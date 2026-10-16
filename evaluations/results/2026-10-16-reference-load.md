@@ -67,7 +67,11 @@ Not changed:
 
 Every claim keeps at least one citation. The claim consumers were refreshed.
 
-## Options for the budget decision (not taken here)
+## Budget decision
+
+The owner chose the budget revision. Rubric version 2 allows ≤ 2.0× when the same run shows ≥ 50% fewer critical/major errors and no mean regression, and otherwise keeps 1.5× ([ADR 0003](../../docs/adr/0003-token-budget-revision.md)). No structural change or rerun was made. Under version 2 both recorded rounds would be within budget (1.79× and 1.75×, with −58% and −53%). They stay evaluated under version 1.
+
+## Options considered
 
 - **Budget revision.** The rubric allows a documented revision when correctness gains justify it. Round 2 cut critical+major errors by 53% (45 → 21).
 - **Structural changes.** These need a rerun to measure:

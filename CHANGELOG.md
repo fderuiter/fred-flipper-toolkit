@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Rubric version 2 (#13, [ADR 0003](docs/adr/0003-token-budget-revision.md)): the comparative token budget is ≤ 2.0× median when the same run shows ≥ 50% fewer critical/major errors and no mean regression, otherwise ≤ 1.5×. `run_pilot.py report` adds `token_budget` and `token_ratio_within_budget`. Scoring is unchanged.
 - `flipper-native` workflow gains a mandatory teardown self-check (step 8): one row per producer, what it touches, and the stop/join line that must run before those are freed; `flipper-review` outputs include the same table (#22). Not yet evaluated in a paired run.
 - Token budget (#13): `evaluations/harness/measure_reference_load.py` measures which skill files pilot sessions loaded and estimates each file's cost; results in `evaluations/results/2026-10-16-reference-load.md`. Removed text from `runtime-ui.md`, `storage-parsers.md`, `hardware-communications.md` and `evidence-policy.md` that duplicated `engineering-rules.md`; projected ratio 1.75× → 1.70× (no rerun).
 
