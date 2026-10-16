@@ -1,0 +1,38 @@
+name: Toolkit bug
+description: A FRED skill or helper gave wrong, unsafe or unverifiable guidance or output.
+labels: [correctness]
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: FRED commit, agent client and version, firmware lineage/version/commit, SDK/API.
+    validations:
+      required: true
+  - type: textarea
+    id: task
+    attributes:
+      label: Task and skill
+      description: What you asked and which skill(s) loaded.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected versus actual
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence (redacted)
+      description: Source paths, logs or transcript excerpts. No secrets, private captures or device identifiers.
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+  - type: dropdown
+    id: hardware
+    attributes:
+      label: Hardware involved
+      options: ["none", "available, not used", "used (describe scope above)"]

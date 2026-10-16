@@ -1,0 +1,28 @@
+name: Stale or wrong source claim
+description: A claim in the registry no longer matches upstream.
+labels: [evidence]
+body:
+  - type: input
+    id: claim
+    attributes:
+      label: Claim ID
+      placeholder: C-TMR-001
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Old and new source
+      description: Pinned URLs (full commit), path/function/section, date checked.
+    validations:
+      required: true
+  - type: textarea
+    id: affected
+    attributes:
+      label: Affected pages and examples
+      description: From the claim's consumers list.
+  - type: textarea
+    id: correction
+    attributes:
+      label: Suggested correction and evidence status
+      description: documented / source-confirmed / inferred / unresolved.

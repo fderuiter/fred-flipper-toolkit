@@ -1,0 +1,30 @@
+name: Capability request
+description: Ask FRED to cover a new surface, protocol or workflow.
+labels: [compatibility]
+body:
+  - type: textarea
+    id: operations
+    attributes:
+      label: Required role and operations
+      description: For example "BLE central: scan, connect, write, subscribe".
+    validations:
+      required: true
+  - type: textarea
+    id: value
+    attributes:
+      label: User value and repeated tasks
+      description: Expansion needs at least three distinct real tasks blocked by the same gap.
+    validations:
+      required: true
+  - type: input
+    id: surface
+    attributes:
+      label: Target surface and firmware lineage
+  - type: textarea
+    id: testing
+    attributes:
+      label: Test and hardware availability
+  - type: input
+    id: maintainer
+    attributes:
+      label: Expected maintainer
