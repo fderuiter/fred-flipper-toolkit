@@ -1,0 +1,11 @@
+entry,status,name,type,params
+Version,+,10.4,,
+Header,+,lib/demo/demo.h,,
+Header,+,lib/demo/legacy.h,,
+Function,+,demo_alloc,Demo*,
+Function,+,demo_write,size_t,"Demo*, const uint8_t*, size_t"
+Function,+,demo_format,int,"char*, size_t, const char*, ..."
+Function,+,demo_legacy,void,Demo*
+Function,+,demo_hidden_soon,_Bool,"Demo*, uint32_t"
+Function,-,demo_internal,void,
+Variable,+,demo_version,const char*,
