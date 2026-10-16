@@ -33,11 +33,11 @@ Extract parsing logic into plain C with no Furi dependencies so it can be host-t
 1. Store an app-specific format identifier and version.
 2. Load: validate every field's range; fall back to defaults per field or wholesale (decide which).
 3. Known older version → migrate through validated state.
-4. Unknown future version → do not overwrite silently; choose read-only, reset-with-notice or refuse, and document it.
+4. Unknown future version → do not overwrite silently; choose read-only, reset-with-notice or refuse, and document it. Read the version before full validation, and treat an existing file you cannot parse the same way: never let a later save rotate or delete it without the user's action.
 5. Save: write a temporary file, check every write length and the sync/close result, then replace via the storage API; keep a recoverable previous copy when losing settings would matter.
 6. Startup: detect stale temporary files from interrupted saves and recover deterministically.
 
-Do not describe rename/sync as power-loss atomic; that is unresolved for this filesystem and device [C-STO-002]. Interrupted-write recovery can be exercised in modeled storage on the host, but device behavior stays pending until tested on hardware.
+Do not describe rename/sync as power-loss atomic; that is unresolved for this filesystem and device [C-STO-002]. Put file operations behind a small interface so host tests can (a) read the real sample files the user supplied and (b) inject a failure at each write/sync/rename/remove step and check that the next load recovers old or new settings. Device behavior stays pending until tested on hardware.
 
 ## Untrusted content
 

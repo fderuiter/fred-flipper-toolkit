@@ -1198,7 +1198,32 @@
       "review_state": "current",
       "consequence": "A matching major does not mean an app loads: check every import against the target's api_symbols.csv. A newer-minor app loads only if it uses no newer symbols.",
       "consumers": [
+        "flipper-core/references/build-debug-release.md",
         "flipper-core/references/compatibility.md"
+      ]
+    },
+    {
+      "id": "C-GUI-003",
+      "claim": "VariableItemList value counts and current indices are uint8_t, and a View's previous_callback is invoked from ViewDispatcher's Back-input handling (view_dispatcher.c) through view_previous (view.c).",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/applications/services/gui/modules/variable_item_list.h",
+          "locator": "variable_item_list_add values_count; variable_item_set/get_current_value_index",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/applications/services/gui/view_dispatcher.c",
+          "locator": "input handling: InputKeyBack -> view_previous",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Map wide setting ranges onto at most 255 steps; keep previous callbacks free of storage or slow work.",
+      "consumers": [
+        "flipper-core/references/runtime-ui.md"
       ]
     }
   ]

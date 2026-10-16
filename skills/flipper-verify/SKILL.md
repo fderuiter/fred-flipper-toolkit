@@ -45,7 +45,7 @@ Also needed: target compatibility card, project source and build hooks, whether 
 3. Establish identities: bootstrap, SDK URL/SHA-256/API, toolchain, firmware commit.
 4. Inspect manifest, imports and assets.
 5. Run authorized checks (format, build, host tests) and keep exact commands, versions, exit codes and logs.
-6. For migration, compare API tables and map changes to call sites; rebuild on the target.
+6. For migration, compare API tables, map changes to call sites, and report source, binary/import and behavior impact separately; rebuild on the target.
 7. Write a separate device test plan; never fill it from compile or mock results.
 8. Prepare artifacts and evidence without publishing.
 

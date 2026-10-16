@@ -32,13 +32,16 @@ There is no `ufbt test` [C-BUILD-001]. Do not describe lint as static analysis.
 - Record: bootstrap version, SDK URL + SHA-256 + API, firmware commit, compiler/binutils versions, build flags/mode, host OS, app commit, dependency pins and `dist/*.fap` SHA-256.
 - Repeatable inputs are not bit-for-bit reproducibility; claim the latter only after comparing hashes from two clean builds. Observed: single-source FAPs were identical across clean builds, multi-source FAPs varied with object order.
 
+When you hand a user build instructions, pin them: `UFBT_HOME=<project dir>/.ufbt ufbt update --branch=<tag>` (or `--url`/`--local --hw-target=f7` with a verified SDK), then `ufbt`, and say that `ufbt launch` deploys to a device.
+
 ## API migration
 
 1. Obtain both `api_symbols.csv` tables from pinned sources (or SDK archives).
 2. Compare with the repository's `scripts/compare_api.py --old OLD --new NEW`; it reports version, removed/added exports and full signature changes, and exits 1 on selected regressions.
 3. Map each removed/changed symbol to call sites; check macros/inline helpers in headers separately (absent rows prove nothing about them).
-4. Rebuild against the target SDK; the official build and loader are authoritative for imports.
-5. Community-only APIs (fork extensions) are a lineage change, not a version bump [C-FORK-001].
+4. Report three impacts separately: source (signature changes break compilation), binary/import (a different API major makes the loader reject the old FAP; a removed or unexported symbol fails at load time even if the major matches [C-FAP-004]), and behavior (needs a device).
+5. Rebuild against the target SDK; the official build and loader are authoritative for imports.
+6. Community-only APIs (fork extensions) are a lineage change, not a version bump [C-FORK-001].
 
 Observed example: 1.5.1 (API 88.2) → dev `3fb1d51` (API 88.4) adds 42 exports with no removals [C-BASE-005].
 

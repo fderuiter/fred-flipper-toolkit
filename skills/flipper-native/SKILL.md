@@ -48,7 +48,7 @@ Also needed: a FAP workspace (or an explicit request to create one), the target 
 5. Separate bounded pure logic (parsers, framing, state machines) from Furi I/O so it can be host-tested.
 6. Implement the smallest complete slice: init with partial-failure cleanup, run loop with cancel, teardown in dependency order.
 7. Review your own diff for context violations, full queues, short I/O, overflow and use-after-free.
-8. Run only authorized checks (see flipper-verify) and report evidence.
+8. Run host tests for extracted logic when the environment allows (otherwise give the exact command), run other authorized checks (see flipper-verify) and report evidence. Give pinned build instructions (SDK tag or verified URL, isolated `UFBT_HOME`).
 
 Decision points: if the request needs an unexported capability, stop and explain rather than reaching into internals. If the task drifts into firmware or host work, say so instead of silently converting it.
 
@@ -80,7 +80,8 @@ Official native FAPs at the researched baseline. Does not modify firmware, take 
 ## Failure modes
 
 - Mandatory SceneManager for a one-screen app.
-- Storage or parsing inside draw/input callbacks.
+- Storage or parsing inside draw/input or View previous callbacks.
+- `VariableItemList` with more than 255 values (counts are `uint8_t`).
 - Unbounded parser or allocation; `count × size` overflow.
 - Dropped Back/cancel event on a full queue.
 - "Check malloc for NULL" presented as OOM handling.

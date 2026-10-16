@@ -48,7 +48,13 @@ Policy per queue: replaceable ticks/status → coalesce; telemetry → count dro
 | Several screens with routing | ViewDispatcher |
 | Reusable screens with history/back stack | ViewDispatcher + SceneManager |
 
-ViewPort, ViewDispatcher and SceneManager are all exported [C-GUI-002]; SceneManager is optional, not mandatory. View models need a locking or snapshot strategy (`with_view_model` or a mutex). Draw only in the draw callback; request redraws (`view_port_update`, model commit) rather than drawing elsewhere.
+ViewPort, ViewDispatcher and SceneManager are all exported [C-GUI-002]; SceneManager is optional, not mandatory.
+
+Module and dispatcher details that commonly break apps [C-GUI-003]:
+
+- `VariableItemList` value counts and the current index are `uint8_t`: at most 255 choices per item. Map wide ranges to steps (for example 5–600 s in 5 s or preset steps) and convert index ↔ value explicitly.
+- A View's `previous_callback` runs inside the dispatcher's Back-input handling. Return a view ID only; do storage or other slow work in the app thread after `view_dispatcher_run` returns, or from a custom event you send.
+- Hand input to the app thread (message queue or custom event) instead of changing shared state inside the GUI input callback. View models need a locking or snapshot strategy (`with_view_model` or a mutex). Draw only in the draw callback; request redraws (`view_port_update`, model commit) rather than drawing elsewhere.
 
 Animation: timed refresh is legitimate. Choose a modest, justified rate; start the timer when the view becomes active and stop it when inactive or exiting; avoid redraw storms from every incoming byte.
 
