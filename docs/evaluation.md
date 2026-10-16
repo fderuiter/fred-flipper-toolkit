@@ -48,6 +48,6 @@ These validate the bundle and helpers. They are not evaluations of agent benefit
 | SDK-migration task family | 74.3 (baseline 74.8) | every family ≥ 80 | [#21](https://github.com/fderuiter/fred-flipper-toolkit/issues/21) |
 | Critical failure in the FRED arm | 1 (UART teardown freed ViewPort before joining the worker) | 0 | [#22](https://github.com/fderuiter/fred-flipper-toolkit/issues/22) |
 | Paired improvement | +9.5 | ≥ 10, or ≥ 50% fewer critical/major errors (−53%: met) | [#23](https://github.com/fderuiter/fred-flipper-toolkit/issues/23) |
-| Median token ratio | 1.75× | ≤ 1.5× | [#13](https://github.com/fderuiter/fred-flipper-toolkit/issues/13) |
+| Median token ratio | 1.75× (projected 1.70× after the #27 trim) | ≤ 1.5× (rubric v1); from rubric v2, ≤ 2.0× when the same run has ≥ 50% fewer critical/major errors and no mean regression ([ADR 0003](adr/0003-token-budget-revision.md)) | [#13](https://github.com/fderuiter/fred-flipper-toolkit/issues/13) |
 
 The one allowed improvement round on the training tasks has been used. Further changes must be measured on held-out variants ([#12](https://github.com/fderuiter/fred-flipper-toolkit/issues/12)).
