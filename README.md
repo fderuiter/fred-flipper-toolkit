@@ -17,32 +17,31 @@ All four load the same shared rules in `skills/flipper-core/references/` ([engin
 
 Examples of what the references get right, each traced to pinned source: `malloc` is the normal exported allocator and crashes on exhaustion instead of returning NULL; raw `printf` is not exported but the wrapped variant is; `furi_timer_stop` does not wait for an in-flight callback; storage calls block; the stock BLE stack is a peripheral, so an appliance that needs a BLE central should be driven through a host or companion MCU.
 
-## Install (Claude Code)
-
-Copy all four skill directories **together** into a project or personal skills directory:
+## Quick start
 
 ```sh
-# project scope
-mkdir -p /path/to/project/.claude/skills
-cp -R skills/flipper-core skills/flipper-native skills/flipper-review skills/flipper-verify /path/to/project/.claude/skills/
-
-# or personal scope
-mkdir -p ~/.claude/skills
-cp -R skills/flipper-core skills/flipper-native skills/flipper-review skills/flipper-verify ~/.claude/skills/
-
-# verify the installed copy (offline, read-only)
-python3 scripts/check_bundle.py --bundle-only --skills-dir ~/.claude/skills
+git clone https://github.com/fderuiter/fred-flipper-toolkit.git
+cd fred-flipper-toolkit
+python3 scripts/fred_setup.py          # guided menu: install, check, SDK setup
 ```
 
-Windows commands, the optional `CLAUDE.md`/`AGENTS.md` routing snippet and notes for other agents are in [docs/project-instructions.md](docs/project-instructions.md). The skills grant no tool permissions and run no commands on activation. Installing a single skill is unsupported and reported as a broken installation.
+On Windows use `py -3 scripts\fred_setup.py`. The wizard shows its plan and asks before writing anything; `--dry-run` shows the plan without changes. Restart Claude Code afterwards, then ask naturally, for example "Can a stock Flipper control my BLE kettle?", "Add a settings screen to this FAP", "Review app_free() for use-after-free" or "Pin my build to the 1.5.1 SDK".
 
-Then ask naturally, for example "Can a stock Flipper control my BLE kettle?", "Add a settings screen to this FAP", "Review app_free() for use-after-free", or "Pin my build to the 1.5.1 SDK".
+| Guide | For |
+|---|---|
+| [Getting started](docs/GETTING-STARTED.md) | Step-by-step install, health check and optional SDK setup |
+| [Using FRED](docs/using-fred.md) | What each skill does, example requests, how to read the answers |
+| [Troubleshooting](docs/troubleshooting.md) | Common problems and fixes |
+| [Manual install and other agents](docs/project-instructions.md) | Copying folders by hand, routing snippet, non-Claude clients |
+
+The skills grant no tool permissions and run no commands on activation. Install all four together; a partial install is reported as broken.
 
 ## Repository layout
 
 - `skills/` — the installable payload: four `SKILL.md` entry points, shared [references](skills/flipper-core/references/) and [forms](skills/flipper-core/assets/) (compatibility card, ownership table, validation report, device test plan).
 - `skills/flipper-core/references/sources.json` — claim registry: each material claim with pinned source, date, evidence status, consequence and consuming pages.
 - [compatibility.json](compatibility.json) — baseline identities and evidence status, kept separate from support claims.
+- `scripts/fred_setup.py` — setup wizard (install, doctor, SDK setup, build, compatibility card); see [ADR 0002](docs/adr/0002-setup-wizard.md).
 - `scripts/check_bundle.py` — offline bundle/registry/link/budget checker. `scripts/compare_api.py` — offline `api_symbols.csv` comparator.
 - `tests/` — unittest suites, including negative and security cases.
 - `evaluations/` — seven benchmark tasks, 24 activation cases, rubric and reviewer-side oracles ([overview](evaluations/README.md)).

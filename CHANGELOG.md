@@ -7,7 +7,7 @@ Implementation phase started 2026-10-16.
 - Compatibility and evidence contracts (#2): `compatibility.json` with separate baseline identities (firmware 1.5.1 / `9e810dc` / f7 / API 88.2, SDK URL and published digest, uFBT 0.2.6, toolchain unknown) and evidence fields; claim registry `skills/flipper-core/references/sources.json` (41 claims with pinned sources, status, consequence and consumers); evidence policy and forms.
 - Four skills (#3): `flipper-core`, `flipper-native`, `flipper-review`, `flipper-verify` with restricted frontmatter, direct-entry loading of shared rules and an explicit broken-installation error.
 - Shared references (#4): engineering rules, compatibility, capability map with BLE stress test, runtime/UI/ownership, storage/parsers, hardware/communications, build/debug/release, corrected assumptions, pinned upstream example index.
-- Offline helpers (#5): `scripts/check_bundle.py` and `scripts/compare_api.py`, with 96 unittest cases including negative and security tests.
+- Offline helpers (#5): `scripts/check_bundle.py` and `scripts/compare_api.py`, with unittest cases including negative and security tests.
 - Benchmarks (#6): seven tasks with synthetic fixtures, reviewer-side oracles (eight seeded lifecycle defects, expected parses, held-out variants), 24 activation cases and a predeclared rubric.
 - Maintenance (#10): review cadence, claim lifecycle, support matrix, SemVer, licensing, release checklist, expansion threshold and issue templates.
 - Baseline facts rechecked at the pins during implementation (API 88.2 row, timer/record/heap/queue/storage/serial/GAP sources). Observed official `dev` `3fb1d51` is API 88.4 with 42 added exports and no removals.
@@ -15,6 +15,10 @@ Implementation phase started 2026-10-16.
 - Live activation (#3): reviewer-side harness; after one description-tuning round 23/24 with 0/8 negative false activations at project and personal scope on claude-sonnet-5-5 and claude-opus-5-5 (Claude Code 2.1.301), held-out paraphrases 6/6.
 - SDK qualification (#7): official 1.5.1 f7 SDK bytes verified against the published SHA-256; uFBT 0.2.6 (PyPI digest verified) in an isolated UFBT_HOME; Flipper toolchain 39. Six designated apps build with 0 warnings (APPCHK Target 7, API 88.2) and pass `ufbt lint` after `ufbt format`; reference host tests pass under gcc/clang with ASan/UBSan. Multi-source FAPs are not bit-for-bit reproducible across clean builds (object order).
 - New claims C-BUILD-004 (a distro toolchain changed the generated API to 89.0) and C-BUILD-005 (official toolchain identity).
+
+- Setup wizard (`scripts/fred_setup.py`, ADR 0002): guided install/uninstall with backups and verification, `doctor`, hash-pinned SDK setup with archive verification, `build`, and a compatibility-card form; 22 offline tests. New human guides: Getting started, Using FRED, Troubleshooting.
+- Pilot round 1 (#8): treatment 84.6 vs baseline 77.4, 58% fewer critical/major errors, comparative gate not met; one improvement round of generic guidance (C-GUI-003, storage testing, migration impacts).
+- Expansion research (#11): fork API surfaces, loader major-only rule (C-FAP-004), mJS host tests (C-JS-001), emulator fidelity, MCP audits, GPIO limits (C-GPIO-001).
 
 Checks: `python3 scripts/check_bundle.py` → 0 errors, 0 warnings; `python3 -m unittest discover -s tests -v` → 96 tests OK (Python 3.13.16, Linux).
 

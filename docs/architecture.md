@@ -85,3 +85,5 @@ Checks: unique IDs; enum values; ISO dates not in the future; `current` claims c
 - `scripts/compare_api.py --old A.csv --new B.csv [--format text|json] [--fail-on removed,changed,major,minor,added,none]` — exit 0 no selected regressions, 1 regressions, 2 usage/malformed input. Text and JSON output are sorted and deterministic.
 
 Neither helper uses the network, subprocesses, `eval`/`exec`, or imports checked files; neither claims to prove C lifecycle correctness. Tests in `tests/` enforce these properties.
+
+`scripts/fred_setup.py` is the separate, opt-in setup wizard ([ADR 0002](adr/0002-setup-wizard.md)): `install`, `uninstall`, `doctor`, `sdk`, `build`, `card`. It may download and run uFBT, but only after showing the plan and getting confirmation (`--yes` for scripts, `--dry-run` to preview). It validates bundles with `check_bundle.py` before and after installing, backs up replaced copies, pins uFBT dependencies by hash and verifies the SDK archive digest. Exit codes: 0 success, 1 problems found (`doctor`, failed build), 2 stopped (refusal, missing confirmation, hash mismatch, failed command).

@@ -15,7 +15,7 @@
 
 ## Artifacts
 
-Build with `evaluations/harness/build_fixtures.sh` (uFBT 0.2.6, verified 1.5.1 SDK, toolchain 39) and record the SHA-256 of each `.fap` you deploy. Expected hashes for single-source apps from the 2026-10-16 qualification: `fred_tally` `2d2c389c55db…`. Multi-source apps may differ by object order (see the [qualification record](../results/2026-10-16-sdk-qualification/README.md)); record what you deploy.
+Build with `evaluations/harness/build_fixtures.sh` (uFBT 0.2.6, verified 1.5.1 SDK, toolchain 39) and record the SHA-256 of each `.fap` you deploy. `.fap` hashes depend on the build folder and, for multi-source apps, object order (see the [qualification record](../results/2026-10-16-sdk-qualification/README.md)), so record the hash of exactly the file you deploy. `python3 scripts/fred_setup.py build <app>` prints it.
 
 Copy to `/ext/apps/Tools/` (or any apps folder) with qFlipper or the SD card. App data folders are `/ext/apps_data/<appid>/`.
 

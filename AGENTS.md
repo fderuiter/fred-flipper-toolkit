@@ -17,7 +17,7 @@ python3 scripts/check_bundle.py
 python3 -m unittest discover -s tests -v
 ```
 
-Use the host's supported Python launcher (`py -3` on Windows if `python3` is unavailable). Both are offline and need no dependencies.
+Use the host's supported Python launcher (`py -3` on Windows if `python3` is unavailable). Both are offline and need no dependencies. `python3 scripts/fred_setup.py doctor` checks an installed setup. The wizard's `sdk`, `build` and `install` subcommands have external effects; run them only within the user's scope.
 
 ## Evidence
 

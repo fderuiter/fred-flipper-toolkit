@@ -2,6 +2,8 @@
 
 FRED is four Agent Skills directories that must be installed **together as siblings**. Isolated installation of one skill is unsupported and is reported as a broken installation.
 
+Most people should use the wizard: `python3 scripts/fred_setup.py install` (see [Getting started](GETTING-STARTED.md)). This page covers the manual equivalent and other clients.
+
 ## Claude Code (primary client)
 
 From a checkout of this repository, copy the four directories into one of the documented skill locations. Review any existing `flipper-*` directories first; do not overwrite them without comparing.

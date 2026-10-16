@@ -37,6 +37,10 @@ Drill (exercised by `tests/test_check_bundle.py::Registry::test_synthetic_upstre
 
 Original prose, scripts and fixtures are MIT (see `LICENSE`). Upstream firmware is GPL-3.0: link to pinned files, do not copy implementations into MIT material. Record license and provenance for any adapted third-party file in `THIRD_PARTY_NOTICES.md` before merging it. A repository-level MIT label does not relicense mirrored vendor documentation; no documentation mirror is vendored.
 
+## Wizard constants
+
+When the supported baseline changes, update `scripts/fred_setup.py` together with `compatibility.json`: SDK URL and SHA-256, the SDK API-table SHA-256, the toolchain version, and the hash-pinned uFBT requirements. Then run `fred_setup.py sdk` in a scratch folder and `doctor` to confirm.
+
 ## Release checklist (local)
 
 1. `python3 scripts/check_bundle.py` → 0 errors.

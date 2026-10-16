@@ -6,6 +6,14 @@ FRED is a v0.1 preview. Start from [AGENTS.md](AGENTS.md), [docs/architecture.md
 
 Add or change a claim in `skills/flipper-core/references/sources.json` with: exact source URL pinned to a full commit (or `live: true` for unversioned docs), path/function/section, applicable version, date checked, documented/source-confirmed/inferred/unresolved status, practical consequence and consuming pages; cite the claim ID in each consuming page. Distinguish upstream documentation, source behavior, third-party claims and engineering recommendations. Explain conflicting evidence rather than silently choosing one source.
 
+## Quick setup for contributors
+
+```sh
+python3 scripts/fred_setup.py install --scope project --project . --dry-run   # preview
+python3 scripts/fred_setup.py doctor
+python3 scripts/fred_setup.py sdk          # only if you build reference fixtures
+```
+
 ## Changes
 
 - Keep skills within budget (≤150 lines and ≤1,000 words each; ≤300 words of descriptions combined; shared rules ≤1,200 words). Domain detail goes in references, shared rules stay in one place, and every skill must work when entered directly.
