@@ -6,7 +6,7 @@ Host: Ubuntu 24.04 x86_64 (cloud container), Python 3.13.16, host gcc 13.3.0 and
 |---|---|
 | Source inspection (fbt 9e810dc, uFBT 0.2.6) | pass: both causes located, see below |
 | Host analogue (host gcc/binutils, Python) | pass: both mechanisms reproduced |
-| SDK build with the recipe (two clean builds, two paths) | **not run**: needs the SDK and toolchain download |
+| SDK build with the recipe (two clean builds, two paths) | **blocked**: the download was approved, but on 2026-10-16 this container's network policy refused `update.flipperzero.one` (proxy `CONNECT` 403) |
 | Bit-for-bit reproducibility of multi-source FAPs | **not established** |
 
 ## Cause 1: object order follows Python's hash seed
