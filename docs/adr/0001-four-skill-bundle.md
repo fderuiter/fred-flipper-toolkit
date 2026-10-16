@@ -1,6 +1,6 @@
 # ADR 0001: Four development skills sharing one reference set
 
-Date: 2026-10-16. Status: accepted design; implementation and measured effectiveness pending.
+Date: 2026-10-16. Status: accepted and implemented as the v0.1 preview (see [architecture](../architecture.md)); SDK qualification and measured effectiveness pending.
 
 ## Context
 
@@ -18,4 +18,4 @@ Do not initially add an MCP server, plugin, hooks, installer/updater, scaffolder
 
 The suite must be installed intact; missing siblings are an installation failure. Reference paths require tests at both scopes and from unrelated working directories. Agent clients that isolate skill directories need a deliberate adapter. Shared rules avoid drift, while bounded entry points and selective references limit context.
 
-The [research report](../research/2026-10-16-research-design.md#5-architecture-decision) contains alternatives, proposed paths, budgets and validation gates. No installable skill files are introduced by this decision record.
+The [research report](../research/2026-10-16-research-design.md#5-architecture-decision) contains alternatives, proposed paths, budgets and validation gates. The implemented layout is `skills/` in this repository; budgets and contracts are enforced by `scripts/check_bundle.py`.

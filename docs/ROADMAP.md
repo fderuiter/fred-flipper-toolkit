@@ -1,6 +1,6 @@
 # Implementation roadmap
 
-Status: planned implementation and qualification. Research/design committed directly to main by user authorization; no installable toolkit exists yet.
+Status (2026-10-16): v0.1 preview implemented — #2–#6 and #10 have their locally achievable work committed and offline checks passing; #7 (SDK), #8 (model comparison) and #9 (hardware) are pending external setup. Issue comments record commits and exact check results.
 
 Tracker: [#1](https://github.com/fderuiter/fred-flipper-toolkit/issues/1). The [implementation prompt](implementation-prompt.md) gives concrete files, sequence, sources and release gates. The [full report](research/2026-10-16-research-design.md) explains the decisions.
 
@@ -25,7 +25,7 @@ Tracker: [#1](https://github.com/fderuiter/fred-flipper-toolkit/issues/1). The [
 4. Qualify hardware behavior separately (#9); operationalize maintenance/release policy (#10).
 5. Expand only when repeated tasks and measured gaps justify it (#11).
 
-No milestone was closed merely because this documentation exists. Implementation is outside the current research-only phase. SDK execution needs prepared or separately authorized setup; comparative evaluations need actual model sessions; device qualification needs explicit hardware scope. Existing local development authorization should not be repeatedly requested within its scope.
+No milestone is closed merely because documentation exists. SDK execution needs prepared or separately authorized setup (the implementation session had no toolchain and could not reach the SDK host); comparative evaluations need actual model sessions; device qualification needs explicit hardware scope. Existing local development authorization should not be repeatedly requested within its scope.
 
 No custom MCP/server, installer, scaffolder, comprehensive emulator, protocol micro-skill collection or broad fork support is required for the first release. Those are deliberately deferred, not forgotten.
 

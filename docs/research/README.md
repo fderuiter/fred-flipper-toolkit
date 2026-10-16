@@ -1,6 +1,6 @@
 # Research record
 
-Checked 2026-10-16. Start with the [full report](2026-10-16-research-design.md); its first ten sections follow the original research assignment's deliverable order. The [standalone implementation prompt](../implementation-prompt.md) is duplicated in section 10 for a self-contained handoff. When editing the prompt, update both copies together.
+Checked 2026-10-16. This directory is the preserved research record; the implementation that follows it lives in `skills/`, `scripts/`, `evaluations/` and `compatibility.json` (see the [repository README](../../README.md)). Start with the [full report](2026-10-16-research-design.md); its first ten sections follow the original research assignment's deliverable order. The [standalone implementation prompt](../implementation-prompt.md) is duplicated in section 10 for a self-contained handoff. When editing the prompt, update both copies together.
 
 [source-inventory.json](source-inventory.json) records repository head pins, observed metadata, the official baseline and published SDK index digest. The report's S01–S30 register records claim-level source/evidence/consequence details. Repository trees, selected firmware/third-party source texts and official docs were read during research. Raw upstream source snapshots are not vendored here; the commit links identify the inspected versions.
 
