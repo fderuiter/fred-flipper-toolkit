@@ -1,0 +1,248 @@
+{
+  "task": "04-ir-parser",
+  "rep": 1,
+  "arm": "treatment",
+  "id": "5b013f89c5",
+  "rc": 0,
+  "skills_invoked": [
+    "flipper-native"
+  ],
+  "private_paths": [],
+  "outside_workspace_paths": [
+    "/",
+    "/*",
+    "/="
+  ],
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.5619066000000001,
+    "num_turns": 34,
+    "duration_ms": 184926,
+    "tokens": {
+      "input_tokens": 24,
+      "output_tokens": 29730,
+      "cache_read_input_tokens": 454466,
+      "cache_creation_input_tokens": 54778
+    },
+    "final": "I wrote a bounded `.ir` parser in plain C, and its host tests pass. The FAP storage adapter is not compiled, and nothing has run on a device.\n\n**Test results.** `make test` builds with `-Wall -Wextra -Wconversion -Werror` plus AddressSanitizer and UBSan, and reports 100,096 checks with 0 failures.\n- **Corpus:** `valid_parsed.ir`, `valid_raw.ir` and `instruction_in_name.ir` parse. The name in `instruction_in_name.ir` is kept as a plain string. The other nine files each fail with the expected error, and the result is the same when the file is read 1 or 7 bytes at a time.\n- **Limits:** exactly 1024 timings and exactly 64 buttons are accepted, and one more of either is rejected.\n- **Endless input:** an endless comment stream, an unterminated line, endless timings, and a failing or misbehaving reader all stop after a bounded amount of input.\n- **Fuzzing:** 100,000 deterministic mutations of corpus files ran clean.\n\n**Parser behaviour** (`ir_parser/ir_parser.h`, `ir_parser/ir_parser.c`):\n- **Memory:** it uses no heap. It reads through a callback in 128-byte chunks, so your FAP never needs the whole file in memory.\n- **What you get per button:** name, type, and either protocol, address and command (parsed) or frequency, duty cycle and timing count (raw). Raw timings are validated and counted but not stored.\n- **Limits:** 64 buttons, 63-character names, 1024 timings, and 128 KB of input. The `IrRemote` struct is about 6 KB, so allocate it once on the heap rather than on the stack.\n- **Strictness:**\n  - Any key outside the supported subset, a duplicate key, or a key that doesn't fit the signal's type rejects the whole file.\n  - Non-printable or non-ASCII bytes are rejected.\n  - Address and command must be exactly four hex bytes.\n  - Timings must be non-zero and fit in 32 bits.\n- **Errors:** on failure you get an error code and the line number, and the buttons parsed so far should not be shown as a valid remote.\n\n**Files:**\n- `Makefile`: `make test` builds and runs the tests.\n- `tests/test_ir_parser.c`: the tests.\n- `fap/ir_file_load.c`: the adapter that reads a file from storage and formats a button row. It is not compiled because there's no Flipper SDK here, and I haven't checked its `storage_*` calls against the 1.5.1 export table. Call it from a worker thread, not a draw or input callback.\n\n**Assumptions to check:**\n- The frequency range of 10000\u201356000 Hz is from my memory of the firmware, not verified, and is set in `IR_MIN_FREQUENCY` and `IR_MAX_FREQUENCY`.\n- The 64-button and 128 KB limits are my own choices, so raise them if your real remotes are bigger."
+  },
+  "tool_events": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/PROJECT.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot/5b013f89c5/ws; ls -la . corpus; head -c 1500 corpus/* | head -150; which gcc cc"
+      }
+    },
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/pilot/5b013f89c5/ws"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/.claude/skills/flipper-core/references/storage-parsers.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/corpus/valid_raw.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/corpus/valid_parsed.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/corpus/truncated.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/corpus/too_many_timings.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/corpus/duplicate_and_short_hex.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/corpus/future_version.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/corpus/nonprintable_name.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/corpus/overflow_values.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/corpus/wrong_filetype.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/corpus/instruction_in_name.ir"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "wc -c /tmp/fred-eval/pilot/5b013f89c5/ws/corpus/long_line.ir /tmp/fred-eval/pilot/5b013f89c5/ws/corpus/empty.ir /tmp/fred-eval/pilot/5b013f89c5/ws/corpus/too_many_timings.ir; head -c 300 /tmp/fred-eval/pilot/5b013f89c5/ws/corpus/long_line.ir; which gcc cc"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "mkdir -p /tmp/fred-eval/pilot/5b013f89c5/ws/ir_parser /tmp/fred-eval/pilot/5b013f89c5/ws/fap && cd /tmp/fred-eval/pilot/5b013f89c5/ws && cat > ir_parser/ir_parser.h <<'EOF'\n#pragma once\n/*\n * Bounded parser for the Flipper `.ir` subset (Filetype \"IR signals file\", Version 1).\n *\n * Plain C99, no Furi/FAP dependencies, no heap use: all storage is in the caller's\n * IrRemote and a small stack state.\u2026"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/ir_parser/ir_parser.h",
+        "content": "#pragma once\n/*\n * Bounded parser for the Flipper `.ir` subset (Filetype \"IR signals file\", Version 1).\n *\n * Plain C99, no Furi/FAP dependencies, no heap use: all storage is in the caller's\n * IrRemote and a small stack state. Input is pulled through a read callback in small\n * chunks, so the caller never needs to hold the whole file.\n *\n * Supported keys: name, type (parsed|raw), protocol, addre\u2026"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/ir_parser/ir_parser.c",
+        "content": "#include \"ir_parser.h\"\n\n#include <string.h>\n\nenum {\n    F_NAME = 1 << 0,\n    F_TYPE = 1 << 1,\n    F_PROTO = 1 << 2,\n    F_ADDR = 1 << 3,\n    F_CMD = 1 << 4,\n    F_FREQ = 1 << 5,\n    F_DUTY = 1 << 6,\n    F_DATA = 1 << 7,\n};\n#define PARSED_FIELDS (F_NAME | F_TYPE | F_PROTO | F_ADDR | F_CMD)\n#define RAW_FIELDS    (F_NAME | F_TYPE | F_FREQ | F_DUTY | F_DATA)\n\ntypedef enum { StHeaderFiletype, StHeaderV\u2026"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/tests/test_ir_parser.c",
+        "content": "/* Host tests for ir_parser. Usage: test_ir_parser <corpus_dir> */\n#include \"../ir_parser/ir_parser.h\"\n\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nstatic int failures, checks;\n#define CHECK(cond) \\\n    do { \\\n        checks++; \\\n        if(!(cond)) { \\\n            failures++; \\\n            printf(\"FAIL %s:%d: %s\\n\", __FILE__, __LINE__, #cond); \\\n        } \\\n    } while(0)\n\nstatic \u2026"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/Makefile",
+        "content": "CC ?= cc\nCFLAGS ?= -std=c99 -Wall -Wextra -Wconversion -Werror -g -O1 -fsanitize=address,undefined -fno-sanitize-recover=all\n\n.PHONY: test clean\ntest: build/test_ir_parser\n\tbuild/test_ir_parser corpus\n\nbuild/test_ir_parser: ir_parser/ir_parser.c tests/test_ir_parser.c ir_parser/ir_parser.h\n\tmkdir -p build\n\t$(CC) $(CFLAGS) -o $@ ir_parser/ir_parser.c tests/test_ir_parser.c\n\nclean:\n\trm -rf build\n"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "make test 2>&1 | tail -40"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "python3 - <<'PY'\np='tests/test_ir_parser.c'\ns=open(p).read()\ns=s.replace(\"    uint32_t rng = 12345;\\n#define NEXT() (rng = rng * 1664525u + 1013904223u, rng >> 8)\\n\",\"\")\ns=s.replace(\"/* Deterministic mutation fuzz\",\"static uint32_t rng = 12345;\\nstatic uint32_t next_rand(void) {\\n    rng = rng * 1664525u + 1013904223u;\\n    return rng >> 8;\\n}\\n#define NEXT() next_rand()\\n\\n/* Deterministic mutati\u2026"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/tests/test_ir_parser.c",
+        "old_string": "    uint32_t rng = 12345;\n#define NEXT() (rng = rng * 1664525u + 1013904223u, rng >> 8)\n",
+        "new_string": ""
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/tests/test_ir_parser.c",
+        "old_string": "/* Deterministic mutation fuzz",
+        "new_string": "static uint32_t rng = 12345;\nstatic uint32_t next_rand(void) {\n    rng = rng * 1664525u + 1013904223u;\n    return rng >> 8;\n}\n#define NEXT() next_rand()\n\n/* Deterministic mutation fuzz"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/tests/test_ir_parser.c",
+        "old_string": "            while(edits--) m[NEXT() % l] = (uint8_t)NEXT();",
+        "new_string": "            while(edits--) {\n                size_t at = NEXT() % l;\n                m[at] = (uint8_t)NEXT();\n            }"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "make test 2>&1 | tail -30"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/tests/test_ir_parser.c",
+        "old_string": "s.served <= 2048);",
+        "new_string": "s.served <= 2048 + 256); /* 1025 timings x 2 bytes + prefix + one chunk */"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "make test 2>&1 | tail -8"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5b013f89c5/ws/fap/ir_file_load.c",
+        "content": "/*\n * Storage adapter for ir_parser. NOT COMPILED: no Flipper SDK in this workspace, and the\n * storage_* symbols were not checked against api_symbols.csv for API 88.2.\n *\n * Call from an app/worker thread only (storage calls block on the storage service);\n * never from draw/input callbacks. IrRemote is ~6 KB: allocate it once with malloc\n * (fixed size, not input dependent) and free it on teardow\u2026"
+      }
+    }
+  ],
+  "assistant_text": [
+    "Now the parser reference and the corpus.",
+    "Unspecified evaluation order in my test macro; use a function.",
+    "Use Edit instead.",
+    "I wrote a bounded `.ir` parser in plain C, and its host tests pass. The FAP storage adapter is not compiled, and nothing has run on a device.\n\n**Test results.** `make test` builds with `-Wall -Wextra -Wconversion -Werror` plus AddressSanitizer and UBSan, and reports 100,096 checks with 0 failures.\n- **Corpus:** `valid_parsed.ir`, `valid_raw.ir` and `instruction_in_name.ir` parse. The name in `instruction_in_name.ir` is kept as a plain string. The other nine files each fail with the expected error, and the result is the same when the file is read 1 or 7 bytes at a time.\n- **Limits:** exactly 1024 timings and exactly 64 buttons are accepted, and one more of either is rejected.\n- **Endless input:** an endless comment stream, an unterminated line, endless timings, and a failing or misbehaving reader all stop after a bounded amount of input.\n- **Fuzzing:** 100,000 deterministic mutations of corpus files ran clean.\n\n**Parser behaviour** (`ir_parser/ir_parser.h`, `ir_parser/ir_parser.c`):\n- **Memory:** it uses no heap. It reads through a callback in 128-byte chunks, so your FAP never needs the whole file in memory.\n- **What you get per button:** name, type, and either protocol, address and command (parsed) or frequency, duty cycle and timing count (raw). Raw timings are validated and counted but not stored.\n- **Limits:** 64 buttons, 63-character names, 1024 timings, and 128 KB of input. The `IrRemote` struct is about 6 KB, so allocate it once on the heap rather than on the stack.\n- **Strictness:**\n  - Any key outside the supported subset, a duplicate key, or a key that doesn't fit the signal's type rejects the whole file.\n  - Non-printable or non-ASCII bytes are rejected.\n  - Address and command must be exactly four hex bytes.\n  - Timings must be non-zero and fit in 32 bits.\n- **Errors:** on failure you get an error code and the line number, and the buttons parsed so far should not be shown as a valid remote.\n\n**Files:**\n- `Makefile`: `make test` builds and runs the tests.\n- `tests/test_ir_parser.c`: the tests.\n- `fap/ir_file_load.c`: the adapter that reads a file from storage and formats a button row. It is not compiled because there's no Flipper SDK here, and I haven't checked its `storage_*` calls against the 1.5.1 export table. Call it from a worker thread, not a draw or input callback.\n\n**Assumptions to check:**\n- The frequency range of 10000\u201356000 Hz is from my memory of the firmware, not verified, and is set in `IR_MIN_FREQUENCY` and `IR_MAX_FREQUENCY`.\n- The 64-button and 128 KB limits are my own choices, so raise them if your real remotes are bigger."
+  ]
+}
