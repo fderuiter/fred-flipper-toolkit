@@ -6,7 +6,8 @@ Load for GPIO, UART, buses, ADC/PWM, USB, radios or companion devices. Hardware 
 
 - Peripherals are shared with firmware services. Acquire through the highest supported API, check the result, release on every exit path [C-BUS-001].
 - An exported init symbol is not permission to reinitialize global hardware.
-- Verify pin, function, mux, voltage, current and current owner from the board documentation and STM32WB55 datasheet before giving wiring advice. Default to 3.3 V logic; one official table mentions 5 V-tolerant inputs, but that is not a blanket 5 V-safe pin claim, especially in analog mode [C-GPIO-001].
+- Header I/O is 3.3 V logic behind 51 Ω series resistors; 20 mA absolute maximum per pin and 100 mA total. The MCU pins are FT-family, but 5 V tolerance needs the MCU powered, pulls disabled and no analog function, and the firmware leaves header pins in analog mode by default; one official page says "5 V tolerant", another "3.3 V". Treat every header pin as 3.3 V only and level-shift 5 V modules [C-GPIO-001].
+- Verify pin, function, mux and current owner in the pinned `furi_hal_resources.c` before giving wiring advice.
 - Restore only state this app changed; do not "restore" global state another owner set.
 
 ## UART pattern (bounded, IRQ-safe)

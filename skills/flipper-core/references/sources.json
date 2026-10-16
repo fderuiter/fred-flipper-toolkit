@@ -796,24 +796,34 @@
     },
     {
       "id": "C-GPIO-001",
-      "claim": "Exact per-pin voltage tolerance for external circuits is not established; official docs emphasize 3.3 V while one table mentions 5 V-tolerant inputs.",
+      "claim": "Header I/O pins (2-7, 10, 12-17) are 3.3 V CMOS logic, connected to STM32WB55RG pins through 51 Ohm series resistors with ESD protection; each can source up to 20 mA (absolute maximum per pin; sum over all I/O 100 mA) and +5V/+3.3V header supplies allow 1.2 A each. All 13 are FT-family pins, but 5 V input is allowed only with the MCU powered, internal pulls disabled and no analog function; firmware 1.5.1 sets every non-debug header pin to analog mode at early init. The two official pages conflict ('+3.3 V tolerant' vs 'Input 5 V tolerant').",
       "sources": [
         {
           "url": "https://docs.flipper.net/zero/gpio-and-modules",
-          "locator": "GPIO voltage and power",
+          "locator": "I/O pins; 51 Ohm resistors; 20 mA per pin; 5 W total; 3.3 V and 5 V tolerance",
+          "live": true
+        },
+        {
+          "url": "https://docs.flipper.net/zero/development/hardware/tech-specs",
+          "locator": "GPIO row: Input 5 V tolerant (See AN4899)",
+          "live": true
+        },
+        {
+          "url": "https://www.farnell.com/datasheets/4797010.pdf",
+          "locator": "STM32WB55 DS11929 Rev 18: Table 16 pin structures, Tables 20-21 absolute maximum ratings, Table 24 note 4-5",
           "live": true
         },
         {
           "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/furi_hal/furi_hal_resources.c",
-          "locator": "pin definitions",
+          "locator": "gpio_pins[] header mapping; furi_hal_resources_init_early sets header pins to GpioModeAnalog",
           "pin": "fw"
         }
       ],
       "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
       "checked_on": "2026-10-16",
-      "status": "unresolved",
+      "status": "documented",
       "review_state": "current",
-      "consequence": "Default to 3.3 V logic; verify against board and STM32WB55 datasheets before wiring.",
+      "consequence": "Treat every header pin as 3.3 V only; never connect 5 V signals directly; budget at most 20 mA per pin (about 8 mA at rated logic levels) and 100 mA total. Use level shifting for 5 V modules.",
       "consumers": [
         "flipper-core/references/capability-map.md",
         "flipper-core/references/engineering-rules.md",
@@ -822,7 +832,8 @@
       ],
       "research_ids": [
         "S22"
-      ]
+      ],
+      "notes": "Unresolved: the primary AN4899 text on analog-mode tolerance (only an ST community quote was available), the schematic PDFs (official links expired) and the ESD part ratings."
     },
     {
       "id": "C-USB-001",

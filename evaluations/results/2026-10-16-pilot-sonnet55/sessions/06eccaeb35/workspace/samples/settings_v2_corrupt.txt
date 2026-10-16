@@ -1,0 +1,6 @@
+Filetype: Interval Timer Settings
+Version: 2
+Work: 99999999999
+Rest: -4
+Rounds: 0
+Vib

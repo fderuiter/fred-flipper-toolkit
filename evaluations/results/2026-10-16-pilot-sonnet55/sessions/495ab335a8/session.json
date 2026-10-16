@@ -1,0 +1,63 @@
+{
+  "task": "05-ble-feasibility",
+  "rep": 2,
+  "arm": "treatment",
+  "id": "495ab335a8",
+  "rc": 0,
+  "skills_invoked": [
+    "flipper-core"
+  ],
+  "private_paths": [],
+  "outside_workspace_paths": [
+    "/"
+  ],
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1258883,
+    "num_turns": 7,
+    "duration_ms": 30933,
+    "tokens": {
+      "input_tokens": 10,
+      "output_tokens": 2827,
+      "cache_read_input_tokens": 95663,
+      "cache_creation_input_tokens": 22008
+    },
+    "final": "I couldn't write the compatibility card to disk. The write was denied, so there is no file. The decision is below.\n\n## Result: a FAP alone can't do this on stock official 1.5.1\n\nI did not write FAP code. The controller needs the Flipper to act as a BLE central: scan for `K2-xxxx`, connect, discover service `ff00`, enable notifications on `ff02`, write to `ff01`, and bond. In the pinned 1.5.1 baseline (commit 9e810dc, API 88.2), the BLE stack is set up as a peripheral. The calls for connecting as a central and discovering or writing GATT characteristics (`aci_gap_create_connection`, `aci_gatt_disc_*`, `aci_gatt_write_char_*`) are not exported to apps. I took these from the skill's reference notes, which cite pinned source. I did not inspect the firmware source or `api_symbols.csv` myself. A custom GATT server or beacon doesn't change the role. JavaScript apps and a built-in app hit the same limit.\n\n## Recommended path\n\n- **Flipper FAP plus a companion MCU over UART.** The FAP has an on/off toggle and a 40\u2013100 \u00b0C selector. The MCU does the scanning, connecting, bonding and notification setup.\n  - The MCU must support BLE central and GATT client, bonding, and 3.3 V logic.\n  - The MCU also needs to send something every few seconds, because the kettle drops idle connections after 30 s.\n- **Alternative: a host computer** does the BLE work instead of the MCU.\n- **Safety:**\n  - The frames between the Flipper and the MCU should have request IDs, lengths, CRC and timeouts.\n  - After a reconnect, don't replay old commands, and require a fresh user action for \"on\".\n  - Leave boil-dry and lid protection to the kettle.\n\n## What I need from you\n\n- Whether you'll add an MCU or use a host computer. That decides what code I write next.\n- The `checksum` algorithm for the `[0x55, cmd, value, checksum]` frame. Your notes don't give it, so I can't build frames yet.\n- How the kettle pairs. The notes only say bonding is required on first connection.\n\nNothing has been compiled, tested, or run against the kettle. Sending commands to the kettle would need your explicit go-ahead.\n\nIf you want, I can retry writing the card to `docs/compatibility-card.md`. I can also start on the FAP UI and the UART protocol, once you pick the MCU or host route."
+  },
+  "tool_events": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/495ab335a8/ws/PROJECT.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot/495ab335a8/ws; ls -la; cat kettle-protocol.md"
+      }
+    },
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot/495ab335a8/ws/.claude/skills/flipper-core; ls -R . | head -50; cat references/engineering-rules.md references/evidence-policy.md references/compatibility.md references/capability-map.md assets/compatibility-card.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "mkdir -p /tmp/fred-eval/pilot/495ab335a8/ws/docs && cat > /tmp/fred-eval/pilot/495ab335a8/ws/docs/compatibility-card.md <<'EOF'\n# Compatibility card: AcmeBrew K2 remote\n\n| Field | Value | Source / status | Consequence if unknown |\n|---|---|---|---|\n| User outcome | Turn kettle on and set temperature over BLE, no phone | PROJECT.md | - |\n| Firmware | official 1.5.1 (commit 9e810dc), stock | PROJECT\u2026"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I couldn't write the compatibility card to disk. The write was denied, so there is no file. The decision is below.\n\n## Result: a FAP alone can't do this on stock official 1.5.1\n\nI did not write FAP code. The controller needs the Flipper to act as a BLE central: scan for `K2-xxxx`, connect, discover service `ff00`, enable notifications on `ff02`, write to `ff01`, and bond. In the pinned 1.5.1 baseline (commit 9e810dc, API 88.2), the BLE stack is set up as a peripheral. The calls for connecting as a central and discovering or writing GATT characteristics (`aci_gap_create_connection`, `aci_gatt_disc_*`, `aci_gatt_write_char_*`) are not exported to apps. I took these from the skill's reference notes, which cite pinned source. I did not inspect the firmware source or `api_symbols.csv` myself. A custom GATT server or beacon doesn't change the role. JavaScript apps and a built-in app hit the same limit.\n\n## Recommended path\n\n- **Flipper FAP plus a companion MCU over UART.** The FAP has an on/off toggle and a 40\u2013100 \u00b0C selector. The MCU does the scanning, connecting, bonding and notification setup.\n  - The MCU must support BLE central and GATT client, bonding, and 3.3 V logic.\n  - The MCU also needs to send something every few seconds, because the kettle drops idle connections after 30 s.\n- **Alternative: a host computer** does the BLE work instead of the MCU.\n- **Safety:**\n  - The frames between the Flipper and the MCU should have request IDs, lengths, CRC and timeouts.\n  - After a reconnect, don't replay old commands, and require a fresh user action for \"on\".\n  - Leave boil-dry and lid protection to the kettle.\n\n## What I need from you\n\n- Whether you'll add an MCU or use a host computer. That decides what code I write next.\n- The `checksum` algorithm for the `[0x55, cmd, value, checksum]` frame. Your notes don't give it, so I can't build frames yet.\n- How the kettle pairs. The notes only say bonding is required on first connection.\n\nNothing has been compiled, tested, or run against the kettle. Sending commands to the kettle would need your explicit go-ahead.\n\nIf you want, I can retry writing the card to `docs/compatibility-card.md`. I can also start on the FAP UI and the UART protocol, once you pick the MCU or host route."
+  ]
+}

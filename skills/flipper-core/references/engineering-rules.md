@@ -53,7 +53,7 @@ Storage calls block on the storage service and return actual lengths; check them
 
 ## 8. Hardware and capability boundaries
 
-GPIO, buses and radios are shared: acquire through the highest supported API, do not reinitialize global hardware because an init symbol is exported, design for 3.3 V unless the exact pin is verified [C-GPIO-001] [C-BUS-001]. The baseline BLE stack is configured as a peripheral; there is no exported general central/GATT-client workflow, so appliance controllers need a host or verified companion MCU [C-BLE-001] [C-BLE-002]. Flipper JavaScript is an mJS-derived subset, not Node or a browser [C-JS-001]. Details: [capability-map.md](capability-map.md), [hardware-communications.md](hardware-communications.md).
+GPIO, buses and radios are shared: acquire through the highest supported API, do not reinitialize global hardware because an init symbol is exported, and treat header pins as 3.3 V only (20 mA per pin) [C-GPIO-001] [C-BUS-001]. The baseline BLE stack is configured as a peripheral; there is no exported general central/GATT-client workflow, so appliance controllers need a host or verified companion MCU [C-BLE-001] [C-BLE-002]. Flipper JavaScript is an mJS-derived subset, not Node or a browser [C-JS-001]. Details: [capability-map.md](capability-map.md), [hardware-communications.md](hardware-communications.md).
 
 ## 9. Builds and evidence
 

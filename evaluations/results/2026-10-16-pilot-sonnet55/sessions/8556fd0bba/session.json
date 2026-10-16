@@ -1,0 +1,41 @@
+{
+  "task": "05-ble-feasibility",
+  "rep": 1,
+  "arm": "baseline",
+  "id": "8556fd0bba",
+  "rc": 0,
+  "skills_invoked": [],
+  "private_paths": [],
+  "outside_workspace_paths": [],
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0649194,
+    "num_turns": 3,
+    "duration_ms": 16465,
+    "tokens": {
+      "input_tokens": 6,
+      "output_tokens": 1256,
+      "cache_read_input_tokens": 43754,
+      "cache_creation_input_tokens": 11993
+    },
+    "final": "I haven't written the FAP, because as far as I know it can't be built for a stock Flipper Zero on firmware 1.5.1. I didn't check this against the 1.5.1 source here, since the workspace only has the two notes files.\n\n**Why it can't work on stock firmware**\n- The official firmware's BLE stack only acts as a peripheral. It's used for the serial profile, HID and similar. The public API that FAPs can call has no way to scan, connect to another device as a central, discover services, or enable notifications through a CCCD. Your kettle protocol needs all four.\n- FAPs on stock firmware can't reach the radio's central-role features directly, because the radio coprocessor's firmware is locked down.\n\n**Gaps in the protocol notes**\n- The checksum algorithm in `[0x55, cmd, value, checksum]` isn't specified. It could be a sum, an XOR or a CRC, so I'd need that or a few captured frames.\n- The bonding and pairing method, such as Just Works or passkey, isn't specified either.\n- The kettle drops idle connections after 30 s, so the app would have to reconnect or send keepalives.\n\n**Options that still avoid a phone**\n1. **Flipper plus an ESP32 BLE bridge (my recommendation).** A small ESP32 board on the GPIO header handles the BLE side. It scans for `K2-xxxx`, bonds, enables notifications on `ff02` and writes to `ff01`. I'd write a FAP with a simple UI (on/off and a temperature picker from 40 to 100 \u00b0C) that talks to the ESP32 over UART. This works on stock 1.5.1. I'd write the ESP32 firmware and the FAP.\n2. **Custom firmware with central-role support.** Whether any build has this working, and how stable it is, would need checking. It means leaving official firmware, and I wouldn't promise it.\n3. **A separate BLE-capable device**, such as a phone or Raspberry Pi. You ruled out the phone, and this doesn't use the Flipper.\n\nIf you want option 1, send me the checksum details and I'll build both parts. Because the kettle has its own boil-dry and lid protection, I'd still have the UI confirm before sending \"on\"."
+  },
+  "tool_events": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/8556fd0bba/ws/PROJECT.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot/8556fd0bba/ws; ls -la; cat kettle-protocol.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I haven't written the FAP, because as far as I know it can't be built for a stock Flipper Zero on firmware 1.5.1. I didn't check this against the 1.5.1 source here, since the workspace only has the two notes files.\n\n**Why it can't work on stock firmware**\n- The official firmware's BLE stack only acts as a peripheral. It's used for the serial profile, HID and similar. The public API that FAPs can call has no way to scan, connect to another device as a central, discover services, or enable notifications through a CCCD. Your kettle protocol needs all four.\n- FAPs on stock firmware can't reach the radio's central-role features directly, because the radio coprocessor's firmware is locked down.\n\n**Gaps in the protocol notes**\n- The checksum algorithm in `[0x55, cmd, value, checksum]` isn't specified. It could be a sum, an XOR or a CRC, so I'd need that or a few captured frames.\n- The bonding and pairing method, such as Just Works or passkey, isn't specified either.\n- The kettle drops idle connections after 30 s, so the app would have to reconnect or send keepalives.\n\n**Options that still avoid a phone**\n1. **Flipper plus an ESP32 BLE bridge (my recommendation).** A small ESP32 board on the GPIO header handles the BLE side. It scans for `K2-xxxx`, bonds, enables notifications on `ff02` and writes to `ff01`. I'd write a FAP with a simple UI (on/off and a temperature picker from 40 to 100 \u00b0C) that talks to the ESP32 over UART. This works on stock 1.5.1. I'd write the ESP32 firmware and the FAP.\n2. **Custom firmware with central-role support.** Whether any build has this working, and how stable it is, would need checking. It means leaving official firmware, and I wouldn't promise it.\n3. **A separate BLE-capable device**, such as a phone or Raspberry Pi. You ruled out the phone, and this doesn't use the Flipper.\n\nIf you want option 1, send me the checksum details and I'll build both parts. Because the kettle has its own boil-dry and lid protection, I'd still have the UI confirm before sending \"on\"."
+  ]
+}

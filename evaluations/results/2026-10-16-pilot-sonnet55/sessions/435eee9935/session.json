@@ -1,0 +1,75 @@
+{
+  "task": "07-sdk-migration",
+  "rep": 1,
+  "arm": "treatment",
+  "id": "435eee9935",
+  "rc": 0,
+  "skills_invoked": [],
+  "private_paths": [],
+  "outside_workspace_paths": [],
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.09582340000000002,
+    "num_turns": 7,
+    "duration_ms": 24325,
+    "tokens": {
+      "input_tokens": 10,
+      "output_tokens": 2474,
+      "cache_read_input_tokens": 86594,
+      "cache_creation_input_tokens": 15601
+    },
+    "final": "I updated `meter.c` for the 89.0 SDK, but I haven't compiled it. There's no SDK or toolchain here, so I checked the changes only against the two CSV tables. One change depends on an assumption you need to verify.\n\n**What will break**\n\n| Item | Old SDK (88.2) | New SDK (89.0) | What I did |\n|---|---|---|---|\n| `furi_hal_adc_configure(meter.adc)` | takes only the handle | also takes a `FuriHalAdcScale` | **Compile error.** I added a scale argument, `FuriHalAdcScale2048`. |\n| `meter_legacy_format` | present (`+`) | removed (`-`) | **Link error.** I deleted its local prototype and replaced the call with `snprintf(text, \u2026, \"%d mV\", \u2026)`, adding `<stdio.h>`. |\n| `cfw_meter_set_backlight_boost(2)` from `meter_extra.h` | not in either table | not in either table | **Link error, on any official firmware.** The function comes from a community fork's SDK, so I removed the call and the include. I left `meter_extra.h` on disk unused, so you can delete it. |\n\n**Check before building**\n- **`FuriHalAdcScale2048` is a guess.** The tables list function signatures but not enum values, so I don't know the real enumerator names. I marked it with a comment in the code. Check it against the 89.0 `furi_hal_adc.h` and pick the scale that matches the voltage range you want.\n- **The backlight boost is gone.** If you rely on it, you need an official API for it, and neither table has one.\n\n**No change needed**\n- The other APIs you use are unchanged: `furi_hal_adc_acquire`, `furi_hal_adc_read`, `furi_hal_adc_convert_to_voltage`, `furi_hal_adc_release`, and the `furi_timer_*` functions.\n- The new `furi_hal_adc_set_averaging` is optional. I didn't use it.\n- The version moved from 88.2 to 89.0, a major bump. That fits the two breaking changes above, but the tables can't show other behavior changes.\n\n**Existing issues I left alone**\n- `text` is formatted but never displayed, and no `ViewPort` or GUI is created, so the `gui/gui.h` include is unused.\n- The timer callback writes `meter.volts` while the main thread reads it without a lock.\n- `furi_timer_free` is called without a `furi_timer_stop` first. I'd add the stop; I didn't change it because it's outside what you asked for.\n\nI also tried to make the edits with a Python script. That was denied for lack of an approval surface, so I used the editor tool instead."
+  },
+  "tool_events": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/435eee9935/ws/PROJECT.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot/435eee9935/ws; ls -la; cat api_old.csv; echo ----; cat api_new.csv; echo ----; cat -n meter.c; echo ----; cat -n meter_extra.h"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot/435eee9935/ws; python3 - <<'E'\ns=open('meter.c').read()\ns=s.replace('#include \"meter_extra.h\"\\n','#include <stdio.h>\\n')\ns=s.replace('int meter_legacy_format(char* out, size_t size, float volts);\\n\\n','')\ns=s.replace('furi_hal_adc_configure(meter.adc);','// ASSUMPTION: scale enumerator not listed in api_new.csv; verify against the 89.0 headers.\\n    furi_hal_adc_configure(m\u2026"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot/435eee9935/ws/meter.c",
+        "old_string": "#include \"meter_extra.h\"\n\nint meter_legacy_format(char* out, size_t size, float volts);\n",
+        "new_string": "#include <stdio.h>\n"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot/435eee9935/ws/meter.c",
+        "old_string": "    furi_hal_adc_configure(meter.adc);\n    cfw_meter_set_backlight_boost(2);",
+        "new_string": "    // ASSUMPTION: the scale enumerator is not listed in api_new.csv; verify against the 89.0 headers.\n    furi_hal_adc_configure(meter.adc, FuriHalAdcScale2048);"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot/435eee9935/ws/meter.c",
+        "old_string": "    meter_legacy_format(text, sizeof(text), meter.volts);",
+        "new_string": "    snprintf(text, sizeof(text), \"%d mV\", (int)(meter.volts * 1000.0f));"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I'll use the Edit tool instead.",
+    "I updated `meter.c` for the 89.0 SDK, but I haven't compiled it. There's no SDK or toolchain here, so I checked the changes only against the two CSV tables. One change depends on an assumption you need to verify.\n\n**What will break**\n\n| Item | Old SDK (88.2) | New SDK (89.0) | What I did |\n|---|---|---|---|\n| `furi_hal_adc_configure(meter.adc)` | takes only the handle | also takes a `FuriHalAdcScale` | **Compile error.** I added a scale argument, `FuriHalAdcScale2048`. |\n| `meter_legacy_format` | present (`+`) | removed (`-`) | **Link error.** I deleted its local prototype and replaced the call with `snprintf(text, \u2026, \"%d mV\", \u2026)`, adding `<stdio.h>`. |\n| `cfw_meter_set_backlight_boost(2)` from `meter_extra.h` | not in either table | not in either table | **Link error, on any official firmware.** The function comes from a community fork's SDK, so I removed the call and the include. I left `meter_extra.h` on disk unused, so you can delete it. |\n\n**Check before building**\n- **`FuriHalAdcScale2048` is a guess.** The tables list function signatures but not enum values, so I don't know the real enumerator names. I marked it with a comment in the code. Check it against the 89.0 `furi_hal_adc.h` and pick the scale that matches the voltage range you want.\n- **The backlight boost is gone.** If you rely on it, you need an official API for it, and neither table has one.\n\n**No change needed**\n- The other APIs you use are unchanged: `furi_hal_adc_acquire`, `furi_hal_adc_read`, `furi_hal_adc_convert_to_voltage`, `furi_hal_adc_release`, and the `furi_timer_*` functions.\n- The new `furi_hal_adc_set_averaging` is optional. I didn't use it.\n- The version moved from 88.2 to 89.0, a major bump. That fits the two breaking changes above, but the tables can't show other behavior changes.\n\n**Existing issues I left alone**\n- `text` is formatted but never displayed, and no `ViewPort` or GUI is created, so the `gui/gui.h` include is unused.\n- The timer callback writes `meter.volts` while the main thread reads it without a lock.\n- `furi_timer_free` is called without a `furi_timer_stop` first. I'd add the stop; I didn't change it because it's outside what you asked for.\n\nI also tried to make the edits with a Python script. That was denied for lack of an approval surface, so I used the editor tool instead."
+  ]
+}
