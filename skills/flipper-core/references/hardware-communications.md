@@ -1,11 +1,10 @@
 # Hardware and communications
 
-Load for GPIO, UART, buses, ADC/PWM, USB, radios or companion devices. Hardware actions (driving pins, transmitting, writing tags, HID, appliance commands) need explicit user scope; this file guides design and review only.
+Load for GPIO, UART, buses, ADC/PWM, USB, radios or companion devices. Design and review guidance only; hardware actions need explicit user scope (engineering rules §10).
 
 ## General rules
 
-- Peripherals are shared with firmware services. Acquire through the highest supported API, check the result, release on every exit path [C-BUS-001].
-- An exported init symbol is not permission to reinitialize global hardware.
+- Extends engineering rules §8 (shared peripherals, highest supported API): check every acquire result and release on every exit path [C-BUS-001].
 - Header I/O is 3.3 V logic behind 51 Ω series resistors; 20 mA absolute maximum per pin and 100 mA total. The MCU pins are FT-family, but 5 V tolerance needs the MCU powered, pulls disabled and no analog function, and the firmware leaves header pins in analog mode by default; one official page says "5 V tolerant", another "3.3 V". Treat every header pin as 3.3 V only and level-shift 5 V modules [C-GPIO-001].
 - Verify pin, function, mux and current owner in the pinned `furi_hal_resources.c` before giving wiring advice.
 - Restore only state this app changed; do not "restore" global state another owner set.
@@ -36,7 +35,7 @@ The Flipper is a USB device, not a general USB host. Changing USB configuration 
 
 ## BLE
 
-Baseline GAP is peripheral; exported `ble_gatt_*` calls are server-side (service/characteristic add/update/delete). No central/GATT-client workflow is exported [C-BLE-001] [C-BLE-002]. Use the stress test in [capability-map.md](capability-map.md#ble-appliance-stress-test).
+Exported `ble_gatt_*` calls are server-side (service/characteristic add/update/delete); see engineering rules §8 for the peripheral-only consequence [C-BLE-001] [C-BLE-002] and the stress test in [capability-map.md](capability-map.md#ble-appliance-stress-test).
 
 ## Radios, NFC, RFID, IR, iButton
 

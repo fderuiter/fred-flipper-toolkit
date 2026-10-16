@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- `flipper-native` workflow gains a mandatory teardown self-check (step 8): one row per producer, what it touches, and the stop/join line that must run before those are freed; `flipper-review` outputs include the same table (#22). Not yet evaluated in a paired run.
+- Token budget (#13): `evaluations/harness/measure_reference_load.py` measures which skill files pilot sessions loaded and estimates each file's cost; results in `evaluations/results/2026-10-16-reference-load.md`. Removed text from `runtime-ui.md`, `storage-parsers.md`, `hardware-communications.md` and `evidence-policy.md` that duplicated `engineering-rules.md`; projected ratio 1.75× → 1.70× (no rerun).
 - `flipper-verify` (#21): an SDK or firmware migration now requires a source / binary-import / behavior impact table (evidence and action per row, citing C-FAP-004) and a rebuild plan (target SDK identity, `ufbt` command, import check, pending device cases). Skill description unchanged, so activation was not re-run. The migration-family score is not yet re-measured (#12).
 
 ## v0.1.0-preview — 2026-10-16

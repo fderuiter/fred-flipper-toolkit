@@ -32,7 +32,7 @@ Tracker: [#1](https://github.com/fderuiter/fred-flipper-toolkit/issues/1). The [
 | [#21: Pilot gap — SDK-migration family 74.3 < 80](https://github.com/fderuiter/fred-flipper-toolkit/issues/21) | P1 | #12 | Migration family ≥ 80 on a held-out paired rerun |
 | [#22: Pilot gap — critical teardown bug in a FRED session](https://github.com/fderuiter/fred-flipper-toolkit/issues/22) | P1 | #12 | Zero treatment critical failures in the next paired run |
 | [#23: Pilot gap — paired improvement +9.5 < +10](https://github.com/fderuiter/fred-flipper-toolkit/issues/23) | P2 | #21, #22 | Held-out paired gain with uncertainty; gate decision on #8 |
-| [#20: Cut the v0.1.0-preview release](https://github.com/fderuiter/fred-flipper-toolkit/issues/20) | P1 | — | Release commit `de33d1c` and [release notes](releases/v0.1.0-preview.md) done; tag and GitHub release pending (tag push not permitted from the automation session) |
+| [#20: Cut the v0.1.0-preview release](https://github.com/fderuiter/fred-flipper-toolkit/issues/20) | P1 | — | Done: tag `v0.1.0-preview` (`a85490a`), [GitHub pre-release](https://github.com/fderuiter/fred-flipper-toolkit/releases/tag/v0.1.0-preview), [release notes](releases/v0.1.0-preview.md) |
 
 ## Sequence and qualification boundaries
 
