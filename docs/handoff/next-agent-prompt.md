@@ -66,6 +66,7 @@ You are continuing **FRED: Flipper Resource & Event Driver**, a source-grounded 
 
 Fetch each issue first; acceptance criteria live there.
 
+0. **#20: finish the release if it is still pending.** The release content is commit `de33d1c`. Check whether tag `v0.1.0-preview` and its GitHub release exist (`git ls-remote origin 'refs/tags/*'`). If not, ask the user to create them; the previous automation session could not push tags (HTTP 403). Use `docs/releases/v0.1.0-preview.md` as the release body.
 1. **#22: teardown critical.** Add a short mandatory teardown self-check to `skills/flipper-native/SKILL.md`, and possibly a matching output line to `flipper-review`: list producers → what each touches → stopped and joined before freeing. Keep within budget. The reference pattern is `evaluations/reference/03-uart/soil_uart.c` and the corrected 06 app.
 2. **#21: migration family.** Make a source / binary-import / behaviour impact table and a rebuild plan required outputs of `skills/flipper-verify/SKILL.md`. Claim `C-FAP-004` explains the loader's major-only check.
 3. **#13: token ratio.** Measure per-reference loading from `evaluations/results/*/sessions/*/session.json` (tool events show which files were read). Trim duplication between `engineering-rules.md` and the topic references, and make reference loading more selective. Rerun activation after any description change.
