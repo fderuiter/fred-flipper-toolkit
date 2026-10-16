@@ -7,6 +7,8 @@
 - Token budget (#13): `evaluations/harness/measure_reference_load.py` measures which skill files pilot sessions loaded and estimates each file's cost; results in `evaluations/results/2026-10-16-reference-load.md`. Removed text from `runtime-ui.md`, `storage-parsers.md`, `hardware-communications.md` and `evidence-policy.md` that duplicated `engineering-rules.md`; projected ratio 1.75× → 1.70× (no rerun).
 - `flipper-verify` (#21): an SDK or firmware migration now requires a source / binary-import / behavior impact table (evidence and action per row, citing C-FAP-004) and a rebuild plan (target SDK identity, `ufbt` command, import check, pending device cases). Skill description unchanged, so activation was not re-run. The migration-family score is not yet re-measured (#12).
 
+- Sandboxed pilot sessions (#14): `evaluations/harness/sandbox.py` and `run_pilot.py run --sandbox` run each evaluated session in Linux mount/PID/network namespaces holding only its workspace, a fresh HOME and read-only system folders, with egress limited to the model API through a logging proxy. Both arms get a general shell. Offline proof (probe as root and as an unprivileged user, a negative control, and a 42-job dry run) in `evaluations/results/2026-10-16-sandbox-proof/`. No model session run yet.
+
 ## v0.1.0-preview — 2026-10-16
 
 Release notes: [docs/releases/v0.1.0-preview.md](docs/releases/v0.1.0-preview.md). Handoff for future work: [docs/handoff/next-agent-prompt.md](docs/handoff/next-agent-prompt.md).

@@ -1,0 +1,283 @@
+{
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "budget_usd_per_session": 3.0,
+  "timeout_s": 1500,
+  "seed": 20261016,
+  "prompt": "Read PROJECT.md in the current directory and complete the request it describes.",
+  "tools": "Read,Glob,Grep,Write,Edit,Skill,Bash",
+  "allowed": [
+    "Read",
+    "Glob",
+    "Grep",
+    "Write",
+    "Edit",
+    "Skill",
+    "Bash"
+  ],
+  "deny_roots": [
+    "/home/claude/fred-flipper-toolkit",
+    "/root",
+    "/tmp/claude-0",
+    "/home",
+    "/tmp/fred-sdk",
+    "/tmp/fred-build"
+  ],
+  "sandbox": true,
+  "sandbox_probe_pass": true,
+  "dry_run": true,
+  "order": [
+    {
+      "task": "01-utility",
+      "rep": 2,
+      "arm": "baseline",
+      "id": "e68687b0fe"
+    },
+    {
+      "task": "01-utility",
+      "rep": 2,
+      "arm": "treatment",
+      "id": "de367f3890"
+    },
+    {
+      "task": "07-sdk-migration",
+      "rep": 3,
+      "arm": "treatment",
+      "id": "9322a0c88d"
+    },
+    {
+      "task": "03-uart",
+      "rep": 1,
+      "arm": "baseline",
+      "id": "1da462991e"
+    },
+    {
+      "task": "07-sdk-migration",
+      "rep": 1,
+      "arm": "baseline",
+      "id": "5724baf8c2"
+    },
+    {
+      "task": "07-sdk-migration",
+      "rep": 2,
+      "arm": "treatment",
+      "id": "bcb87de679"
+    },
+    {
+      "task": "01-utility",
+      "rep": 3,
+      "arm": "baseline",
+      "id": "c692658d2a"
+    },
+    {
+      "task": "04-ir-parser",
+      "rep": 1,
+      "arm": "treatment",
+      "id": "5b013f89c5"
+    },
+    {
+      "task": "05-ble-feasibility",
+      "rep": 3,
+      "arm": "treatment",
+      "id": "518e6eec14"
+    },
+    {
+      "task": "02-settings",
+      "rep": 3,
+      "arm": "baseline",
+      "id": "901e4f78c6"
+    },
+    {
+      "task": "03-uart",
+      "rep": 3,
+      "arm": "baseline",
+      "id": "5e5ea0d664"
+    },
+    {
+      "task": "04-ir-parser",
+      "rep": 2,
+      "arm": "treatment",
+      "id": "a86d9e1ee4"
+    },
+    {
+      "task": "02-settings",
+      "rep": 1,
+      "arm": "treatment",
+      "id": "83f1fdee1c"
+    },
+    {
+      "task": "06-lifecycle-review",
+      "rep": 2,
+      "arm": "treatment",
+      "id": "9f77f1237f"
+    },
+    {
+      "task": "02-settings",
+      "rep": 2,
+      "arm": "treatment",
+      "id": "06eccaeb35"
+    },
+    {
+      "task": "06-lifecycle-review",
+      "rep": 1,
+      "arm": "treatment",
+      "id": "655f4d762e"
+    },
+    {
+      "task": "03-uart",
+      "rep": 1,
+      "arm": "treatment",
+      "id": "7fdc57803c"
+    },
+    {
+      "task": "06-lifecycle-review",
+      "rep": 3,
+      "arm": "baseline",
+      "id": "e80e498515"
+    },
+    {
+      "task": "03-uart",
+      "rep": 2,
+      "arm": "treatment",
+      "id": "9c28166606"
+    },
+    {
+      "task": "01-utility",
+      "rep": 1,
+      "arm": "baseline",
+      "id": "b4a6e1f4f6"
+    },
+    {
+      "task": "06-lifecycle-review",
+      "rep": 1,
+      "arm": "baseline",
+      "id": "3fd3d6ee4e"
+    },
+    {
+      "task": "04-ir-parser",
+      "rep": 3,
+      "arm": "baseline",
+      "id": "9023df2cb4"
+    },
+    {
+      "task": "05-ble-feasibility",
+      "rep": 2,
+      "arm": "treatment",
+      "id": "495ab335a8"
+    },
+    {
+      "task": "07-sdk-migration",
+      "rep": 2,
+      "arm": "baseline",
+      "id": "b5f1dc854f"
+    },
+    {
+      "task": "07-sdk-migration",
+      "rep": 1,
+      "arm": "treatment",
+      "id": "435eee9935"
+    },
+    {
+      "task": "04-ir-parser",
+      "rep": 2,
+      "arm": "baseline",
+      "id": "022256f61d"
+    },
+    {
+      "task": "05-ble-feasibility",
+      "rep": 1,
+      "arm": "treatment",
+      "id": "af02595022"
+    },
+    {
+      "task": "05-ble-feasibility",
+      "rep": 1,
+      "arm": "baseline",
+      "id": "8556fd0bba"
+    },
+    {
+      "task": "04-ir-parser",
+      "rep": 3,
+      "arm": "treatment",
+      "id": "993784c0b8"
+    },
+    {
+      "task": "01-utility",
+      "rep": 3,
+      "arm": "treatment",
+      "id": "b1a65169ad"
+    },
+    {
+      "task": "01-utility",
+      "rep": 1,
+      "arm": "treatment",
+      "id": "bbf0d00a16"
+    },
+    {
+      "task": "03-uart",
+      "rep": 3,
+      "arm": "treatment",
+      "id": "7e95ab3187"
+    },
+    {
+      "task": "03-uart",
+      "rep": 2,
+      "arm": "baseline",
+      "id": "11f438abc6"
+    },
+    {
+      "task": "02-settings",
+      "rep": 1,
+      "arm": "baseline",
+      "id": "26fc8f8804"
+    },
+    {
+      "task": "02-settings",
+      "rep": 3,
+      "arm": "treatment",
+      "id": "a7a44c542e"
+    },
+    {
+      "task": "05-ble-feasibility",
+      "rep": 3,
+      "arm": "baseline",
+      "id": "361cb52230"
+    },
+    {
+      "task": "04-ir-parser",
+      "rep": 1,
+      "arm": "baseline",
+      "id": "99b860f6b2"
+    },
+    {
+      "task": "07-sdk-migration",
+      "rep": 3,
+      "arm": "baseline",
+      "id": "45bca1a395"
+    },
+    {
+      "task": "05-ble-feasibility",
+      "rep": 2,
+      "arm": "baseline",
+      "id": "af83a79660"
+    },
+    {
+      "task": "06-lifecycle-review",
+      "rep": 2,
+      "arm": "baseline",
+      "id": "827a048879"
+    },
+    {
+      "task": "06-lifecycle-review",
+      "rep": 3,
+      "arm": "treatment",
+      "id": "38ef43d05e"
+    },
+    {
+      "task": "02-settings",
+      "rep": 2,
+      "arm": "baseline",
+      "id": "adc9da409f"
+    }
+  ]
+}
