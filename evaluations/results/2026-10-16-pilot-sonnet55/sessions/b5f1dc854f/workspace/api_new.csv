@@ -1,0 +1,19 @@
+entry,status,name,type,params
+Version,+,89.0,,
+Header,+,applications/services/gui/gui.h,,
+Header,+,furi/core/timer.h,,
+Header,+,targets/f7/furi_hal/furi_hal_adc.h,,
+Function,+,furi_hal_adc_acquire,FuriHalAdcHandle*,
+Function,+,furi_hal_adc_configure,void,"FuriHalAdcHandle*, FuriHalAdcScale"
+Function,+,furi_hal_adc_read,uint16_t,"FuriHalAdcHandle*, FuriHalAdcChannel"
+Function,+,furi_hal_adc_convert_to_voltage,float,"FuriHalAdcHandle*, uint16_t"
+Function,+,furi_hal_adc_release,void,FuriHalAdcHandle*
+Function,+,furi_timer_alloc,FuriTimer*,"FuriTimerCallback, FuriTimerType, void*"
+Function,+,furi_timer_start,FuriStatus,"FuriTimer*, uint32_t"
+Function,+,furi_timer_free,void,FuriTimer*
+Function,-,meter_legacy_format,int,"char*, size_t, float"
+Function,+,view_port_alloc,ViewPort*,
+Function,+,view_port_free,void,ViewPort*
+Function,+,furi_hal_adc_set_averaging,void,"FuriHalAdcHandle*, uint8_t"
+Function,-,internal_adc_calibrate,void,
+Variable,+,meter_default_precision,const uint8_t,

@@ -928,19 +928,24 @@
     },
     {
       "id": "C-EMU-001",
-      "claim": "No comprehensive official Flipper emulator was established; the community emulator describes experimental, partial FAP support.",
+      "claim": "The ZDStudios fapemu runner executes FAP Thumb code on a Unicorn Cortex-M4 model with about 152 Python handlers for API 87.1; any other import silently returns 0, 19 handlers are no-ops, there is no scheduler, peripheral, radio, ViewDispatcher or API-version check, and the repository's LICENSE is empty. No comprehensive official emulator exists.",
       "sources": [
         {
-          "url": "https://github.com/ZDStudios/Flipper-Zero-Emulator/tree/23edb1bf355698cc0d9c37f297c2102ecd1b114f",
-          "locator": "README FAP runner section",
+          "url": "https://github.com/ZDStudios/Flipper-Zero-Emulator/blob/23edb1bf355698cc0d9c37f297c2102ecd1b114f/fapemu/machine.py",
+          "locator": "_dispatch_api: unknown import returns 0",
+          "pin": "emu"
+        },
+        {
+          "url": "https://github.com/ZDStudios/Flipper-Zero-Emulator/blob/23edb1bf355698cc0d9c37f297c2102ecd1b114f/fapemu/api/core.py",
+          "locator": "@api handlers (85) plus graphics.py (66)",
           "pin": "emu"
         }
       ],
       "applies_to": "ZDStudios emulator at 23edb1b",
       "checked_on": "2026-10-16",
-      "status": "documented",
+      "status": "source-confirmed",
       "review_state": "current",
-      "consequence": "Emulator results are not hardware evidence.",
+      "consequence": "Emulator runs are at most smoke evidence for relocation and simple ViewPort logic, never hardware or compatibility evidence; 'ran without fault' is weak because missing APIs succeed silently. Nothing may be copied.",
       "consumers": [
         "flipper-core/references/assumptions.md",
         "flipper-core/references/build-debug-release.md",
@@ -1070,7 +1075,7 @@
     },
     {
       "id": "C-FORK-001",
-      "claim": "Momentum and Unleashed showed recent activity on 2026-10-16 and Xtreme is archived; each is a separate firmware lineage with its own API surface.",
+      "claim": "Momentum, Unleashed and Xtreme are separate lineages with different API tables. At the pinned heads: Momentum d3f89df declares API 87.1 (468 exports added, 2 removed, 1 signature changed vs official 88.2); Unleashed f62964c declares '88.20' and is a superset (312 added, 0 removed, 0 changed); archived Xtreme 54619d0 declares 58.1 (443 added, 336 removed, 120 changed) and uses toolchain 33. JS modules also differ: Momentum and Unleashed add blebeacon, i2c, spi, infrared, subghz, usbdisk and vgm.",
       "sources": [
         {
           "url": "https://github.com/Next-Flip/Momentum-Firmware/tree/d3f89dfe2ef6b01839201598e9be1590cba80322",
@@ -1086,13 +1091,28 @@
           "url": "https://github.com/Flipper-XFW/Xtreme-Firmware/tree/54619d013a120897eeade491decf4d1e95217c06",
           "locator": "archived dev head",
           "pin": "xtreme"
+        },
+        {
+          "url": "https://github.com/Next-Flip/Momentum-Firmware/blob/d3f89dfe2ef6b01839201598e9be1590cba80322/targets/f7/api_symbols.csv",
+          "locator": "Version row; compared with compare_api.py",
+          "pin": "momentum"
+        },
+        {
+          "url": "https://github.com/DarkFlippers/unleashed-firmware/blob/f62964cb8216c566cb3940992d0fea6bbe91d840/targets/f7/api_symbols.csv",
+          "locator": "Version row; compared with compare_api.py",
+          "pin": "unleashed"
+        },
+        {
+          "url": "https://github.com/Flipper-XFW/Xtreme-Firmware/blob/54619d013a120897eeade491decf4d1e95217c06/targets/f7/api_symbols.csv",
+          "locator": "Version row; compared with compare_api.py",
+          "pin": "xtreme"
         }
       ],
       "applies_to": "community firmware lineages, observed heads",
       "checked_on": "2026-10-16",
-      "status": "documented",
+      "status": "source-confirmed",
       "review_state": "current",
-      "consequence": "No fork support claimed; rebuild and verify imports per lineage.",
+      "consequence": "No fork support claimed. A Momentum or Xtreme build is rejected by the official loader (API major differs); an Unleashed build passes the manifest check but fails if it imports any Unleashed-only symbol. Rebuild against the official SDK.",
       "consumers": [
         "flipper-core/references/assumptions.md",
         "flipper-core/references/build-debug-release.md",
@@ -1142,6 +1162,30 @@
       "consequence": "Record toolchain version and compiler identity in every build report; the archive hash can only be observed, not publisher-verified.",
       "consumers": [
         "flipper-core/references/build-debug-release.md",
+        "flipper-core/references/compatibility.md"
+      ]
+    },
+    {
+      "id": "C-FAP-004",
+      "claim": "The official 1.5.1 loader rejects a FAP only for a hardware-target mismatch or a different API major (ApiTooOld/ApiTooNew); the API-minor comparisons are commented out, so minor differences surface only as unresolved imports during ELF symbol resolution.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/lib/flipper_application/application_manifest.c",
+          "locator": "flipper_application_manifest_is_too_old/_is_too_new (minor check commented out)",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/lib/flipper_application/flipper_application.c",
+          "locator": "flipper_application_validate_manifest",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "A matching major does not mean an app loads: check every import against the target's api_symbols.csv. A newer-minor app loads only if it uses no newer symbols.",
+      "consumers": [
         "flipper-core/references/compatibility.md"
       ]
     }

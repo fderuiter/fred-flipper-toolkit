@@ -23,7 +23,7 @@ The official `dev` branch observed at `3fb1d51727733d2007abc5ec636a89328857803e`
 ## Three kinds of compatibility
 
 1. **Source compatibility** — the project rebuilds with the chosen headers, signatures and toolchain.
-2. **Binary/import compatibility** — target and API major match the firmware's policy *and* every imported symbol resolves at load time, including symbols added in later minors and library/resource dependencies [C-FAP-001] [C-BASE-002].
+2. **Binary/import compatibility** — the loader checks only the hardware target and the API **major** (minor checks are disabled at the baseline), then every imported symbol must resolve, including symbols added in later minors and library/resource dependencies [C-FAP-004] [C-FAP-001] [C-BASE-002].
 3. **Behavior** — the app does the right thing on the device. Only device evidence establishes this.
 
 A matching API major or a successful compile proves neither of the others, and never proves cross-fork compatibility [C-FORK-001].
@@ -53,4 +53,12 @@ Unknown values are legal. Each needs a consequence, for example "SDK unknown →
 
 ## Other lineages
 
-Momentum and Unleashed showed recent activity; Xtreme is archived [C-FORK-001]. Treat each as its own lineage: inspect its `api_symbols.csv`, extensions and toolchain, rebuild and verify imports. No fork support is claimed initially. Compare API tables with the repository's `scripts/compare_api.py` when both tables are available locally.
+Treat each fork as its own lineage [C-FORK-001]:
+
+| Lineage (pinned head) | API | vs official 88.2 | Consequence on official 1.5.1 |
+|---|---|---|---|
+| Momentum `d3f89df` | 87.1 | +468 / −2 / 1 changed | Fork-built FAP rejected (major differs) |
+| Unleashed `f62964c` | "88.20" | +312 / 0 / 0 (superset) | Passes manifest check; fails if it imports any Unleashed-only symbol |
+| Xtreme `54619d0` (archived) | 58.1 | +443 / −336 / 120 changed; toolchain 33 | Historical only |
+
+Inspect the fork's `api_symbols.csv`, extensions and toolchain, rebuild and verify imports. No fork support is claimed. Compare API tables with the repository's `scripts/compare_api.py` when both tables are available locally.

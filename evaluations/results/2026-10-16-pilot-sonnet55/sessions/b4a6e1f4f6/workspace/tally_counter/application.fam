@@ -1,0 +1,8 @@
+App(
+    appid="tally_counter",
+    name="Tally Counter",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="tally_counter_app",
+    stack_size=1 * 1024,
+    fap_category="Tools",
+)
