@@ -1,0 +1,110 @@
+{
+  "id": "P04",
+  "kind": "positive",
+  "prompt": "Implement UART receive in my Flipper app; frames arrive in bursts and I need an overflow counter.",
+  "started": "2026-10-16T18:37:11+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-native"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/hardware-communications.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-native"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.103876,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1491,
+      "cache_read_input_tokens": 39260,
+      "cache_creation_input_tokens": 21257
+    },
+    "text": "There's no Flipper app in the workspace. The directory only contains the `.claude/skills` files, with no `application.fam` and no C sources. So I can't add UART receive to your app yet, and I don't want to guess at its structure.\n\nI need these from you:\n\n1. **The app.** Either put it in the working directory or paste `application.fam` and the main sources. If you'd rather I scaffold a new one, say so.\n2. **The frame format.** I need the start byte or sync pattern, how length is given (fixed or in a field), the maximum frame size, and the checksum or CRC if there is one.\n3. **Baud rate and serial interface.** Is it USART (pins 13/14) or LPUART, and what are the baud rate and parity?\n4. **Burst size.** How many frames or bytes arrive back-to-back, and how long can the app stall while one is handled? I'll use this to size the stream buffer.\n5. **Firmware target.** Is it official firmware? The rules I'm working from assume 1.5.1 (API 88.2), so tell me if you're on a different version or a fork.\n\nOnce I have that, the design follows the repo's UART pattern:\n\n- **RX callback.** It runs in interrupt context. It does nothing except read the available bytes into a `FuriStreamBuffer` with zero timeout. If the send is short, it adds the shortfall to an atomic `overflow_bytes` counter.\n- **Worker thread.** It reads from the stream with a timeout and runs a bounded framing state machine. The state machine enforces a maximum length, resyncs on a bad length or CRC, and has an inter-byte timeout. It posts parsed frames to the app, and counts frames dropped when the app's queue is full.\n- **Counters.** Overflow bytes, dropped frames, framing errors and resyncs are all shown, not silently dropped.\n- **Busy handle.** If `furi_hal_serial_control_acquire` returns NULL, the app reports that the port is busy and doesn't retry.\n- **Teardown.** Stop the RX, deinit, release the handle, join the worker, then free the stream buffer last.\n- **Host tests.** The framing state machine is kept free of Furi calls so it can be tested on a host with burst and garbage inputs.\n\nBuilding and host tests can run here. Bursts at line rate on real hardware stay marked untested until you can run them on a device."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P04/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P04/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P04/ws/.claude/skills/flipper-core/references/hardware-communications.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.{fam,c,h,csv}",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P04/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "There's no Flipper app in the workspace. The directory only contains the `.claude/skills` files, with no `application.fam` and no C sources. So I can't add UART receive to your app yet, and I don't want to guess at its structure.\n\nI need these from you:\n\n1. **The app.** Either put it in the working directory or paste `application.fam` and the main sources. If you'd rather I scaffold a new one, say so.\n2. **The frame format.** I need the start byte or sync pattern, how length is given (fixed or in a field), the maximum frame size, and the checksum or CRC if there is one.\n3. **Baud rate and serial interface.** Is it USART (pins 13/14) or LPUART, and what are the baud rate and parity?\n4. **Burst size.** How many frames or bytes arrive back-to-back, and how long can the app stall while one is handled? I'll use this to size the stream buffer.\n5. **Firmware target.** Is it official firmware? The rules I'm working from assume 1.5.1 (API 88.2), so tell me if you're on a different version or a fork.\n\nOnce I have that, the design follows the repo's UART pattern:\n\n- **RX callback.** It runs in interrupt context. It does nothing except read the available bytes into a `FuriStreamBuffer` with zero timeout. If the send is short, it adds the shortfall to an atomic `overflow_bytes` counter.\n- **Worker thread.** It reads from the stream with a timeout and runs a bounded framing state machine. The state machine enforces a maximum length, resyncs on a bad length or CRC, and has an inter-byte timeout. It posts parsed frames to the app, and counts frames dropped when the app's queue is full.\n- **Counters.** Overflow bytes, dropped frames, framing errors and resyncs are all shown, not silently dropped.\n- **Busy handle.** If `furi_hal_serial_control_acquire` returns NULL, the app reports that the port is busy and doesn't retry.\n- **Teardown.** Stop the RX, deinit, release the handle, join the worker, then free the stream buffer last.\n- **Host tests.** The framing state machine is kept free of Furi calls so it can be tested on a host with burst and garbage inputs.\n\nBuilding and host tests can run here. Bursts at line rate on real hardware stay marked untested until you can run them on a device."
+  ]
+}

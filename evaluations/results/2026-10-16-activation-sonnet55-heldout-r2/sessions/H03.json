@@ -1,0 +1,128 @@
+{
+  "id": "H03",
+  "kind": "positive",
+  "prompt": "pin my uFBT build to the 1.5.1 SDK and tell me what the build proves",
+  "started": "2026-10-16T18:40:02+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [
+    "flipper-core"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/build-debug-release.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1162552,
+    "num_turns": 10,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1919,
+      "cache_read_input_tokens": 65452,
+      "cache_creation_input_tokens": 22626
+    },
+    "text": "I haven't pinned anything yet, and no build has run. The workspace has nothing to build, so there is nothing for a build to prove.\n\n**What's here:** the workspace contains only the `.claude/skills/flipper-*` files. There is no `application.fam`, no C sources, no `.ufbt*` directory and no `dist/`. I also didn't check whether `ufbt` is installed, since the missing project already blocks a build.\n\n**What the pin needs:** the first `ufbt` run downloads the SDK and toolchain from the moving `release` channel by default. To avoid that, the pin would be:\n\n```\nUFBT_HOME=$PWD/.ufbt-1.5.1 ufbt update --branch=1.5.1\n```\n\nI haven't run it for two reasons:\n- It downloads external components and changes SDK state, so it needs your explicit go-ahead.\n- The expected SDK checksum isn't verified. The skill's registry lists `https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip` with SHA-256 `dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe`, but only as documented, not as downloaded bytes.\n\nA safer option is to download that zip, check its SHA-256, and then run `ufbt update --local=<path>`.\n\n**What a successful build would prove, and what it wouldn't.**\n\n| Evidence field | What a successful 1.5.1 build gives you |\n|---|---|\n| Compiled | Your sources compile and link against the 1.5.1 SDK (API 88.2, f7). The official compiler, linker and imports are the authority here. It is only valid with the SDK URL and hash, the toolchain version, the exact command, the exit code and the `.fap` SHA-256 recorded. |\n| Static checks | `ufbt lint` is formatting and naming only. It is not static analysis. |\n| Host tests | Nothing. There is no `ufbt test`. |\n| Device behavior | Nothing. UI, teardown, timing, radio and GPIO stay `not-run` until they are tested on hardware. |\n\nA build also wouldn't prove the app works on Momentum, Unleashed or any other firmware. Each of those needs its own compile and device test. Old `dist/` output doesn't count as a fresh build either.\n\n**What I need from you:**\n1. The path to your project, or the files copied into this workspace.\n2. Your OK to download the SDK. Tell me whether to use `--branch=1.5.1` or the hash-checked zip, and confirm the `.ufbt-1.5.1` directory.\n\nOnce I have both, I'll read `application.fam` first, then pin, build, and report each evidence field separately."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-heldout-r2/H03/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-heldout-r2/H03/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-heldout-r2/H03/ws/.claude/skills/flipper-core/references/build-debug-release.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/{application.fam,*.fam,.ufbt*,ufbt*,*.c}"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "C-BASE-00[1-4]",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-heldout-r2/H03/ws/.claude/skills/flipper-core/references/sources.json",
+        "output_mode": "content",
+        "-A": 12
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "ufbt",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-heldout-r2/H03/ws",
+        "glob": "!.claude/**",
+        "output_mode": "files_with_matches"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I haven't pinned anything yet, and no build has run. The workspace has nothing to build, so there is nothing for a build to prove.\n\n**What's here:** the workspace contains only the `.claude/skills/flipper-*` files. There is no `application.fam`, no C sources, no `.ufbt*` directory and no `dist/`. I also didn't check whether `ufbt` is installed, since the missing project already blocks a build.\n\n**What the pin needs:** the first `ufbt` run downloads the SDK and toolchain from the moving `release` channel by default. To avoid that, the pin would be:\n\n```\nUFBT_HOME=$PWD/.ufbt-1.5.1 ufbt update --branch=1.5.1\n```\n\nI haven't run it for two reasons:\n- It downloads external components and changes SDK state, so it needs your explicit go-ahead.\n- The expected SDK checksum isn't verified. The skill's registry lists `https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip` with SHA-256 `dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe`, but only as documented, not as downloaded bytes.\n\nA safer option is to download that zip, check its SHA-256, and then run `ufbt update --local=<path>`.\n\n**What a successful build would prove, and what it wouldn't.**\n\n| Evidence field | What a successful 1.5.1 build gives you |\n|---|---|\n| Compiled | Your sources compile and link against the 1.5.1 SDK (API 88.2, f7). The official compiler, linker and imports are the authority here. It is only valid with the SDK URL and hash, the toolchain version, the exact command, the exit code and the `.fap` SHA-256 recorded. |\n| Static checks | `ufbt lint` is formatting and naming only. It is not static analysis. |\n| Host tests | Nothing. There is no `ufbt test`. |\n| Device behavior | Nothing. UI, teardown, timing, radio and GPIO stay `not-run` until they are tested on hardware. |\n\nA build also wouldn't prove the app works on Momentum, Unleashed or any other firmware. Each of those needs its own compile and device test. Old `dist/` output doesn't count as a fresh build either.\n\n**What I need from you:**\n1. The path to your project, or the files copied into this workspace.\n2. Your OK to download the SDK. Tell me whether to use `--branch=1.5.1` or the hash-checked zip, and confirm the `.ufbt-1.5.1` directory.\n\nOnce I have both, I'll read `application.fam` first, then pin, build, and report each evidence field separately."
+  ]
+}

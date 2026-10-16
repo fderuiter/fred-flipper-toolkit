@@ -1,0 +1,102 @@
+{
+  "id": "A01",
+  "kind": "ambiguous",
+  "prompt": "Build my FAP with ufbt and then run `ufbt test` to make sure it works.",
+  "started": "2026-10-16T18:39:34+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0866941,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1061,
+      "cache_read_input_tokens": 40121,
+      "cache_creation_input_tokens": 18015
+    },
+    "text": "I haven't built or run anything. There are two problems.\n\n1. **There is no FAP in the workspace.** The working directory has no `application.fam` or app source. It contains only the `.claude/skills/` files. `ufbt` has nothing to build here. If the app is somewhere else, tell me the path or put it in this directory.\n\n2. **`ufbt test` doesn't exist.** The pinned FRED references for official firmware 1.5.1 say so explicitly (engineering-rules \u00a71 and \u00a79, claim C-BUILD-001). The commands that do exist are `ufbt` (build), `ufbt lint` and `ufbt format`. Lint only checks formatting and naming, so it can't show that the app works. Even a successful build only shows that it compiles, not that it behaves correctly on a device.\n\nOnce the app is present, I plan to do this:\n- Read `application.fam` and any build hooks first. The manifest is executable Python.\n- Check whether a trusted ufbt toolchain and SDK are already installed. If not, ufbt's first run would download an SDK and toolchain from the moving release channel. I'd tell you the exact source and pin and get your approval before that happens. Until then, the compile result would be marked `blocked`, not `pass`.\n- Run `ufbt` and `ufbt lint`. I'd report the commands, versions, exit codes and logs, plus the hash of the freshly built `.fap`.\n- Write up a separate device test plan for anything that needs hardware, including the behaviors that matter most (UI, teardown and I/O).\n\nIf you have host-side unit tests, I can run those instead of `ufbt test`."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/application.fam"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/A01/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/A01/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/A01/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I haven't built or run anything. There are two problems.\n\n1. **There is no FAP in the workspace.** The working directory has no `application.fam` or app source. It contains only the `.claude/skills/` files. `ufbt` has nothing to build here. If the app is somewhere else, tell me the path or put it in this directory.\n\n2. **`ufbt test` doesn't exist.** The pinned FRED references for official firmware 1.5.1 say so explicitly (engineering-rules \u00a71 and \u00a79, claim C-BUILD-001). The commands that do exist are `ufbt` (build), `ufbt lint` and `ufbt format`. Lint only checks formatting and naming, so it can't show that the app works. Even a successful build only shows that it compiles, not that it behaves correctly on a device.\n\nOnce the app is present, I plan to do this:\n- Read `application.fam` and any build hooks first. The manifest is executable Python.\n- Check whether a trusted ufbt toolchain and SDK are already installed. If not, ufbt's first run would download an SDK and toolchain from the moving release channel. I'd tell you the exact source and pin and get your approval before that happens. Until then, the compile result would be marked `blocked`, not `pass`.\n- Run `ufbt` and `ufbt lint`. I'd report the commands, versions, exit codes and logs, plus the hash of the freshly built `.fap`.\n- Write up a separate device test plan for anything that needs hardware, including the behaviors that matter most (UI, teardown and I/O).\n\nIf you have host-side unit tests, I can run those instead of `ufbt test`."
+  ]
+}

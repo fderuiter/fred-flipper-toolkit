@@ -1,0 +1,58 @@
+{
+  "id": "N06",
+  "kind": "negative",
+  "prompt": "What's a good name for my cat? She likes dolphins.",
+  "started": "2026-10-16T18:39:30+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0482791,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 283,
+      "cache_read_input_tokens": 5291,
+      "cache_creation_input_tokens": 11229
+    },
+    "text": "Here are some dolphin-inspired names for her:\n\n**Direct nods**\n- **Delphi**, from the Greek *delphis* (dolphin), and also the name of the oracle\n- **Finley**, a play on \"fin\"\n- **Flipper**, after the classic TV dolphin\n\n**Ocean-themed**\n- **Marina**\n- **Pearl**\n- **Coral**\n- **Misty**\n- **Wave**\n\n**Playful and short**\n- **Pod**\n- **Splash**\n- **Echo**, after dolphin echolocation\n- **Kai**, Hawaiian for \"sea\"\n\nMy top pick is **Delphi**. It means \"dolphin\" and sounds elegant, so it works as a cat name. **Echo** is a close second if you want something shorter.\n\nWhat's she like? If she's sleek and gray, or very chatty, I can narrow these down."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "Here are some dolphin-inspired names for her:\n\n**Direct nods**\n- **Delphi**, from the Greek *delphis* (dolphin), and also the name of the oracle\n- **Finley**, a play on \"fin\"\n- **Flipper**, after the classic TV dolphin\n\n**Ocean-themed**\n- **Marina**\n- **Pearl**\n- **Coral**\n- **Misty**\n- **Wave**\n\n**Playful and short**\n- **Pod**\n- **Splash**\n- **Echo**, after dolphin echolocation\n- **Kai**, Hawaiian for \"sea\"\n\nMy top pick is **Delphi**. It means \"dolphin\" and sounds elegant, so it works as a cat name. **Echo** is a close second if you want something shorter.\n\nWhat's she like? If she's sleek and gray, or very chatty, I can narrow these down."
+  ]
+}

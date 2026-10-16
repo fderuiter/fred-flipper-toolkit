@@ -1,0 +1,121 @@
+{
+  "id": "P08",
+  "kind": "positive",
+  "prompt": "Firmware moved to a new API version; compare these two api_symbols.csv files and plan my app's migration.",
+  "started": "2026-10-16T18:39:07+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0919369,
+    "num_turns": 10,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1267,
+      "cache_read_input_tokens": 63029,
+      "cache_creation_input_tokens": 18237
+    },
+    "text": "I can't plan the migration yet because the workspace has none of the files it depends on. A search for `api_symbols.csv`, any other `*.csv`, `application.fam` and anything with \"api\" in its name found nothing. The only files in `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P08/ws` are the FRED skill files under `.claude/skills/`. I haven't compared anything, and I won't guess at symbol changes from memory.\n\n**What I need from you**\n1. **The two `api_symbols.csv` files.** Please put them in the workspace under distinct names, such as `old/api_symbols.csv` and `new/api_symbols.csv`. Tell me which firmware version and commit each one is from. The baseline in the skill's reference files is official 1.5.1 (commit `9e810dc`, API 88.2), so say if one of them is that.\n2. **Your app's source.** I need `application.fam` and the `.c` and `.h` files. I'll read the `.fam` before any build, because it is executable Python.\n3. **The target firmware.** Is it official, or a fork such as Momentum or Unleashed? Forks count as separate API lineages and need their own checks.\n\n**What I'll do once I have them**\n1. **Compare the tables.** I'll diff the two files and sort the changes into removed, added, signature-changed and flipped between exported (`+`) and not exported (`-`). This is source-level evidence only, and I'll label it that way.\n2. **Map to your code.** I'll match each affected symbol to its call sites in your app and rank the changes by whether they break the build or change behavior without breaking it.\n3. **Write the plan.** It will give an edit order and flag any change that needs a design decision.\n4. **Rebuild on the target SDK.** I won't download an SDK or toolchain without telling you the exact source, pin and effects first. If no trusted toolchain is already set up, the compile check will be marked `blocked` rather than passed.\n5. **List device tests separately.** Compiling doesn't count as a device pass, so I'll write a separate list of tests to run on hardware.\n\nOnce the files are in place, tell me and I'll start the comparison."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/api_symbols.csv"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P08/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P08/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*api*"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/application.fam"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.csv"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't plan the migration yet because the workspace has none of the files it depends on. A search for `api_symbols.csv`, any other `*.csv`, `application.fam` and anything with \"api\" in its name found nothing. The only files in `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P08/ws` are the FRED skill files under `.claude/skills/`. I haven't compared anything, and I won't guess at symbol changes from memory.\n\n**What I need from you**\n1. **The two `api_symbols.csv` files.** Please put them in the workspace under distinct names, such as `old/api_symbols.csv` and `new/api_symbols.csv`. Tell me which firmware version and commit each one is from. The baseline in the skill's reference files is official 1.5.1 (commit `9e810dc`, API 88.2), so say if one of them is that.\n2. **Your app's source.** I need `application.fam` and the `.c` and `.h` files. I'll read the `.fam` before any build, because it is executable Python.\n3. **The target firmware.** Is it official, or a fork such as Momentum or Unleashed? Forks count as separate API lineages and need their own checks.\n\n**What I'll do once I have them**\n1. **Compare the tables.** I'll diff the two files and sort the changes into removed, added, signature-changed and flipped between exported (`+`) and not exported (`-`). This is source-level evidence only, and I'll label it that way.\n2. **Map to your code.** I'll match each affected symbol to its call sites in your app and rank the changes by whether they break the build or change behavior without breaking it.\n3. **Write the plan.** It will give an edit order and flag any change that needs a design decision.\n4. **Rebuild on the target SDK.** I won't download an SDK or toolchain without telling you the exact source, pin and effects first. If no trusted toolchain is already set up, the compile check will be marked `blocked` rather than passed.\n5. **List device tests separately.** Compiling doesn't count as a device pass, so I'll write a separate list of tests to run on hardware.\n\nOnce the files are in place, tell me and I'll start the comparison."
+  ]
+}

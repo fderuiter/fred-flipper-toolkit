@@ -1,0 +1,80 @@
+{
+  "id": "H01",
+  "kind": "positive",
+  "prompt": "Is a Flipper able to act as a BLE central to talk to my lock?",
+  "started": "2026-10-16T18:45:57+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/capability-map.md",
+    "flipper-core/references/compatibility.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.43116129999999997,
+    "num_turns": 6,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1550,
+      "cache_read_input_tokens": 44971,
+      "cache_creation_input_tokens": 29915
+    },
+    "text": "Short answer: **no \u2014 not a stock Flipper on its own.**\n\n## Why\n\nA BLE smart lock is a peripheral (GATT server). To talk to it, the Flipper would need to act as a **BLE central / GATT client**: scan \u2192 connect \u2192 discover services \u2192 read/write characteristics \u2192 subscribe \u2192 pair/bond \u2192 reconnect.\n\nOn the researched official-firmware baseline (1.5.1 / f7 / SDK API 88.2), that role isn't exposed:\n\n- `gap_init` configures the Flipper as **`GAP_PERIPHERAL_ROLE`** \u2014 it advertises and waits to be connected to, the opposite of what a central does. [C-BLE-001]\n- The exported BLE surface is **server-side** (`ble_gatt_*` for building your own services/characteristics). None of the central/client primitives are exported \u2014 no `aci_gap_create_connection`, no `aci_gatt_disc_*` (service discovery), no `aci_gatt_read_char_*` / `aci_gatt_write_char_*`. [C-BLE-002]\n- Writing a custom GATT server or a beacon FAP does **not** change the GAP role.\n\nSo an external FAP (or on-device JavaScript) literally has no API to initiate an outbound connection to your lock. This is a public-SDK limitation, not a claim about the silicon \u2014 the radio co-processor may be capable, but a firmware/CPU2-stack change to add the central role would be a separate, much larger investigation with its own recovery/debug plan.\n\n## What actually works\n\nTwo feasible routes, both using the Flipper as the **UI/controller** and something else as the BLE central:\n\n1. **Companion MCU over UART** \u2014 e.g. an ESP32 (or similar BLE-central-capable chip) wired to the Flipper's GPIO UART. Flipper sends framed commands; the MCU does the scan/connect/write to the lock. Verify the specific chip supports BLE central/GATT-client mode and is 3.3 V-tolerant before wiring.\n2. **Host companion** \u2014 if a phone/PC is acceptable, run the BLE-central logic there and use the Flipper only as a trigger/display (or skip it entirely).\n\nIf you go the MCU route, define a bounded, versioned framed protocol: request IDs, length fields, a CRC for corruption detection (CRC is *not* authentication), timeouts, explicit reconnect states, and a target allowlist so it only ever talks to your lock. Don't replay stale commands after a reconnect, and leave the lock's own safety/stop behavior intact.\n\nOne caveat worth stating plainly: driving a lock assumes you own it or are authorized to test it, and that you have whatever pairing/credentials the lock requires \u2014 the Flipper-vs-MCU question is only about transport, not about bypassing the lock's authentication.\n\nWant me to sketch the Flipper-side FAP + UART protocol, or spec the companion-MCU side? Which lock (make/model) and which companion do you have in mind?"
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core",
+        "args": "BLE central capability \u2014 can Flipper Zero act as a BLE central to connect to a BLE peripheral like a smart lock?"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-heldout-r2/H01/ws/.claude/skills/flipper-core/references/capability-map.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-heldout-r2/H01/ws/.claude/skills/flipper-core/references/compatibility.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "Short answer: **no \u2014 not a stock Flipper on its own.**\n\n## Why\n\nA BLE smart lock is a peripheral (GATT server). To talk to it, the Flipper would need to act as a **BLE central / GATT client**: scan \u2192 connect \u2192 discover services \u2192 read/write characteristics \u2192 subscribe \u2192 pair/bond \u2192 reconnect.\n\nOn the researched official-firmware baseline (1.5.1 / f7 / SDK API 88.2), that role isn't exposed:\n\n- `gap_init` configures the Flipper as **`GAP_PERIPHERAL_ROLE`** \u2014 it advertises and waits to be connected to, the opposite of what a central does. [C-BLE-001]\n- The exported BLE surface is **server-side** (`ble_gatt_*` for building your own services/characteristics). None of the central/client primitives are exported \u2014 no `aci_gap_create_connection`, no `aci_gatt_disc_*` (service discovery), no `aci_gatt_read_char_*` / `aci_gatt_write_char_*`. [C-BLE-002]\n- Writing a custom GATT server or a beacon FAP does **not** change the GAP role.\n\nSo an external FAP (or on-device JavaScript) literally has no API to initiate an outbound connection to your lock. This is a public-SDK limitation, not a claim about the silicon \u2014 the radio co-processor may be capable, but a firmware/CPU2-stack change to add the central role would be a separate, much larger investigation with its own recovery/debug plan.\n\n## What actually works\n\nTwo feasible routes, both using the Flipper as the **UI/controller** and something else as the BLE central:\n\n1. **Companion MCU over UART** \u2014 e.g. an ESP32 (or similar BLE-central-capable chip) wired to the Flipper's GPIO UART. Flipper sends framed commands; the MCU does the scan/connect/write to the lock. Verify the specific chip supports BLE central/GATT-client mode and is 3.3 V-tolerant before wiring.\n2. **Host companion** \u2014 if a phone/PC is acceptable, run the BLE-central logic there and use the Flipper only as a trigger/display (or skip it entirely).\n\nIf you go the MCU route, define a bounded, versioned framed protocol: request IDs, length fields, a CRC for corruption detection (CRC is *not* authentication), timeouts, explicit reconnect states, and a target allowlist so it only ever talks to your lock. Don't replay stale commands after a reconnect, and leave the lock's own safety/stop behavior intact.\n\nOne caveat worth stating plainly: driving a lock assumes you own it or are authorized to test it, and that you have whatever pairing/credentials the lock requires \u2014 the Flipper-vs-MCU question is only about transport, not about bypassing the lock's authentication.\n\nWant me to sketch the Flipper-side FAP + UART protocol, or spec the companion-MCU side? Which lock (make/model) and which companion do you have in mind?"
+  ]
+}

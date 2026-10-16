@@ -1,6 +1,6 @@
 ---
 name: flipper-native
-description: Implement or change native Flipper Zero external apps (FAPs) in C on official firmware. Use when adding screens, settings, storage, timers, worker threads, UART or bus handling to a FAP, or fixing a ViewPort, View or ViewDispatcher implementation. Not for feasibility-only questions, firmware or radio-stack rewrites, host applications, or ordinary JavaScript.
+description: Implement or change native Flipper Zero external apps (FAPs) in C on official firmware. Use when adding screens, settings, storage, timers, worker threads, UART or bus handling to a FAP, using Furi records or services from app code, writing parsers for capture or data files a FAP reads, or fixing a ViewPort, View or ViewDispatcher implementation. Not for feasibility-only questions, firmware or radio-stack rewrites, host applications, or ordinary JavaScript.
 license: MIT
 compatibility: Official Flipper Zero firmware 1.5.1, target f7, API 88.2 researched baseline. Requires sibling flipper-core directory for shared references.
 metadata:

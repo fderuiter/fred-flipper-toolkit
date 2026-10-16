@@ -1,0 +1,58 @@
+{
+  "id": "N02",
+  "kind": "negative",
+  "prompt": "How do I reverse a linked list in C?",
+  "started": "2026-10-16T18:42:51+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0528126,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 748,
+      "cache_read_input_tokens": 5286,
+      "cache_creation_input_tokens": 11200
+    },
+    "text": "Reverse the list by walking it once and flipping each node's `next` pointer to point at the node before it. You need three pointers to do that without losing the rest of the list.\n\n```c\n#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n    int data;\n    struct Node *next;\n} Node;\n\nNode *reverse(Node *head) {\n    Node *prev = NULL;\n    Node *curr = head;\n\n    while (curr != NULL) {\n        Node *next = curr->next;  // save the rest of the list\n        curr->next = prev;        // flip the pointer\n        prev = curr;              // advance prev\n        curr = next;              // advance curr\n    }\n    return prev;                  // prev is the new head\n}\n```\n\n**How it works**\n\nFor the list `1 -> 2 -> 3`:\n\n| Step | prev | curr | Result so far |\n|------|------|------|---------------|\n| start | NULL | 1 | |\n| 1 | 1 | 2 | `1 -> NULL` |\n| 2 | 2 | 3 | `2 -> 1 -> NULL` |\n| 3 | 3 | NULL | `3 -> 2 -> 1 -> NULL` |\n\nWhen `curr` reaches `NULL`, `prev` points at the old last node, which is now the head.\n\n**Usage**\n\n```c\nhead = reverse(head);   // reassign, because the head changes\n```\n\nThis runs in O(n) time and O(1) extra space. It reverses the list in place and allocates nothing.\n\n**Recursive version**\n\n```c\nNode *reverse_rec(Node *head) {\n    if (head == NULL || head->next == NULL)\n        return head;\n\n    Node *new_head = reverse_rec(head->next);\n    head->next->next = head;   // make the next node point back at us\n    head->next = NULL;\n    return new_head;\n}\n```\n\nThis is also O(n) time, but it uses O(n) stack space. A very long list can overflow the stack, so I'd use the iterative version in practice.\n\n**Pitfall:** the function returns the new head, so you have to assign it back. If you ignore the return value, your original `head` pointer will point at the last node of the reversed list and the list will look like it has one element.\n\nIf you'd rather not reassign, take a `Node **head` and update `*head` inside the function."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "Reverse the list by walking it once and flipping each node's `next` pointer to point at the node before it. You need three pointers to do that without losing the rest of the list.\n\n```c\n#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n    int data;\n    struct Node *next;\n} Node;\n\nNode *reverse(Node *head) {\n    Node *prev = NULL;\n    Node *curr = head;\n\n    while (curr != NULL) {\n        Node *next = curr->next;  // save the rest of the list\n        curr->next = prev;        // flip the pointer\n        prev = curr;              // advance prev\n        curr = next;              // advance curr\n    }\n    return prev;                  // prev is the new head\n}\n```\n\n**How it works**\n\nFor the list `1 -> 2 -> 3`:\n\n| Step | prev | curr | Result so far |\n|------|------|------|---------------|\n| start | NULL | 1 | |\n| 1 | 1 | 2 | `1 -> NULL` |\n| 2 | 2 | 3 | `2 -> 1 -> NULL` |\n| 3 | 3 | NULL | `3 -> 2 -> 1 -> NULL` |\n\nWhen `curr` reaches `NULL`, `prev` points at the old last node, which is now the head.\n\n**Usage**\n\n```c\nhead = reverse(head);   // reassign, because the head changes\n```\n\nThis runs in O(n) time and O(1) extra space. It reverses the list in place and allocates nothing.\n\n**Recursive version**\n\n```c\nNode *reverse_rec(Node *head) {\n    if (head == NULL || head->next == NULL)\n        return head;\n\n    Node *new_head = reverse_rec(head->next);\n    head->next->next = head;   // make the next node point back at us\n    head->next = NULL;\n    return new_head;\n}\n```\n\nThis is also O(n) time, but it uses O(n) stack space. A very long list can overflow the stack, so I'd use the iterative version in practice.\n\n**Pitfall:** the function returns the new head, so you have to assign it back. If you ignore the return value, your original `head` pointer will point at the last node of the reversed list and the list will look like it has one element.\n\nIf you'd rather not reassign, take a `Node **head` and update `*head` inside the function."
+  ]
+}

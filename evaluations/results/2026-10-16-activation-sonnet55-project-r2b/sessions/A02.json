@@ -1,0 +1,76 @@
+{
+  "id": "A02",
+  "kind": "ambiguous",
+  "prompt": "Use RECORD_PASSTHROUGH to share my app state with the GUI service.",
+  "started": "2026-10-16T18:44:01+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-core",
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": false,
+  "reasons": [
+    "missing expected ['flipper-native']"
+  ],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0631833,
+    "num_turns": 3,
+    "usage": {
+      "input_tokens": 4,
+      "output_tokens": 722,
+      "cache_read_input_tokens": 21833,
+      "cache_creation_input_tokens": 13443
+    },
+    "text": "I can't use RECORD_PASSTHROUGH, because it doesn't exist as far as I can establish. I also found no app code or GUI service in this workspace to wire it into. The workspace only holds Flipper Zero skill documentation.\n\nThe Flipper references say the same thing in three places:\n- `engineering-rules.md:9` says `RECORD_PASSTHROUGH` is not established, and tells me not to invent APIs, records, or macros.\n- `assumptions.md:14` says to treat it as invented until source proves it exists.\n- `sources.json` (claim `C-REC-002`) says it isn't defined in the inspected public surface. That surface is the firmware's `api_symbols.csv` at commit 9e810dc.\n\nIf you're on a Flipper app, the usual way to share state with the GUI is one of these:\n- **Furi records:** your app creates a record with `furi_record_create`. The GUI side borrows it with `furi_record_open` and releases it with `furi_record_close`.\n- **A mutex-guarded model:** the model is passed to ViewPort or View callbacks, which is the standard pattern for GUI state.\n- **A message queue:** the app sends events to the GUI thread.\n\nWhere does `RECORD_PASSTHROUGH` come from? It could be a macro in a fork, a library, or your own header. If you point me to the source or tell me which firmware and SDK you're on, I can check it. If you want the standard Furi record approach instead, tell me which of the three patterns fits and where your app code is."
+  },
+  "tool_events": [
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "RECORD_PASSTHROUGH",
+        "output_mode": "content",
+        "-C": 3
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I'll start by searching the workspace for RECORD_PASSTHROUGH.",
+    "I can't use RECORD_PASSTHROUGH, because it doesn't exist as far as I can establish. I also found no app code or GUI service in this workspace to wire it into. The workspace only holds Flipper Zero skill documentation.\n\nThe Flipper references say the same thing in three places:\n- `engineering-rules.md:9` says `RECORD_PASSTHROUGH` is not established, and tells me not to invent APIs, records, or macros.\n- `assumptions.md:14` says to treat it as invented until source proves it exists.\n- `sources.json` (claim `C-REC-002`) says it isn't defined in the inspected public surface. That surface is the firmware's `api_symbols.csv` at commit 9e810dc.\n\nIf you're on a Flipper app, the usual way to share state with the GUI is one of these:\n- **Furi records:** your app creates a record with `furi_record_create`. The GUI side borrows it with `furi_record_open` and releases it with `furi_record_close`.\n- **A mutex-guarded model:** the model is passed to ViewPort or View callbacks, which is the standard pattern for GUI state.\n- **A message queue:** the app sends events to the GUI thread.\n\nWhere does `RECORD_PASSTHROUGH` come from? It could be a macro in a fork, a library, or your own header. If you point me to the source or tell me which firmware and SDK you're on, I can check it. If you want the standard Furi record approach instead, tell me which of the three patterns fits and where your app code is."
+  ]
+}

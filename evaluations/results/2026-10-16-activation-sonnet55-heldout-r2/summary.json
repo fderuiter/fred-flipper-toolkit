@@ -1,0 +1,109 @@
+{
+  "run": "2026-10-16-activation-sonnet55-heldout-r2",
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "scope": "project",
+  "claude_code_version": "2.1.301",
+  "skills_listed": 114,
+  "cases": 6,
+  "passed": 6,
+  "negative_false_activations": 0,
+  "direct_entry": [
+    {
+      "id": "H02",
+      "non_core_loaded": [
+        "flipper-review"
+      ],
+      "core_loaded": false,
+      "shared_rules_read": {
+        "engineering-rules.md": true,
+        "evidence-policy.md": true
+      },
+      "pass": true
+    },
+    {
+      "id": "H03",
+      "non_core_loaded": [
+        "flipper-verify"
+      ],
+      "core_loaded": false,
+      "shared_rules_read": {
+        "engineering-rules.md": true,
+        "evidence-policy.md": true
+      },
+      "pass": true
+    },
+    {
+      "id": "H04",
+      "non_core_loaded": [
+        "flipper-native"
+      ],
+      "core_loaded": false,
+      "shared_rules_read": {
+        "engineering-rules.md": true,
+        "evidence-policy.md": true
+      },
+      "pass": true
+    }
+  ],
+  "isolation_violations": [],
+  "total_cost_usd": 0.5165,
+  "results": [
+    {
+      "id": "H01",
+      "kind": "positive",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-core"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "H02",
+      "kind": "positive",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-review"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "H03",
+      "kind": "positive",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-verify"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "H04",
+      "kind": "positive",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-native"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "H05",
+      "kind": "negative",
+      "pass": true,
+      "loaded_fred": [],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "H06",
+      "kind": "negative",
+      "pass": true,
+      "loaded_fred": [],
+      "loaded_other_skills": [],
+      "reasons": []
+    }
+  ]
+}

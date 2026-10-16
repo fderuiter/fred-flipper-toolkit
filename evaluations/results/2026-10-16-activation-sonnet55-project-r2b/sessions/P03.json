@@ -1,0 +1,125 @@
+{
+  "id": "P03",
+  "kind": "positive",
+  "prompt": "Add a settings screen with a VariableItemList to my FAP and persist the values to the SD card.",
+  "started": "2026-10-16T18:43:29+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-core"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-native"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/runtime-ui.md",
+    "flipper-core/references/storage-parsers.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-native"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.11155419999999999,
+    "num_turns": 10,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1634,
+      "cache_read_input_tokens": 67862,
+      "cache_creation_input_tokens": 22103
+    },
+    "text": "I haven't written any code, because your FAP isn't in this workspace. The only files under `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P03/ws` are the `.claude/skills/flipper-*` skill files. There is no `application.fam` and no `.c`, `.h` or icon file.\n\nI could scaffold a new app, but a settings screen should match your existing code. That means your entry point, state struct, `ViewDispatcher` or `ViewPort` setup, and `appid`. Guessing would likely give you something that doesn't fit.\n\nCan you do one of these?\n1. **Point me to the FAP.** Give me the right directory, or copy the sources into this workspace.\n2. **Have me create a new FAP.** I'd build a minimal one with a main menu and a settings screen.\n\nI also need to know which firmware and SDK you target. If you don't say, I'll assume official firmware 1.5.1 on f7, API 88.2. If you're on Momentum or Unleashed, tell me, because their APIs differ.\n\nMy plan, once I have the code:\n- **UI:** a `VariableItemList` in a `ViewDispatcher` view, with a Back callback that returns to the previous view. I would not add `SceneManager` unless your app already uses it.\n- **Settings:** a plain-C struct with a version number and validated defaults.\n- **Storage:** a file under `APP_DATA_PATH(...)` on the SD card, written through `FlipperFormat`. Loading and saving would happen in the app thread (the one running the `ViewDispatcher` event loop), never in the draw or input callbacks. Writes would go to a temp file first, and I'd check every open, write, sync, close and rename result. A missing SD card, a corrupt file or a file from a newer version would fall back to defaults, and the app would still start and exit normally.\n- **Testing:** I'd keep the validation and clamping logic free of Furi calls so it can be tested on the host.\n- **Build:** I'd only build if you authorize it. Compiling won't prove the behavior on a real device, so I'll mark device testing as not run.\n\nI also need to know which settings you want, for example a toggle, a numeric range or an enum, and their defaults."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P03/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P03/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P03/ws/.claude/skills/flipper-core/references/runtime-ui.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P03/ws/.claude/skills/flipper-core/references/storage-parsers.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/application.fam",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P03/ws"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.{c,h,fam,png}",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P03/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I haven't written any code, because your FAP isn't in this workspace. The only files under `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P03/ws` are the `.claude/skills/flipper-*` skill files. There is no `application.fam` and no `.c`, `.h` or icon file.\n\nI could scaffold a new app, but a settings screen should match your existing code. That means your entry point, state struct, `ViewDispatcher` or `ViewPort` setup, and `appid`. Guessing would likely give you something that doesn't fit.\n\nCan you do one of these?\n1. **Point me to the FAP.** Give me the right directory, or copy the sources into this workspace.\n2. **Have me create a new FAP.** I'd build a minimal one with a main menu and a settings screen.\n\nI also need to know which firmware and SDK you target. If you don't say, I'll assume official firmware 1.5.1 on f7, API 88.2. If you're on Momentum or Unleashed, tell me, because their APIs differ.\n\nMy plan, once I have the code:\n- **UI:** a `VariableItemList` in a `ViewDispatcher` view, with a Back callback that returns to the previous view. I would not add `SceneManager` unless your app already uses it.\n- **Settings:** a plain-C struct with a version number and validated defaults.\n- **Storage:** a file under `APP_DATA_PATH(...)` on the SD card, written through `FlipperFormat`. Loading and saving would happen in the app thread (the one running the `ViewDispatcher` event loop), never in the draw or input callbacks. Writes would go to a temp file first, and I'd check every open, write, sync, close and rename result. A missing SD card, a corrupt file or a file from a newer version would fall back to defaults, and the app would still start and exit normally.\n- **Testing:** I'd keep the validation and clamping logic free of Furi calls so it can be tested on the host.\n- **Build:** I'd only build if you authorize it. Compiling won't prove the behavior on a real device, so I'll mark device testing as not run.\n\nI also need to know which settings you want, for example a toggle, a numeric range or an enum, and their defaults."
+  ]
+}

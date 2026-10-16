@@ -1,0 +1,113 @@
+{
+  "id": "H02",
+  "kind": "positive",
+  "prompt": "Go through my FAP teardown code and look for anything that could use freed memory",
+  "started": "2026-10-16T18:40:02+00:00",
+  "expected": [
+    "flipper-review"
+  ],
+  "acceptable": [
+    "flipper-core"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-review"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-review"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.09382489999999999,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1218,
+      "cache_read_input_tokens": 62889,
+      "cache_creation_input_tokens": 18835
+    },
+    "text": "I can't review your FAP teardown code yet, because there's no FAP source in the working directory. The only files here are the `.claude/skills/` reference docs. A search for `*.c`, `*.h` and `*.fam` found nothing. A search for `furi_thread_free`, `furi_timer_free` and `application.fam` outside `.claude/` found nothing either. So I have no findings, and I haven't inspected any of your code.\n\nCan you add the app, or tell me where it lives? The files that matter most are:\n- `application.fam`\n- the main app `.c` file with its alloc and free functions\n- any worker, timer, UART or storage files\n\nIf you can only paste part of it, the most useful parts are the app's `alloc`/`free` pair and its `main` function.\n\nOnce I have the code, I'll check these use-after-free risks:\n- **Timers:** a timer callback that can still run, or still reads app state, after that state is freed. `furi_timer_stop` doesn't guarantee a running callback has finished.\n- **Worker threads:** a thread that is freed or joined after the state it uses, or one that is never woken to exit.\n- **Serial and other interrupt callbacks:** a callback still registered when its context is freed.\n- **GUI:** a ViewPort or View still attached when its model is freed, and draw or input callbacks holding a stale context pointer.\n- **Queues and streams:** events still queued that point to freed memory.\n- **Failure paths:** early exits that free only part of what was set up.\n- **Records:** close and free ordering.\n\nThis will be a read-only review. I won't edit anything unless you ask. I'll rank the findings and mark each as a source trace or a hypothesis. I'll also list what I did and didn't inspect."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-review"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.{c,h,fam}"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-heldout-r2/H02/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-heldout-r2/H02/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-heldout-r2/H02/ws"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "furi_thread_free|furi_timer_free|application\\.fam",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-heldout-r2/H02/ws",
+        "glob": "!.claude/**",
+        "output_mode": "files_with_matches"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't review your FAP teardown code yet, because there's no FAP source in the working directory. The only files here are the `.claude/skills/` reference docs. A search for `*.c`, `*.h` and `*.fam` found nothing. A search for `furi_thread_free`, `furi_timer_free` and `application.fam` outside `.claude/` found nothing either. So I have no findings, and I haven't inspected any of your code.\n\nCan you add the app, or tell me where it lives? The files that matter most are:\n- `application.fam`\n- the main app `.c` file with its alloc and free functions\n- any worker, timer, UART or storage files\n\nIf you can only paste part of it, the most useful parts are the app's `alloc`/`free` pair and its `main` function.\n\nOnce I have the code, I'll check these use-after-free risks:\n- **Timers:** a timer callback that can still run, or still reads app state, after that state is freed. `furi_timer_stop` doesn't guarantee a running callback has finished.\n- **Worker threads:** a thread that is freed or joined after the state it uses, or one that is never woken to exit.\n- **Serial and other interrupt callbacks:** a callback still registered when its context is freed.\n- **GUI:** a ViewPort or View still attached when its model is freed, and draw or input callbacks holding a stale context pointer.\n- **Queues and streams:** events still queued that point to freed memory.\n- **Failure paths:** early exits that free only part of what was set up.\n- **Records:** close and free ordering.\n\nThis will be a read-only review. I won't edit anything unless you ask. I'll rank the findings and mark each as a source trace or a hypothesis. I'll also list what I did and didn't inspect."
+  ]
+}

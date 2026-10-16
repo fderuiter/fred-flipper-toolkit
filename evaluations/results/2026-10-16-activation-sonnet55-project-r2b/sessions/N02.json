@@ -1,0 +1,58 @@
+{
+  "id": "N02",
+  "kind": "negative",
+  "prompt": "How do I reverse a linked list in C?",
+  "started": "2026-10-16T18:43:51+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0530966,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 764,
+      "cache_read_input_tokens": 5286,
+      "cache_creation_input_tokens": 11231
+    },
+    "text": "Use three pointers and walk the list once, flipping each node's `next` to point backward.\n\n```c\n#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n    int data;\n    struct Node *next;\n} Node;\n\nNode *reverse(Node *head) {\n    Node *prev = NULL;\n    Node *curr = head;\n\n    while (curr != NULL) {\n        Node *next = curr->next;  // save the rest of the list\n        curr->next = prev;        // flip the link\n        prev = curr;              // advance prev\n        curr = next;              // advance curr\n    }\n    return prev;                  // new head\n}\n```\n\nUse it by reassigning the head:\n\n```c\nhead = reverse(head);\n```\n\n**How it works**\n\nFor `1 -> 2 -> 3`:\n\n1. `prev=NULL, curr=1`. Save `next=2`, set `1->next=NULL`, move on.\n2. `prev=1, curr=2`. Save `next=3`, set `2->next=1`, move on.\n3. `prev=2, curr=3`. Save `next=NULL`, set `3->next=2`, move on.\n4. `curr` is `NULL`, so return `prev` (node 3). The list is now `3 -> 2 -> 1`.\n\n**Complexity:** O(n) time, O(1) extra space. It reverses in place and allocates nothing.\n\n**Pointer-to-pointer variant**\n\nThis version updates the head directly, so the caller doesn't need to reassign it:\n\n```c\nvoid reverse_inplace(Node **head) {\n    Node *prev = NULL, *curr = *head;\n    while (curr) {\n        Node *next = curr->next;\n        curr->next = prev;\n        prev = curr;\n        curr = next;\n    }\n    *head = prev;\n}\n```\n\nCall it as `reverse_inplace(&head);`.\n\n**Recursive version**\n\nThis works but uses O(n) stack, so it can overflow on long lists:\n\n```c\nNode *reverse_rec(Node *head) {\n    if (head == NULL || head->next == NULL)\n        return head;\n    Node *new_head = reverse_rec(head->next);\n    head->next->next = head;\n    head->next = NULL;\n    return new_head;\n}\n```\n\nPrefer the iterative version in practice. It handles an empty list and a single-node list without special cases."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "Use three pointers and walk the list once, flipping each node's `next` to point backward.\n\n```c\n#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n    int data;\n    struct Node *next;\n} Node;\n\nNode *reverse(Node *head) {\n    Node *prev = NULL;\n    Node *curr = head;\n\n    while (curr != NULL) {\n        Node *next = curr->next;  // save the rest of the list\n        curr->next = prev;        // flip the link\n        prev = curr;              // advance prev\n        curr = next;              // advance curr\n    }\n    return prev;                  // new head\n}\n```\n\nUse it by reassigning the head:\n\n```c\nhead = reverse(head);\n```\n\n**How it works**\n\nFor `1 -> 2 -> 3`:\n\n1. `prev=NULL, curr=1`. Save `next=2`, set `1->next=NULL`, move on.\n2. `prev=1, curr=2`. Save `next=3`, set `2->next=1`, move on.\n3. `prev=2, curr=3`. Save `next=NULL`, set `3->next=2`, move on.\n4. `curr` is `NULL`, so return `prev` (node 3). The list is now `3 -> 2 -> 1`.\n\n**Complexity:** O(n) time, O(1) extra space. It reverses in place and allocates nothing.\n\n**Pointer-to-pointer variant**\n\nThis version updates the head directly, so the caller doesn't need to reassign it:\n\n```c\nvoid reverse_inplace(Node **head) {\n    Node *prev = NULL, *curr = *head;\n    while (curr) {\n        Node *next = curr->next;\n        curr->next = prev;\n        prev = curr;\n        curr = next;\n    }\n    *head = prev;\n}\n```\n\nCall it as `reverse_inplace(&head);`.\n\n**Recursive version**\n\nThis works but uses O(n) stack, so it can overflow on long lists:\n\n```c\nNode *reverse_rec(Node *head) {\n    if (head == NULL || head->next == NULL)\n        return head;\n    Node *new_head = reverse_rec(head->next);\n    head->next->next = head;\n    head->next = NULL;\n    return new_head;\n}\n```\n\nPrefer the iterative version in practice. It handles an empty list and a single-node list without special cases."
+  ]
+}

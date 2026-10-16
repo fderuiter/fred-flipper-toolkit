@@ -1,0 +1,112 @@
+{
+  "id": "A07",
+  "kind": "ambiguous",
+  "prompt": "Make my Flipper read every NFC card and emulate any of them; NFC is fully supported, right?",
+  "started": "2026-10-16T18:37:46+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/assumptions.md",
+    "flipper-core/references/capability-map.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/hardware-communications.md"
+  ],
+  "direct_entry": null,
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1191143,
+    "num_turns": 9,
+    "usage": {
+      "input_tokens": 10,
+      "output_tokens": 1845,
+      "cache_read_input_tokens": 92963,
+      "cache_creation_input_tokens": 22837
+    },
+    "text": "No. NFC isn't fully supported, so the Flipper can't read every card or emulate any of them. The pinned FRED references say NFC support is \"technology- and role-specific, not universal access.\" I didn't inspect the NFC exports or the pinned `api_symbols.csv`, and nothing was run on a device. The per-protocol points below come from general knowledge of the Flipper's NFC stack, not from checked sources.\n\n**Reading** depends on the card's frequency and protocol.\n- **Not readable at all:** The Flipper's NFC hardware only covers 13.56 MHz. 125 kHz cards (EM4100, HID Prox) need the separate LF RFID reader. Cards on other frequencies can't be read.\n- **Read fully:** Many simple ISO14443-A tags work, such as NTAG/Ultralight and some Mifare Classic, Plus and DESFire UIDs and public data. Mifare Classic only reads fully if the sector keys are known or recoverable.\n- **Read only in part:** Cards with per-sector keys or cryptographic authentication (secured DESFire, many payment cards, modern access cards) give you the UID and public data at most. The secret data stays locked.\n\n**Emulating** is narrower than reading.\n- **Works for:** UID-only emulation, and full dumps of simple tag types.\n- **Doesn't work for:** Anything that needs live cryptography or a secure element. Bank cards, hotel and transit systems that check a challenge-response, and secured DESFire fall into this group.\n- **Rolling-code and server-checked systems:** These reject a cloned or replayed card even if the emulation is technically correct.\n\n**What I'd do instead:**\n1. For a specific card, identify its type first (the Flipper's NFC \"Read\" shows this). The answer depends on the type.\n2. For a custom app, I'd recommend a native FAP on the NFC protocol and worker libraries. That needs checking against the exports (the `+` rows in `api_symbols.csv`) before designing anything, per the FRED rules. A header in the firmware tree alone doesn't make an API available to apps.\n3. If you need a card type the stock firmware can't handle, a firmware fork or an external reader is the next step. Forks like Momentum and Unleashed are separate lineages with different exports, so I'd inspect the one you're on.\n\nI'd only help with this for cards and systems you own or are authorized to test. Cloning access or payment cards you don't control isn't something I'll assist with.\n\nTell me which cards you have and which firmware you're running. I can then work out what's feasible for them and, if you want a custom app, fill in the compatibility card."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core",
+        "args": "Feasibility: can a Flipper Zero read every NFC card and emulate any of them? Is NFC fully supported?"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A07/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A07/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A07/ws/.claude/skills/flipper-core/references/assumptions.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A07/ws/.claude/skills/flipper-core/references/capability-map.md"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "NFC|nfc|Mifare|MIFARE|DESFire",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A07/ws/.claude/skills/flipper-core",
+        "output_mode": "content",
+        "-n": true,
+        "head_limit": 30
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A07/ws/.claude/skills/flipper-core/references/hardware-communications.md",
+        "offset": 38,
+        "limit": 15
+      }
+    }
+  ],
+  "assistant_text": [
+    "No. NFC isn't fully supported, so the Flipper can't read every card or emulate any of them. The pinned FRED references say NFC support is \"technology- and role-specific, not universal access.\" I didn't inspect the NFC exports or the pinned `api_symbols.csv`, and nothing was run on a device. The per-protocol points below come from general knowledge of the Flipper's NFC stack, not from checked sources.\n\n**Reading** depends on the card's frequency and protocol.\n- **Not readable at all:** The Flipper's NFC hardware only covers 13.56 MHz. 125 kHz cards (EM4100, HID Prox) need the separate LF RFID reader. Cards on other frequencies can't be read.\n- **Read fully:** Many simple ISO14443-A tags work, such as NTAG/Ultralight and some Mifare Classic, Plus and DESFire UIDs and public data. Mifare Classic only reads fully if the sector keys are known or recoverable.\n- **Read only in part:** Cards with per-sector keys or cryptographic authentication (secured DESFire, many payment cards, modern access cards) give you the UID and public data at most. The secret data stays locked.\n\n**Emulating** is narrower than reading.\n- **Works for:** UID-only emulation, and full dumps of simple tag types.\n- **Doesn't work for:** Anything that needs live cryptography or a secure element. Bank cards, hotel and transit systems that check a challenge-response, and secured DESFire fall into this group.\n- **Rolling-code and server-checked systems:** These reject a cloned or replayed card even if the emulation is technically correct.\n\n**What I'd do instead:**\n1. For a specific card, identify its type first (the Flipper's NFC \"Read\" shows this). The answer depends on the type.\n2. For a custom app, I'd recommend a native FAP on the NFC protocol and worker libraries. That needs checking against the exports (the `+` rows in `api_symbols.csv`) before designing anything, per the FRED rules. A header in the firmware tree alone doesn't make an API available to apps.\n3. If you need a card type the stock firmware can't handle, a firmware fork or an external reader is the next step. Forks like Momentum and Unleashed are separate lineages with different exports, so I'd inspect the one you're on.\n\nI'd only help with this for cards and systems you own or are authorized to test. Cloning access or payment cards you don't control isn't something I'll assist with.\n\nTell me which cards you have and which firmware you're running. I can then work out what's feasible for them and, if you want a custom app, fill in the compatibility card."
+  ]
+}

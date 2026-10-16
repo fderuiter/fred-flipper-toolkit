@@ -1,0 +1,58 @@
+{
+  "id": "H06",
+  "kind": "negative",
+  "prompt": "Explain how C struct padding works",
+  "started": "2026-10-16T18:40:02+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.059264199999999996,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 1169,
+      "cache_read_input_tokens": 4742,
+      "cache_creation_input_tokens": 11774
+    },
+    "text": "# C Struct Padding\n\n**Why it exists:** CPUs access memory most efficiently (or, on some architectures, only) when a value sits at an address that's a multiple of its size. The compiler inserts unused **padding bytes** so each member is properly **aligned**.\n\n## The rules\n\n1. Each member must start at an offset that's a multiple of its **alignment requirement** (usually equal to its size for primitives: `char`=1, `short`=2, `int`/`float`=4, `double`/pointers=8 on a typical 64-bit system).\n2. The struct's overall **alignment** equals that of its most strictly aligned member.\n3. The struct's total **size** is rounded up to a multiple of its alignment (trailing padding), so that elements in an array all stay aligned.\n\n## Example\n\n```c\nstruct A {\n    char  c;   // offset 0, 1 byte\n               // 3 bytes padding\n    int   i;   // offset 4, 4 bytes\n    char  d;   // offset 8, 1 byte\n               // 3 bytes trailing padding\n};             // sizeof = 12, alignment = 4\n```\n\nMembers total 6 bytes, but the struct is 12.\n\n## Reordering reduces padding\n\n```c\nstruct B {\n    int   i;   // offset 0\n    char  c;   // offset 4\n    char  d;   // offset 5\n               // 2 bytes trailing padding\n};             // sizeof = 8\n```\n\nSame members, 8 bytes instead of 12. A good heuristic: **order members from largest to smallest alignment**.\n\n## A more dramatic case\n\n```c\nstruct C { char a; double b; char c; };  // 24 bytes\nstruct D { double b; char a; char c; };  // 16 bytes\n```\n\n`C`: `a`@0, 7 padding, `b`@8, `c`@16, 7 trailing padding \u2192 24.\n`D`: `b`@0, `a`@8, `c`@9, 6 trailing padding \u2192 16.\n\n## Inspecting it\n\n```c\n#include <stddef.h>\n#include <stdio.h>\n\nprintf(\"size=%zu align=%zu off_i=%zu\\n\",\n       sizeof(struct A), _Alignof(struct A), offsetof(struct A, i));\n```\n\nUse `offsetof` and `sizeof` rather than assuming layout.\n\n## Controlling it\n\n- **Packed structs** remove padding: `__attribute__((packed))` (GCC/Clang) or `#pragma pack(1)` (MSVC/GCC/Clang). Useful for wire formats and file headers, but unaligned access can be slower, and on some architectures it can fault. Taking a pointer to a packed member is also undefined-behavior-prone.\n- **Explicit alignment**: `_Alignas(n)` (C11) or `__attribute__((aligned(n)))`, for example to align to cache lines or SIMD widths.\n\n## Practical notes\n\n- Padding bytes have **indeterminate values**. Don't `memcmp` structs or hash/write them raw (it can also leak uninitialized memory). Compare field by field, or `memset` first if you must, though assignment is not guaranteed to preserve padding.\n- Struct layout is **implementation-defined**. The C standard guarantees members are in declaration order (no reordering by the compiler) and that there's no padding before the first member, but not much else.\n- For serialization or network protocols, don't send structs directly. Serialize each field explicitly, which also avoids endianness issues.\n- Nested structs are aligned according to their own alignment, so padding can appear inside as well as between them."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "# C Struct Padding\n\n**Why it exists:** CPUs access memory most efficiently (or, on some architectures, only) when a value sits at an address that's a multiple of its size. The compiler inserts unused **padding bytes** so each member is properly **aligned**.\n\n## The rules\n\n1. Each member must start at an offset that's a multiple of its **alignment requirement** (usually equal to its size for primitives: `char`=1, `short`=2, `int`/`float`=4, `double`/pointers=8 on a typical 64-bit system).\n2. The struct's overall **alignment** equals that of its most strictly aligned member.\n3. The struct's total **size** is rounded up to a multiple of its alignment (trailing padding), so that elements in an array all stay aligned.\n\n## Example\n\n```c\nstruct A {\n    char  c;   // offset 0, 1 byte\n               // 3 bytes padding\n    int   i;   // offset 4, 4 bytes\n    char  d;   // offset 8, 1 byte\n               // 3 bytes trailing padding\n};             // sizeof = 12, alignment = 4\n```\n\nMembers total 6 bytes, but the struct is 12.\n\n## Reordering reduces padding\n\n```c\nstruct B {\n    int   i;   // offset 0\n    char  c;   // offset 4\n    char  d;   // offset 5\n               // 2 bytes trailing padding\n};             // sizeof = 8\n```\n\nSame members, 8 bytes instead of 12. A good heuristic: **order members from largest to smallest alignment**.\n\n## A more dramatic case\n\n```c\nstruct C { char a; double b; char c; };  // 24 bytes\nstruct D { double b; char a; char c; };  // 16 bytes\n```\n\n`C`: `a`@0, 7 padding, `b`@8, `c`@16, 7 trailing padding \u2192 24.\n`D`: `b`@0, `a`@8, `c`@9, 6 trailing padding \u2192 16.\n\n## Inspecting it\n\n```c\n#include <stddef.h>\n#include <stdio.h>\n\nprintf(\"size=%zu align=%zu off_i=%zu\\n\",\n       sizeof(struct A), _Alignof(struct A), offsetof(struct A, i));\n```\n\nUse `offsetof` and `sizeof` rather than assuming layout.\n\n## Controlling it\n\n- **Packed structs** remove padding: `__attribute__((packed))` (GCC/Clang) or `#pragma pack(1)` (MSVC/GCC/Clang). Useful for wire formats and file headers, but unaligned access can be slower, and on some architectures it can fault. Taking a pointer to a packed member is also undefined-behavior-prone.\n- **Explicit alignment**: `_Alignas(n)` (C11) or `__attribute__((aligned(n)))`, for example to align to cache lines or SIMD widths.\n\n## Practical notes\n\n- Padding bytes have **indeterminate values**. Don't `memcmp` structs or hash/write them raw (it can also leak uninitialized memory). Compare field by field, or `memset` first if you must, though assignment is not guaranteed to preserve padding.\n- Struct layout is **implementation-defined**. The C standard guarantees members are in declaration order (no reordering by the compiler) and that there's no padding before the first member, but not much else.\n- For serialization or network protocols, don't send structs directly. Serialize each field explicitly, which also avoids endianness issues.\n- Nested structs are aligned according to their own alignment, so padding can appear inside as well as between them."
+  ]
+}

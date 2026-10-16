@@ -1,0 +1,105 @@
+{
+  "id": "A04",
+  "kind": "ambiguous",
+  "prompt": "Here's a 2022 tutorial using `furi_alloc` and `furi_record_open(\"gui\")` without close \u2014 update it for my FAP.",
+  "started": "2026-10-16T18:45:13+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-core",
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-native"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/runtime-ui.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-native"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.2272422,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 2626,
+      "cache_read_input_tokens": 40291,
+      "cache_creation_input_tokens": 20830
+    },
+    "text": "I can't see the tutorial itself. Only text came through, and there's no app source in this workspace (just the `.claude/skills` folder). I haven't edited anything yet. Please paste the code or point me to the file and I'll port it line by line. In the meantime, here are the changes most 2022 examples need, checked against the current official firmware (1.5.1, API 88.2).\n\n## The two things you named\n\n**`furi_alloc` \u2192 `malloc`**\n- `furi_alloc` isn't in today's exported SDK, so a FAP can't call it. Use `malloc`/`free`.\n- `malloc` doesn't return NULL when memory runs out; the device crashes instead. A NULL check won't save you. The real fix is to limit sizes before allocating, and to check that `count \u00d7 size` can't overflow.\n- `furi_alloc` used to zero memory. Set your struct fields explicitly rather than counting on that.\n\n**`furi_record_open(\"gui\")` without a close \u2192 balanced open/close with the named constant**\n- Use `furi_record_open(RECORD_GUI)` instead of the string `\"gui\"`. With a typo in a string name, the app hangs forever on open.\n- Every open needs a matching `furi_record_close(RECORD_GUI)`. Do it last in teardown, after `gui_remove_view_port`. Never free the record yourself; it belongs to the system.\n\n## Other 2022-era names you'll probably hit\n\n| 2022 tutorial | Current |\n|---|---|\n| `osMessageQueueNew` / `Put` / `Get` | `furi_message_queue_alloc` / `_put` / `_get` |\n| `osWaitForever`, `osOK` | `FuriWaitForever`, `FuriStatusOk` |\n| `ValueMutex` / `acquire_mutex` | `FuriMutex` (`furi_mutex_alloc/acquire/release`) |\n| `string_t` (m-string) | `FuriString` |\n| Built into firmware tree | Standalone FAP: `application.fam` with `apptype=FlipperAppType.EXTERNAL`, built with `ufbt` |\n\n## A minimal app with the corrected pattern\n\n```c\n#include <furi.h>\n#include <gui/gui.h>\n#include <input/input.h>\n\ntypedef struct {\n    FuriMessageQueue* input_queue;\n    ViewPort* view_port;\n    Gui* gui;\n} MyApp;\n\nstatic void draw_callback(Canvas* canvas, void* ctx) {\n    UNUSED(ctx);\n    canvas_draw_str(canvas, 2, 12, \"Hello\");\n}\n\nstatic void input_callback(InputEvent* event, void* ctx) {\n    MyApp* app = ctx;\n    // GUI thread: just post, never block\n    furi_message_queue_put(app->input_queue, event, 0);\n}\n\nint32_t my_app_main(void* p) {\n    UNUSED(p);\n    MyApp* app = malloc(sizeof(MyApp)); // was furi_alloc\n\n    app->input_queue = furi_message_queue_alloc(8, sizeof(InputEvent));\n    app->view_port = view_port_alloc();\n    view_port_draw_callback_set(app->view_port, draw_callback, app);\n    view_port_input_callback_set(app->view_port, input_callback, app);\n\n    app->gui = furi_record_open(RECORD_GUI); // was \"gui\"\n    gui_add_view_port(app->gui, app->view_port, GuiLayerFullscreen);\n\n    InputEvent event;\n    bool running = true;\n    while(running) {\n        if(furi_message_queue_get(app->input_queue, &event, 100) == FuriStatusOk) {\n            if(event.type == InputTypeShort && event.key == InputKeyBack) running = false;\n        }\n        view_port_update(app->view_port);\n    }\n\n    // Teardown: detach from GUI, free, close the record last\n    view_port_enabled_set(app->view_port, false);\n    gui_remove_view_port(app->gui, app->view_port);\n    view_port_free(app->view_port);\n    furi_message_queue_free(app->input_queue);\n    furi_record_close(RECORD_GUI); // was missing\n    free(app);\n    return 0;\n}\n```\n\nFor a single custom screen like this, a ViewPort is enough. If the tutorial has several screens, a ViewDispatcher fits better, but you don't need a SceneManager.\n\n## What's been checked\n\n- **API names:** checked against the reference notes for the pinned firmware (`furi_alloc` not exported; `malloc` behavior; how records open and close).\n- **Not compiled or tested:** I haven't built this skeleton, and nothing has run on a device.\n\nSend the tutorial code along with your firmware version and I'll port the whole thing. I'll also check every call against that firmware's export list, since timers and storage calls in old tutorials often have their own problems."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A04/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A04/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A04/ws/.claude/skills/flipper-core/references/runtime-ui.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't see the tutorial itself. Only text came through, and there's no app source in this workspace (just the `.claude/skills` folder). I haven't edited anything yet. Please paste the code or point me to the file and I'll port it line by line. In the meantime, here are the changes most 2022 examples need, checked against the current official firmware (1.5.1, API 88.2).\n\n## The two things you named\n\n**`furi_alloc` \u2192 `malloc`**\n- `furi_alloc` isn't in today's exported SDK, so a FAP can't call it. Use `malloc`/`free`.\n- `malloc` doesn't return NULL when memory runs out; the device crashes instead. A NULL check won't save you. The real fix is to limit sizes before allocating, and to check that `count \u00d7 size` can't overflow.\n- `furi_alloc` used to zero memory. Set your struct fields explicitly rather than counting on that.\n\n**`furi_record_open(\"gui\")` without a close \u2192 balanced open/close with the named constant**\n- Use `furi_record_open(RECORD_GUI)` instead of the string `\"gui\"`. With a typo in a string name, the app hangs forever on open.\n- Every open needs a matching `furi_record_close(RECORD_GUI)`. Do it last in teardown, after `gui_remove_view_port`. Never free the record yourself; it belongs to the system.\n\n## Other 2022-era names you'll probably hit\n\n| 2022 tutorial | Current |\n|---|---|\n| `osMessageQueueNew` / `Put` / `Get` | `furi_message_queue_alloc` / `_put` / `_get` |\n| `osWaitForever`, `osOK` | `FuriWaitForever`, `FuriStatusOk` |\n| `ValueMutex` / `acquire_mutex` | `FuriMutex` (`furi_mutex_alloc/acquire/release`) |\n| `string_t` (m-string) | `FuriString` |\n| Built into firmware tree | Standalone FAP: `application.fam` with `apptype=FlipperAppType.EXTERNAL`, built with `ufbt` |\n\n## A minimal app with the corrected pattern\n\n```c\n#include <furi.h>\n#include <gui/gui.h>\n#include <input/input.h>\n\ntypedef struct {\n    FuriMessageQueue* input_queue;\n    ViewPort* view_port;\n    Gui* gui;\n} MyApp;\n\nstatic void draw_callback(Canvas* canvas, void* ctx) {\n    UNUSED(ctx);\n    canvas_draw_str(canvas, 2, 12, \"Hello\");\n}\n\nstatic void input_callback(InputEvent* event, void* ctx) {\n    MyApp* app = ctx;\n    // GUI thread: just post, never block\n    furi_message_queue_put(app->input_queue, event, 0);\n}\n\nint32_t my_app_main(void* p) {\n    UNUSED(p);\n    MyApp* app = malloc(sizeof(MyApp)); // was furi_alloc\n\n    app->input_queue = furi_message_queue_alloc(8, sizeof(InputEvent));\n    app->view_port = view_port_alloc();\n    view_port_draw_callback_set(app->view_port, draw_callback, app);\n    view_port_input_callback_set(app->view_port, input_callback, app);\n\n    app->gui = furi_record_open(RECORD_GUI); // was \"gui\"\n    gui_add_view_port(app->gui, app->view_port, GuiLayerFullscreen);\n\n    InputEvent event;\n    bool running = true;\n    while(running) {\n        if(furi_message_queue_get(app->input_queue, &event, 100) == FuriStatusOk) {\n            if(event.type == InputTypeShort && event.key == InputKeyBack) running = false;\n        }\n        view_port_update(app->view_port);\n    }\n\n    // Teardown: detach from GUI, free, close the record last\n    view_port_enabled_set(app->view_port, false);\n    gui_remove_view_port(app->gui, app->view_port);\n    view_port_free(app->view_port);\n    furi_message_queue_free(app->input_queue);\n    furi_record_close(RECORD_GUI); // was missing\n    free(app);\n    return 0;\n}\n```\n\nFor a single custom screen like this, a ViewPort is enough. If the tutorial has several screens, a ViewDispatcher fits better, but you don't need a SceneManager.\n\n## What's been checked\n\n- **API names:** checked against the reference notes for the pinned firmware (`furi_alloc` not exported; `malloc` behavior; how records open and close).\n- **Not compiled or tested:** I haven't built this skeleton, and nothing has run on a device.\n\nSend the tutorial code along with your firmware version and I'll port the whole thing. I'll also check every call against that firmware's export list, since timers and storage calls in old tutorials often have their own problems."
+  ]
+}

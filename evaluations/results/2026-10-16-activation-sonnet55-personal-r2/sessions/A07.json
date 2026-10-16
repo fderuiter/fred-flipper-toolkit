@@ -1,0 +1,94 @@
+{
+  "id": "A07",
+  "kind": "ambiguous",
+  "prompt": "Make my Flipper read every NFC card and emulate any of them; NFC is fully supported, right?",
+  "started": "2026-10-16T18:43:10+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/assumptions.md",
+    "flipper-core/references/capability-map.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.07668939999999999,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1450,
+      "cache_read_input_tokens": 40134,
+      "cache_creation_input_tokens": 14541
+    },
+    "text": "No, NFC isn't fully supported. The Flipper can't read every card and can't emulate every card you read. I couldn't open the skill's reference files (engineering rules, evidence policy, capability map), because reading outside the working directory was denied and there was no way to approve it. What follows is from my general knowledge of stock official firmware, not checked against the skill's pinned sources or any API table.\n\n**Reading**\n- **Low-frequency cards (125 kHz RFID, such as EM4100 and HID Prox):** these use a separate RFID subsystem, not NFC. They read and emulate well.\n- **High-frequency cards (13.56 MHz):** the Flipper handles ISO 14443-A (including NTAG/Ultralight and Mifare Classic), ISO 14443-B, FeliCa and ISO 15693 (NFC-V) to varying degrees.\n- **Mifare Classic:** the Flipper recovers keys from its dictionary or by nested attacks run with a phone or reader. Cards with unknown, hardened keys may not be fully readable.\n- **Mifare DESFire:** the Flipper reads the card's structure but can't get at data protected by unknown keys.\n- **Bank cards (EMV):** it reads only limited public data, such as the card number and expiry date.\n\n**Emulating**\n- **Works well:** UID-only cards, NTAG/Ultralight and fully read Mifare Classic dumps. Many simple access cards fall into these groups.\n- **Doesn't work:** anything that depends on a secret key or a cryptographic exchange, such as DESFire, secure-element cards and EMV payment cards. The Flipper can't copy a secret it can't read.\n- **Also doesn't work:** cards where the reader checks for a genuine chip, or which UID is allowed. Readers that do this will reject the emulated card.\n\n**Your goal and the rules**\n- **\"Every card, emulate any\":** not achievable, for the reasons above. What you can do is read and emulate the card types the Flipper supports.\n- **Legitimacy:** use it only on cards you own or have permission to test. Cloning access or payment cards you don't own is illegal in many places.\n\nIf you tell me what cards you want to use, I can give you a per-card verdict. Your firmware version also matters, because some firmware forks add card support that official firmware lacks. If you'd like me to check this against the skill's pinned sources, grant read access to that skill directory and I'll redo it."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core",
+        "args": "Feasibility: can Flipper Zero read every NFC card and emulate any of them? Is NFC fully supported?"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A07/config/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A07/config/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A07/config/skills/flipper-core/references/assumptions.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A07/config/skills/flipper-core/references/capability-map.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "No, NFC isn't fully supported. The Flipper can't read every card and can't emulate every card you read. I couldn't open the skill's reference files (engineering rules, evidence policy, capability map), because reading outside the working directory was denied and there was no way to approve it. What follows is from my general knowledge of stock official firmware, not checked against the skill's pinned sources or any API table.\n\n**Reading**\n- **Low-frequency cards (125 kHz RFID, such as EM4100 and HID Prox):** these use a separate RFID subsystem, not NFC. They read and emulate well.\n- **High-frequency cards (13.56 MHz):** the Flipper handles ISO 14443-A (including NTAG/Ultralight and Mifare Classic), ISO 14443-B, FeliCa and ISO 15693 (NFC-V) to varying degrees.\n- **Mifare Classic:** the Flipper recovers keys from its dictionary or by nested attacks run with a phone or reader. Cards with unknown, hardened keys may not be fully readable.\n- **Mifare DESFire:** the Flipper reads the card's structure but can't get at data protected by unknown keys.\n- **Bank cards (EMV):** it reads only limited public data, such as the card number and expiry date.\n\n**Emulating**\n- **Works well:** UID-only cards, NTAG/Ultralight and fully read Mifare Classic dumps. Many simple access cards fall into these groups.\n- **Doesn't work:** anything that depends on a secret key or a cryptographic exchange, such as DESFire, secure-element cards and EMV payment cards. The Flipper can't copy a secret it can't read.\n- **Also doesn't work:** cards where the reader checks for a genuine chip, or which UID is allowed. Readers that do this will reject the emulated card.\n\n**Your goal and the rules**\n- **\"Every card, emulate any\":** not achievable, for the reasons above. What you can do is read and emulate the card types the Flipper supports.\n- **Legitimacy:** use it only on cards you own or have permission to test. Cloning access or payment cards you don't own is illegal in many places.\n\nIf you tell me what cards you want to use, I can give you a per-card verdict. Your firmware version also matters, because some firmware forks add card support that official firmware lacks. If you'd like me to check this against the skill's pinned sources, grant read access to that skill directory and I'll redo it."
+  ]
+}

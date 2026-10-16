@@ -1,0 +1,98 @@
+{
+  "id": "P01",
+  "kind": "positive",
+  "prompt": "Can a stock Flipper Zero on official firmware act as a remote for my Bluetooth LE ceiling fan? It needs to connect to the fan and write a characteristic.",
+  "started": "2026-10-16T18:44:36+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-native"
+  ],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/capability-map.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.2206282,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1628,
+      "cache_read_input_tokens": 63661,
+      "cache_creation_input_tokens": 21913
+    },
+    "text": "**No. A stock Flipper Zero on official firmware can't connect to your fan and write a characteristic.** Its Bluetooth is set up so that other devices (phones, the Flipper app) connect to it. It can't start a connection to a device like your fan.\n\n**What I checked** (official firmware 1.5.1, commit `9e810dc`, API 88.2):\n- `targets/f7/ble_glue/gap.c` (`gap_init()`) starts the Bluetooth stack in peripheral mode, meaning it waits for others to connect (claim C-BLE-001).\n- `targets/f7/api_symbols.csv`, the list of functions apps are allowed to call, has nothing for scanning and connecting to another device, finding its services, or reading and writing its characteristics. The Bluetooth functions apps can use are only for publishing the Flipper's own services (claim C-BLE-002).\n\nSo no app or script can do this on stock firmware. Running the Flipper as its own Bluetooth server or beacon doesn't help, because the fan also waits for something to connect to it.\n\nThe chip itself might be able to do it, but that would mean changing the firmware or the radio stack. I haven't looked into that, and it's much more work.\n\n**Options that would work:**\n1. **Flipper plus a small add-on board:** An ESP32-type board that can act as a Bluetooth client does the connect-and-write. The Flipper sends it commands over a serial connection (UART) and gives you the buttons and screen. Check first that your exact chip supports the client role and runs at 3.3 V.\n2. **A phone or computer:** If you don't need the Flipper in the loop, a phone or computer can do the Bluetooth part. On a computer, a short Python script using `bleak` connects and writes the characteristic directly.\n3. **Check for a radio or infrared remote:** Many Bluetooth ceiling fans also ship with a 315/433 MHz or infrared handheld remote. If yours has one, the Flipper's built-in Sub-GHz or Infrared apps may be able to learn and resend its buttons with no extra hardware. This depends on your model and the remote's signal, so it needs testing.\n\n**Still unknown:**\n- Whether the fan needs pairing or bonding first.\n- Which service and characteristic it uses, and what bytes it expects. You can find these by inspecting the fan with a phone app like nRF Connect.\n- Whether it has a separate radio or infrared remote at all.\n\nIf you tell me which route you want, I can sketch the Flipper app and its serial link to an add-on board, or a Python script for a computer."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core",
+        "args": "Can a stock Flipper Zero on official firmware act as a BLE central to connect to a Bluetooth LE ceiling fan and write a GATT characteristic?"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P01/ws/.claude/skills/flipper-core/references/capability-map.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P01/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P01/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "C-BLE-00[12]",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P01/ws/.claude/skills/flipper-core/references/sources.json",
+        "output_mode": "content",
+        "-A": 12
+      }
+    }
+  ],
+  "assistant_text": [
+    "**No. A stock Flipper Zero on official firmware can't connect to your fan and write a characteristic.** Its Bluetooth is set up so that other devices (phones, the Flipper app) connect to it. It can't start a connection to a device like your fan.\n\n**What I checked** (official firmware 1.5.1, commit `9e810dc`, API 88.2):\n- `targets/f7/ble_glue/gap.c` (`gap_init()`) starts the Bluetooth stack in peripheral mode, meaning it waits for others to connect (claim C-BLE-001).\n- `targets/f7/api_symbols.csv`, the list of functions apps are allowed to call, has nothing for scanning and connecting to another device, finding its services, or reading and writing its characteristics. The Bluetooth functions apps can use are only for publishing the Flipper's own services (claim C-BLE-002).\n\nSo no app or script can do this on stock firmware. Running the Flipper as its own Bluetooth server or beacon doesn't help, because the fan also waits for something to connect to it.\n\nThe chip itself might be able to do it, but that would mean changing the firmware or the radio stack. I haven't looked into that, and it's much more work.\n\n**Options that would work:**\n1. **Flipper plus a small add-on board:** An ESP32-type board that can act as a Bluetooth client does the connect-and-write. The Flipper sends it commands over a serial connection (UART) and gives you the buttons and screen. Check first that your exact chip supports the client role and runs at 3.3 V.\n2. **A phone or computer:** If you don't need the Flipper in the loop, a phone or computer can do the Bluetooth part. On a computer, a short Python script using `bleak` connects and writes the characteristic directly.\n3. **Check for a radio or infrared remote:** Many Bluetooth ceiling fans also ship with a 315/433 MHz or infrared handheld remote. If yours has one, the Flipper's built-in Sub-GHz or Infrared apps may be able to learn and resend its buttons with no extra hardware. This depends on your model and the remote's signal, so it needs testing.\n\n**Still unknown:**\n- Whether the fan needs pairing or bonding first.\n- Which service and characteristic it uses, and what bytes it expects. You can find these by inspecting the fan with a phone app like nRF Connect.\n- Whether it has a separate radio or infrared remote at all.\n\nIf you tell me which route you want, I can sketch the Flipper app and its serial link to an add-on board, or a Python script for a computer."
+  ]
+}

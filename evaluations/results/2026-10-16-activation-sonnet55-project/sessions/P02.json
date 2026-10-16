@@ -1,0 +1,108 @@
+{
+  "id": "P02",
+  "kind": "positive",
+  "prompt": "Should I write my GPIO blinker as a JavaScript script or a native FAP? It needs to toggle a pin every 10 ms.",
+  "started": "2026-10-16T18:37:11+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/capability-map.md",
+    "flipper-core/references/compatibility.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.12118609999999999,
+    "num_turns": 9,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1868,
+      "cache_read_input_tokens": 65301,
+      "cache_creation_input_tokens": 23990
+    },
+    "text": "**Write it as a native FAP.** A 10 ms toggle is a 50 Hz square wave with 10 ms between edges. A JS script is the wrong tool for that.\n\n**Why not JS**\n- Flipper JS runs on a modified mJS interpreter plus firmware modules, and it's not Node or a browser [C-JS-001]. It's meant for quick automation, not timing-sensitive work.\n- A script's delay-and-toggle loop goes through the interpreter and the module bindings, and it shares the CPU with the firmware. I haven't measured the jitter. The pinned sources don't state any timing guarantee for JS, so I'd treat it as unproven for a steady 10 ms edge. This is an inference, and I haven't run it.\n\n**Why a FAP works**\n- A FAP can use the public `furi_hal_gpio_*` calls. Acquire the pin through the highest supported API and don't touch registers directly [C-GPIO-001].\n- I haven't checked these against the pinned `api_symbols.csv`, because the baseline files aren't in your workspace. Check that every function you call is exported before relying on it [C-FAP-003].\n\n**Timing pattern**\n- For a blinker, a worker thread that waits on `furi_delay_ms(10)` or on absolute ticks is fine. Using absolute ticks keeps drift from accumulating. The FreeRTOS tick is 1 ms, so expect roughly 1 ms of jitter.\n- A Furi timer callback also works if it only toggles the pin. Callbacks must not block, and you must not call `furi_timer_free` from one [C-TMR-002].\n- At teardown, `furi_timer_stop` doesn't wait for a callback that's already running [C-TMR-001]. Free the timer before releasing the pin.\n- Keep logging out of the toggle path.\n- If you need edges tighter than about 1 ms, or a fixed duty cycle with no jitter, use a hardware PWM output (`furi_hal_pwm_start`) rather than a software toggle [C-BUS-001]. Whether your pin has PWM is unverified.\n\n**Things to check before running**\n- Which pin you're using. Voltage tolerance for external circuits isn't established, so design for 3.3 V and keep any load within the pin's current limits [C-GPIO-001].\n- Driving a GPIO output counts as an action that needs your explicit go-ahead. I haven't run anything.\n- Restore the pin to its prior state on exit.\n\n**Unknowns**\n- Your firmware lineage and version, and your SDK. My research baseline is official 1.5.1 (f7, API 88.2) [C-BASE-001] [C-BASE-002]. If you run Momentum or Unleashed, those are separate lineages that need their own inspection [C-FORK-001].\n- Nothing here is compiled or device-tested. It's a feasibility-level recommendation.\n\nIf you tell me the pin and firmware, I can scaffold the FAP with the flipper-native skill and a worker-thread or timer design."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P02/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P02/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P02/ws/.claude/skills/flipper-core/references/capability-map.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P02/ws/.claude/skills/flipper-core/references/compatibility.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.{fam,c,js,json}",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P02/ws"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "C-JS-001|C-GPIO-001|C-TMR-001",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P02/ws/.claude/skills/flipper-core/references/sources.json",
+        "output_mode": "content",
+        "-A": 12
+      }
+    }
+  ],
+  "assistant_text": [
+    "**Write it as a native FAP.** A 10 ms toggle is a 50 Hz square wave with 10 ms between edges. A JS script is the wrong tool for that.\n\n**Why not JS**\n- Flipper JS runs on a modified mJS interpreter plus firmware modules, and it's not Node or a browser [C-JS-001]. It's meant for quick automation, not timing-sensitive work.\n- A script's delay-and-toggle loop goes through the interpreter and the module bindings, and it shares the CPU with the firmware. I haven't measured the jitter. The pinned sources don't state any timing guarantee for JS, so I'd treat it as unproven for a steady 10 ms edge. This is an inference, and I haven't run it.\n\n**Why a FAP works**\n- A FAP can use the public `furi_hal_gpio_*` calls. Acquire the pin through the highest supported API and don't touch registers directly [C-GPIO-001].\n- I haven't checked these against the pinned `api_symbols.csv`, because the baseline files aren't in your workspace. Check that every function you call is exported before relying on it [C-FAP-003].\n\n**Timing pattern**\n- For a blinker, a worker thread that waits on `furi_delay_ms(10)` or on absolute ticks is fine. Using absolute ticks keeps drift from accumulating. The FreeRTOS tick is 1 ms, so expect roughly 1 ms of jitter.\n- A Furi timer callback also works if it only toggles the pin. Callbacks must not block, and you must not call `furi_timer_free` from one [C-TMR-002].\n- At teardown, `furi_timer_stop` doesn't wait for a callback that's already running [C-TMR-001]. Free the timer before releasing the pin.\n- Keep logging out of the toggle path.\n- If you need edges tighter than about 1 ms, or a fixed duty cycle with no jitter, use a hardware PWM output (`furi_hal_pwm_start`) rather than a software toggle [C-BUS-001]. Whether your pin has PWM is unverified.\n\n**Things to check before running**\n- Which pin you're using. Voltage tolerance for external circuits isn't established, so design for 3.3 V and keep any load within the pin's current limits [C-GPIO-001].\n- Driving a GPIO output counts as an action that needs your explicit go-ahead. I haven't run anything.\n- Restore the pin to its prior state on exit.\n\n**Unknowns**\n- Your firmware lineage and version, and your SDK. My research baseline is official 1.5.1 (f7, API 88.2) [C-BASE-001] [C-BASE-002]. If you run Momentum or Unleashed, those are separate lineages that need their own inspection [C-FORK-001].\n- Nothing here is compiled or device-tested. It's a feasibility-level recommendation.\n\nIf you tell me the pin and firmware, I can scaffold the FAP with the flipper-native skill and a worker-thread or timer design."
+  ]
+}

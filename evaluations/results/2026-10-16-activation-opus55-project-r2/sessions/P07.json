@@ -1,0 +1,112 @@
+{
+  "id": "P07",
+  "kind": "positive",
+  "prompt": "Pin my uFBT build to the 1.5.1 SDK and tell me exactly what the build does and doesn't prove.",
+  "started": "2026-10-16T18:44:36+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/build-debug-release.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.24876580000000004,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 2295,
+      "cache_read_input_tokens": 64209,
+      "cache_creation_input_tokens": 23749
+    },
+    "text": "I couldn't pin or run anything yet. The working directory (`/tmp/fred-eval/.../P07/ws`) has only the `.claude/skills/` files. There's no `application.fam`, no app source and no existing `.ufbt*` state, and I have no shell in this session. So the build is **`blocked`**, not `pass`: there is no project to build and no toolchain to build with.\n\n## How to pin it\n\nDo this from your app directory, the one containing `application.fam`. Two points first:\n\n- **Read `application.fam` and any build hooks before building.** The manifest is Python that the build runs.\n- **The download only happens if you approve it.** The first `ufbt update` fetches the SDK and toolchain from the internet. Without a pin, uFBT bootstraps from the moving `release` channel.\n\n```bash\n# 1. Keep the SDK in a project-local folder so your global ~/.ufbt is untouched\nexport UFBT_HOME=\"$PWD/.ufbt-1.5.1\"\n\n# 2. Download the exact SDK archive and check its hash before using it\ncurl -fLo flipper-z-f7-sdk-1.5.1.zip \\\n  https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip\necho \"dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe  flipper-z-f7-sdk-1.5.1.zip\" | sha256sum -c -\n\n# 3. Install that file (only if step 2 printed OK)\nufbt update --local=flipper-z-f7-sdk-1.5.1.zip\n\n# 4. Delete any old dist/ so nothing stale gets reported as fresh, then build\nrm -rf dist && ufbt\nsha256sum dist/*.fap\n```\n\nUsing `--local` with a hash-checked file is stricter than `ufbt update --branch=1.5.1`, which works too but trusts whatever the server returns. One caveat: the URL and hash come from Flipper's live update index (checked 2026-10-16). Nobody has hashed the actual downloaded bytes yet, which is what step 2 does.\n\nWrite down these values so the result means something: uFBT version, SDK URL and hash, API version (it should be **88.2**), firmware commit (`9e810dc399e027e48ce07751df72168abbb19065`), compiler version, your app's commit, and the `.fap` hash.\n\n## What a clean build proves\n\n- Your C code compiles and links against the 1.5.1 f7 SDK headers and libraries.\n- Every function it calls is exported in the API 88.2 table, so the loader shouldn't reject it for a missing symbol on 1.5.1.\n- The manifest is accepted by the build.\n- `dist/` contains a `.fap` with a known hash, built from known inputs.\n\n## What it doesn't prove\n\n- **That the app works on a Flipper.** It says nothing about drawing, input handling, exit and cleanup, timers and worker threads, storage I/O, memory use or crashes. Only running on a real device shows those.\n- **Logic correctness.** That needs host tests of the extracted logic, and there is no `ufbt test`.\n- **Radio, GPIO, IR, NFC or electrical behaviour.**\n- **Compatibility with other firmware.** It covers official 1.5.1 / API 88.2 only. Momentum, Unleashed and later official versions each need their own build and device check.\n- **Reproducibility.** Getting the same `.fap` hash every time requires comparing two clean builds.\n- **Catalog acceptance.** The catalog has its own manifest, screenshot and license checks.\n- **Code quality.** `ufbt lint` (if you run it) only checks formatting and naming. It is not static analysis.\n\n## Status right now\n\n| Check | Status | Reason |\n|---|---|---|\n| SDK pinned | blocked | No project here; the download needs your go-ahead |\n| SDK archive hash checked | not-run | Not downloaded yet |\n| Compiled | blocked | No `application.fam` or toolchain |\n| Host tests | not-run | No source |\n| Behaviour on a device | not-run | Needs hardware, and you'd have to approve that separately |\n\nTo have me run it, open the session in the app's repo and confirm the SDK and toolchain download. I'll then run the steps above and fill in a validation report with the exact commands, exit codes and hashes."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify",
+        "args": "Pin uFBT build to SDK 1.5.1 and explain what the build does and doesn't prove."
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P07/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P07/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P07/ws/.claude/skills/flipper-core/references/build-debug-release.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "C-BASE-00[1-4]|C-BUILD-001|C-TEST-001",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P07/ws/.claude/skills/flipper-core/references/sources.json",
+        "output_mode": "content",
+        "-A": 12
+      }
+    }
+  ],
+  "assistant_text": [
+    "I couldn't pin or run anything yet. The working directory (`/tmp/fred-eval/.../P07/ws`) has only the `.claude/skills/` files. There's no `application.fam`, no app source and no existing `.ufbt*` state, and I have no shell in this session. So the build is **`blocked`**, not `pass`: there is no project to build and no toolchain to build with.\n\n## How to pin it\n\nDo this from your app directory, the one containing `application.fam`. Two points first:\n\n- **Read `application.fam` and any build hooks before building.** The manifest is Python that the build runs.\n- **The download only happens if you approve it.** The first `ufbt update` fetches the SDK and toolchain from the internet. Without a pin, uFBT bootstraps from the moving `release` channel.\n\n```bash\n# 1. Keep the SDK in a project-local folder so your global ~/.ufbt is untouched\nexport UFBT_HOME=\"$PWD/.ufbt-1.5.1\"\n\n# 2. Download the exact SDK archive and check its hash before using it\ncurl -fLo flipper-z-f7-sdk-1.5.1.zip \\\n  https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip\necho \"dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe  flipper-z-f7-sdk-1.5.1.zip\" | sha256sum -c -\n\n# 3. Install that file (only if step 2 printed OK)\nufbt update --local=flipper-z-f7-sdk-1.5.1.zip\n\n# 4. Delete any old dist/ so nothing stale gets reported as fresh, then build\nrm -rf dist && ufbt\nsha256sum dist/*.fap\n```\n\nUsing `--local` with a hash-checked file is stricter than `ufbt update --branch=1.5.1`, which works too but trusts whatever the server returns. One caveat: the URL and hash come from Flipper's live update index (checked 2026-10-16). Nobody has hashed the actual downloaded bytes yet, which is what step 2 does.\n\nWrite down these values so the result means something: uFBT version, SDK URL and hash, API version (it should be **88.2**), firmware commit (`9e810dc399e027e48ce07751df72168abbb19065`), compiler version, your app's commit, and the `.fap` hash.\n\n## What a clean build proves\n\n- Your C code compiles and links against the 1.5.1 f7 SDK headers and libraries.\n- Every function it calls is exported in the API 88.2 table, so the loader shouldn't reject it for a missing symbol on 1.5.1.\n- The manifest is accepted by the build.\n- `dist/` contains a `.fap` with a known hash, built from known inputs.\n\n## What it doesn't prove\n\n- **That the app works on a Flipper.** It says nothing about drawing, input handling, exit and cleanup, timers and worker threads, storage I/O, memory use or crashes. Only running on a real device shows those.\n- **Logic correctness.** That needs host tests of the extracted logic, and there is no `ufbt test`.\n- **Radio, GPIO, IR, NFC or electrical behaviour.**\n- **Compatibility with other firmware.** It covers official 1.5.1 / API 88.2 only. Momentum, Unleashed and later official versions each need their own build and device check.\n- **Reproducibility.** Getting the same `.fap` hash every time requires comparing two clean builds.\n- **Catalog acceptance.** The catalog has its own manifest, screenshot and license checks.\n- **Code quality.** `ufbt lint` (if you run it) only checks formatting and naming. It is not static analysis.\n\n## Status right now\n\n| Check | Status | Reason |\n|---|---|---|\n| SDK pinned | blocked | No project here; the download needs your go-ahead |\n| SDK archive hash checked | not-run | Not downloaded yet |\n| Compiled | blocked | No `application.fam` or toolchain |\n| Host tests | not-run | No source |\n| Behaviour on a device | not-run | Needs hardware, and you'd have to approve that separately |\n\nTo have me run it, open the session in the app's repo and confirm the SDK and toolchain download. I'll then run the steps above and fill in a validation report with the exact commands, exit codes and hashes."
+  ]
+}

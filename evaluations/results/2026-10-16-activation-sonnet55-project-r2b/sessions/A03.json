@@ -1,0 +1,104 @@
+{
+  "id": "A03",
+  "kind": "ambiguous",
+  "prompt": "This Momentum firmware example uses a momentum_* settings API; make it work on my official-firmware Flipper.",
+  "started": "2026-10-16T18:44:02+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [
+    "flipper-native",
+    "flipper-verify"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/compatibility.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.10010549999999999,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1423,
+      "cache_read_input_tokens": 40595,
+      "cache_creation_input_tokens": 20451
+    },
+    "text": "I haven't changed anything yet, because the example's source isn't in this workspace. The directory has only the `.claude/skills/` files and no `.c`, `application.fam` or `.h` files. I need the code to say what to change, and I won't guess at API names.\n\n**What I can say from the pinned references:**\n- Momentum is its own firmware lineage, not a superset of official firmware. Its API table, extensions and toolchain have to be checked against official firmware separately (C-FORK-001).\n- The checked baseline for official firmware is 1.5.1, f7, API 88.2 (C-BASE-001, C-BASE-002). I haven't confirmed that your Flipper runs that version.\n- I found no evidence in the pinned sources that official firmware has any `momentum_*` settings API. My working assumption is that it doesn't, so a build against the official SDK would fail on those symbols, or fail to load. I haven't inspected Momentum's API table, so this is unconfirmed.\n- Official firmware gives an app no shared settings store to replace it with. The usual fix is to store the app's own settings in a versioned file on the SD card, under `/ext/apps_data/<app>/`, using the Storage API. The file needs validated defaults and a policy for newer versions (engineering rules \u00a77).\n\n**What I need from you:**\n1. The example's source, either pasted or placed in this working directory.\n2. Your official firmware version, from the Flipper's Settings, About screen. If it isn't 1.5.1, tell me which version you have.\n3. Whether you build with `ufbt`, and which SDK version it uses.\n\n**What I'll do once I have the code:**\n1. List every `momentum_*` call and any other Momentum-only includes.\n2. Check each one against the official 1.5.1 exports.\n3. Replace the settings calls with a small settings module backed by a versioned file on the SD card.\n4. Mark anything I can't confirm as unresolved. Without a device, I can report what I checked in the source and what compiled. I can't report that it works on your Flipper."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/A03/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/A03/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/A03/ws/.claude/skills/flipper-core/references/compatibility.md"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "momentum",
+        "-i": true,
+        "output_mode": "content",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/A03/ws/.claude/skills/flipper-core/references"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I haven't changed anything yet, because the example's source isn't in this workspace. The directory has only the `.claude/skills/` files and no `.c`, `application.fam` or `.h` files. I need the code to say what to change, and I won't guess at API names.\n\n**What I can say from the pinned references:**\n- Momentum is its own firmware lineage, not a superset of official firmware. Its API table, extensions and toolchain have to be checked against official firmware separately (C-FORK-001).\n- The checked baseline for official firmware is 1.5.1, f7, API 88.2 (C-BASE-001, C-BASE-002). I haven't confirmed that your Flipper runs that version.\n- I found no evidence in the pinned sources that official firmware has any `momentum_*` settings API. My working assumption is that it doesn't, so a build against the official SDK would fail on those symbols, or fail to load. I haven't inspected Momentum's API table, so this is unconfirmed.\n- Official firmware gives an app no shared settings store to replace it with. The usual fix is to store the app's own settings in a versioned file on the SD card, under `/ext/apps_data/<app>/`, using the Storage API. The file needs validated defaults and a policy for newer versions (engineering rules \u00a77).\n\n**What I need from you:**\n1. The example's source, either pasted or placed in this working directory.\n2. Your official firmware version, from the Flipper's Settings, About screen. If it isn't 1.5.1, tell me which version you have.\n3. Whether you build with `ufbt`, and which SDK version it uses.\n\n**What I'll do once I have the code:**\n1. List every `momentum_*` call and any other Momentum-only includes.\n2. Check each one against the official 1.5.1 exports.\n3. Replace the settings calls with a small settings module backed by a versioned file on the SD card.\n4. Mark anything I can't confirm as unresolved. Without a device, I can report what I checked in the source and what compiled. I can't report that it works on your Flipper."
+  ]
+}

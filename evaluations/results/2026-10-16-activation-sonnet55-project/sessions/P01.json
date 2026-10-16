@@ -1,0 +1,94 @@
+{
+  "id": "P01",
+  "kind": "positive",
+  "prompt": "Can a stock Flipper Zero on official firmware act as a remote for my Bluetooth LE ceiling fan? It needs to connect to the fan and write a characteristic.",
+  "started": "2026-10-16T18:37:11+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-native"
+  ],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/capability-map.md",
+    "flipper-core/references/compatibility.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1079397,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1335,
+      "cache_read_input_tokens": 38617,
+      "cache_creation_input_tokens": 22679
+    },
+    "text": "**No. A stock Flipper Zero on official firmware can't be a remote for a BLE ceiling fan on its own.** This is a researched finding, not something I tested on a device.\n\n**Why**\n- A BLE ceiling fan is almost certainly a peripheral (a GATT server). Controlling it means the Flipper has to act as the central. That means scanning, connecting, discovering services, and writing a characteristic. It usually also means pairing and reconnecting.\n- On official firmware 1.5.1 (f7, API 88.2), the Bluetooth stack is configured as a peripheral only. `gap_init` sets `GAP_PERIPHERAL_ROLE` [C-BLE-001].\n- The calls you'd need aren't exported to external apps. These include `aci_gap_create_connection`, `aci_gatt_disc_*`, `aci_gatt_read_char_*` and `aci_gatt_write_char_*` [C-BLE-002]. The public BLE API covers only server-side services and characteristics.\n- The radio chip may be able to do central, but the firmware doesn't expose it. Changing that would mean modifying the firmware or the radio coprocessor, which is a separate project.\n- The Flipper's JavaScript runtime sits on the same stack, so it doesn't get around this.\n\n**Options that work**\n1. **A companion BLE chip on the Flipper's GPIO header.** Use an ESP32 (a chip with BLE central support) wired to the Flipper over UART. The Flipper provides the UI and a small framed command protocol. The ESP32 does the scan, connect and characteristic write. Check that the chip supports central/client and runs at 3.3 V before you wire it.\n2. **A phone or computer.** If that's acceptable, it can do the BLE work directly.\n3. **Check whether the fan also has an RF or IR remote.** Many fans do. The Flipper's Sub-GHz and Infrared support can replay those signals natively, with no BLE needed. Many BLE fans ship with a 433 MHz or IR remote, so this is worth checking first.\n\n**Still unknown**\n- The fan's model and protocol. I'd need to know whether it uses a plain characteristic write or needs pairing or encryption.\n- Whether you're open to adding hardware.\n- Whether the fan is yours to control. I'm assuming it is.\n\nIf you tell me the fan model, I can look at whether option 3 applies. If you're open to extra hardware, I can sketch the Flipper-to-ESP32 protocol for option 1."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P01/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P01/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P01/ws/.claude/skills/flipper-core/references/capability-map.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P01/ws/.claude/skills/flipper-core/references/compatibility.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "**No. A stock Flipper Zero on official firmware can't be a remote for a BLE ceiling fan on its own.** This is a researched finding, not something I tested on a device.\n\n**Why**\n- A BLE ceiling fan is almost certainly a peripheral (a GATT server). Controlling it means the Flipper has to act as the central. That means scanning, connecting, discovering services, and writing a characteristic. It usually also means pairing and reconnecting.\n- On official firmware 1.5.1 (f7, API 88.2), the Bluetooth stack is configured as a peripheral only. `gap_init` sets `GAP_PERIPHERAL_ROLE` [C-BLE-001].\n- The calls you'd need aren't exported to external apps. These include `aci_gap_create_connection`, `aci_gatt_disc_*`, `aci_gatt_read_char_*` and `aci_gatt_write_char_*` [C-BLE-002]. The public BLE API covers only server-side services and characteristics.\n- The radio chip may be able to do central, but the firmware doesn't expose it. Changing that would mean modifying the firmware or the radio coprocessor, which is a separate project.\n- The Flipper's JavaScript runtime sits on the same stack, so it doesn't get around this.\n\n**Options that work**\n1. **A companion BLE chip on the Flipper's GPIO header.** Use an ESP32 (a chip with BLE central support) wired to the Flipper over UART. The Flipper provides the UI and a small framed command protocol. The ESP32 does the scan, connect and characteristic write. Check that the chip supports central/client and runs at 3.3 V before you wire it.\n2. **A phone or computer.** If that's acceptable, it can do the BLE work directly.\n3. **Check whether the fan also has an RF or IR remote.** Many fans do. The Flipper's Sub-GHz and Infrared support can replay those signals natively, with no BLE needed. Many BLE fans ship with a 433 MHz or IR remote, so this is worth checking first.\n\n**Still unknown**\n- The fan's model and protocol. I'd need to know whether it uses a plain characteristic write or needs pairing or encryption.\n- Whether you're open to adding hardware.\n- Whether the fan is yours to control. I'm assuming it is.\n\nIf you tell me the fan model, I can look at whether option 3 applies. If you're open to extra hardware, I can sketch the Flipper-to-ESP32 protocol for option 1."
+  ]
+}

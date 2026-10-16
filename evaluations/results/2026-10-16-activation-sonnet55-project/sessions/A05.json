@@ -1,0 +1,104 @@
+{
+  "id": "A05",
+  "kind": "ambiguous",
+  "prompt": "I don't have an SDK installed or a Flipper with me. Can you confirm my app works?",
+  "started": "2026-10-16T18:37:44+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.09426770000000001,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1292,
+      "cache_read_input_tokens": 62637,
+      "cache_creation_input_tokens": 18767
+    },
+    "text": "I can't confirm your app works, and nothing here could confirm it yet. I found no app in this workspace. The only files are the Flipper skill references under `.claude/skills/`. There's no `application.fam`, no C source and no built `.fap`. Nothing was built or run.\n\n**Status by check**\n\n| Check | Status | Reason |\n|---|---|---|\n| Source inspected | not-run | No app source is present. |\n| Static checks (`ufbt lint`, formatting only) | not-run | No source, and no toolchain. |\n| Compiled | blocked | No source and no trusted SDK or toolchain. |\n| Host tests | not-run | No source and no harness. |\n| Device behavior | blocked | You have no Flipper with you. |\n\n**What you can still confirm without a Flipper**\n- **Compilation:** this can be confirmed with the official `ufbt` pinned to a specific SDK, such as official firmware 1.5.1 (API 88.2). A successful build tells you the app compiles and links against that API. It says nothing about whether the UI, teardown, timing or hardware behavior is correct.\n- **Parsers and logic:** I can write host tests for these if the code is separable from the Furi calls.\n- **Code review:** I can read the source for lifecycle, concurrency and bounds problems. Those findings would be hypotheses, not reproduced bugs.\n- **Device behavior:** this stays unverified until it runs on real hardware. I can write you a device test plan to run later.\n\n**What I need from you**\n1. The app source. Put it in this directory, or paste `application.fam` and the C files.\n2. Which firmware and SDK you target: official 1.5.1, or a fork such as Momentum or Unleashed.\n3. Whether I may download the SDK and toolchain. Setting up `ufbt` fetches an SDK from the internet. I'd pin it to a specific version and tell you the exact source before downloading anything."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A05/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A05/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A05/ws"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "application\\.fam|\\.fap",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A05/ws",
+        "output_mode": "count",
+        "glob": "!.claude/**"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't confirm your app works, and nothing here could confirm it yet. I found no app in this workspace. The only files are the Flipper skill references under `.claude/skills/`. There's no `application.fam`, no C source and no built `.fap`. Nothing was built or run.\n\n**Status by check**\n\n| Check | Status | Reason |\n|---|---|---|\n| Source inspected | not-run | No app source is present. |\n| Static checks (`ufbt lint`, formatting only) | not-run | No source, and no toolchain. |\n| Compiled | blocked | No source and no trusted SDK or toolchain. |\n| Host tests | not-run | No source and no harness. |\n| Device behavior | blocked | You have no Flipper with you. |\n\n**What you can still confirm without a Flipper**\n- **Compilation:** this can be confirmed with the official `ufbt` pinned to a specific SDK, such as official firmware 1.5.1 (API 88.2). A successful build tells you the app compiles and links against that API. It says nothing about whether the UI, teardown, timing or hardware behavior is correct.\n- **Parsers and logic:** I can write host tests for these if the code is separable from the Furi calls.\n- **Code review:** I can read the source for lifecycle, concurrency and bounds problems. Those findings would be hypotheses, not reproduced bugs.\n- **Device behavior:** this stays unverified until it runs on real hardware. I can write you a device test plan to run later.\n\n**What I need from you**\n1. The app source. Put it in this directory, or paste `application.fam` and the C files.\n2. Which firmware and SDK you target: official 1.5.1, or a fork such as Momentum or Unleashed.\n3. Whether I may download the SDK and toolchain. Setting up `ufbt` fetches an SDK from the internet. I'd pin it to a specific version and tell you the exact source before downloading anything."
+  ]
+}

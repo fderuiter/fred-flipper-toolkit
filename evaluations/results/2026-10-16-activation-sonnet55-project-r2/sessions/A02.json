@@ -1,0 +1,76 @@
+{
+  "id": "A02",
+  "kind": "ambiguous",
+  "prompt": "Use RECORD_PASSTHROUGH to share my app state with the GUI service.",
+  "started": "2026-10-16T18:39:35+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-core",
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": false,
+  "reasons": [
+    "missing expected ['flipper-native']"
+  ],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0634131,
+    "num_turns": 3,
+    "usage": {
+      "input_tokens": 4,
+      "output_tokens": 741,
+      "cache_read_input_tokens": 21831,
+      "cache_creation_input_tokens": 13453
+    },
+    "text": "`RECORD_PASSTHROUGH` isn't something I can use. It doesn't appear to exist, so I haven't done anything.\n\nThe workspace has no app source code, only Flipper Zero skill reference files. Those files say `RECORD_PASSTHROUGH` is not established in the inspected public firmware surface. It isn't in `api_symbols.csv` at the pinned firmware commit (`.claude/skills/flipper-core/references/sources.json`, claim C-REC-002). They tell me to treat it as invented until source proves otherwise. I'd be making up an API if I wrote code that used it.\n\nIf you're working on a Flipper Zero app, the real mechanism for sharing state with the GUI is the record system:\n- **Sharing state:** `furi_record_create` / `furi_record_open` / `furi_record_close`. The GUI service is the `RECORD_GUI` record, whose header is `gui/gui.h`.\n- **Your own app state:** Keep it in your app struct, protect it with a `FuriMutex`, and render it from a `ViewPort` draw callback. Send input and state changes through a `FuriMessageQueue`.\n\nTo get further, I need one of these:\n1. Where `RECORD_PASSTHROUGH` is defined, such as a header, a fork, or documentation.\n2. Confirmation that this is a Flipper app and which firmware you target (official, Momentum or Unleashed), so I can implement the state-sharing with real APIs.\n3. If it's from a different system entirely, the project that contains it."
+  },
+  "tool_events": [
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "RECORD_PASSTHROUGH",
+        "output_mode": "content",
+        "-C": 3
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I'll start by looking for RECORD_PASSTHROUGH in the workspace.",
+    "`RECORD_PASSTHROUGH` isn't something I can use. It doesn't appear to exist, so I haven't done anything.\n\nThe workspace has no app source code, only Flipper Zero skill reference files. Those files say `RECORD_PASSTHROUGH` is not established in the inspected public firmware surface. It isn't in `api_symbols.csv` at the pinned firmware commit (`.claude/skills/flipper-core/references/sources.json`, claim C-REC-002). They tell me to treat it as invented until source proves otherwise. I'd be making up an API if I wrote code that used it.\n\nIf you're working on a Flipper Zero app, the real mechanism for sharing state with the GUI is the record system:\n- **Sharing state:** `furi_record_create` / `furi_record_open` / `furi_record_close`. The GUI service is the `RECORD_GUI` record, whose header is `gui/gui.h`.\n- **Your own app state:** Keep it in your app struct, protect it with a `FuriMutex`, and render it from a `ViewPort` draw callback. Send input and state changes through a `FuriMessageQueue`.\n\nTo get further, I need one of these:\n1. Where `RECORD_PASSTHROUGH` is defined, such as a header, a fork, or documentation.\n2. Confirmation that this is a Flipper app and which firmware you target (official, Momentum or Unleashed), so I can implement the state-sharing with real APIs.\n3. If it's from a different system entirely, the project that contains it."
+  ]
+}

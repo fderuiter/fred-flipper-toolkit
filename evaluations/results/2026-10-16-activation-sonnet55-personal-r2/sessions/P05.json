@@ -1,0 +1,104 @@
+{
+  "id": "P05",
+  "kind": "positive",
+  "prompt": "Review this Flipper app's app_free() for use-after-free and leaks.",
+  "started": "2026-10-16T18:42:34+00:00",
+  "expected": [
+    "flipper-review"
+  ],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-native"
+  ],
+  "loaded_fred": [
+    "flipper-review"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-review"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0707535,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1119,
+      "cache_read_input_tokens": 40115,
+      "cache_creation_input_tokens": 13885
+    },
+    "text": "I couldn't review `app_free()`, for two reasons.\n\n- **Shared references blocked:** The flipper-review skill tells me to read two shared reference files before reviewing: `engineering-rules.md` and `evidence-policy.md`, both in the flipper-core skill. Reading them was denied because they are outside the allowed working directories, and this session has no way to approve it. The skill says to stop in that case rather than continue from memory. Its message is \"Broken installation: FRED shared references are missing. Install flipper-core, flipper-native, flipper-review and flipper-verify together as sibling directories.\" In this case the files may be present but unreadable from here, so it may be a permissions problem rather than a missing install.\n- **No source in the workspace:** The working directory is `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P05/ws`. A search for `app_free` found nothing, and there are no `.c` or `.h` files there. I have no code to review.\n\nTo get the review done, you could:\n1. Paste the `app_free()` function, the app struct, and `app_alloc()` here. The worker, timer, or callback setup would help too. Or copy the FAP source into the workspace.\n2. Allow reads from the skills `config/` directory, or copy the flipper-core references into the workspace, so I can follow the skill's process.\n\nWith the code I'd check these things:\n- The order of frees against stopping every producer: timers, worker threads, and GUI and input callbacks.\n- Whether `view_port_enabled_set` and `gui_remove_view_port` happen before the ViewPort is freed.\n- Whether `furi_timer_free`, `furi_thread_join` and `furi_thread_free` run before the shared state they use is released.\n- Records closed (`furi_record_close`).\n- Mutexes, message queues, streams, and storage handles freed.\n- Cleanup of partial-init failures.\n\nI'll write the findings by severity, each with a trace and a suggested fix. I won't edit anything unless you ask."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-review"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "app_free",
+        "output_mode": "content"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P05/config/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P05/config/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.[ch]"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I couldn't review `app_free()`, for two reasons.\n\n- **Shared references blocked:** The flipper-review skill tells me to read two shared reference files before reviewing: `engineering-rules.md` and `evidence-policy.md`, both in the flipper-core skill. Reading them was denied because they are outside the allowed working directories, and this session has no way to approve it. The skill says to stop in that case rather than continue from memory. Its message is \"Broken installation: FRED shared references are missing. Install flipper-core, flipper-native, flipper-review and flipper-verify together as sibling directories.\" In this case the files may be present but unreadable from here, so it may be a permissions problem rather than a missing install.\n- **No source in the workspace:** The working directory is `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P05/ws`. A search for `app_free` found nothing, and there are no `.c` or `.h` files there. I have no code to review.\n\nTo get the review done, you could:\n1. Paste the `app_free()` function, the app struct, and `app_alloc()` here. The worker, timer, or callback setup would help too. Or copy the FAP source into the workspace.\n2. Allow reads from the skills `config/` directory, or copy the flipper-core references into the workspace, so I can follow the skill's process.\n\nWith the code I'd check these things:\n- The order of frees against stopping every producer: timers, worker threads, and GUI and input callbacks.\n- Whether `view_port_enabled_set` and `gui_remove_view_port` happen before the ViewPort is freed.\n- Whether `furi_timer_free`, `furi_thread_join` and `furi_thread_free` run before the shared state they use is released.\n- Records closed (`furi_record_close`).\n- Mutexes, message queues, streams, and storage handles freed.\n- Cleanup of partial-init failures.\n\nI'll write the findings by severity, each with a trace and a suggested fix. I won't edit anything unless you ask."
+  ]
+}

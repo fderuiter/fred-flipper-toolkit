@@ -1,0 +1,104 @@
+{
+  "id": "A04",
+  "kind": "ambiguous",
+  "prompt": "Here's a 2022 tutorial using `furi_alloc` and `furi_record_open(\"gui\")` without close \u2014 update it for my FAP.",
+  "started": "2026-10-16T18:37:43+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-core",
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-native"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/runtime-ui.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-native"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0995569,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1234,
+      "cache_read_input_tokens": 40249,
+      "cache_creation_input_tokens": 20795
+    },
+    "text": "I can't update it yet. The workspace has only the `.claude/skills/` files, with no tutorial text and no FAP source (`application.fam`, `.c` files). Paste the tutorial code or drop the files into the working directory, and I'll make the edits.\n\nI can already tell you what will change, based on the pinned baseline (official firmware 1.5.1, API 88.2).\n\n- **`furi_alloc`:** This isn't an established API at the baseline, so I can't confirm it exists. Use `malloc`/`free`, which are exported. Exhaustion crashes instead of returning NULL, so a NULL check isn't OOM handling. Bound the sizes first, and check `count \u00d7 size` for overflow.\n- **`furi_record_open(\"gui\")`:** Add a matching `furi_record_close(RECORD_GUI)`. Use the `RECORD_GUI` macro rather than the string, because a misspelled record name blocks forever. Close the record last in teardown. Before that, call `gui_remove_view_port()` and free the ViewPort, or remove views and free the ViewDispatcher.\n- **Teardown order:** Stop any timers and workers, detach the view from the GUI, free memory, then close the record. If you set up several resources in init, a failed init needs to release only the ones already acquired.\n- **Timers and callbacks:** If the tutorial uses `furi_timer_stop` and then frees the context, change it. Stop doesn't wait for a running callback. Keep the context alive until `furi_timer_free` returns. Also keep storage and long work out of draw and input callbacks.\n- **Possible extras:** Check the `.fam` fields (`appid`, `apptype`, `entry_point`, `requires`). Check that the other API names in the tutorial are in `api_symbols.csv` for your target.\n\nTwo things would help me when you send the files:\n- Which firmware and SDK version you target. I'll assume official 1.5.1 unless you say otherwise.\n- Whether you can build with `ufbt`. If you can't, I'll report the update as not compiled, and the result would be untested on a device either way."
+  },
+  "tool_events": [
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A04/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A04/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A04/ws/.claude/skills/flipper-core/references/runtime-ui.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't update it yet. The workspace has only the `.claude/skills/` files, with no tutorial text and no FAP source (`application.fam`, `.c` files). Paste the tutorial code or drop the files into the working directory, and I'll make the edits.\n\nI can already tell you what will change, based on the pinned baseline (official firmware 1.5.1, API 88.2).\n\n- **`furi_alloc`:** This isn't an established API at the baseline, so I can't confirm it exists. Use `malloc`/`free`, which are exported. Exhaustion crashes instead of returning NULL, so a NULL check isn't OOM handling. Bound the sizes first, and check `count \u00d7 size` for overflow.\n- **`furi_record_open(\"gui\")`:** Add a matching `furi_record_close(RECORD_GUI)`. Use the `RECORD_GUI` macro rather than the string, because a misspelled record name blocks forever. Close the record last in teardown. Before that, call `gui_remove_view_port()` and free the ViewPort, or remove views and free the ViewDispatcher.\n- **Teardown order:** Stop any timers and workers, detach the view from the GUI, free memory, then close the record. If you set up several resources in init, a failed init needs to release only the ones already acquired.\n- **Timers and callbacks:** If the tutorial uses `furi_timer_stop` and then frees the context, change it. Stop doesn't wait for a running callback. Keep the context alive until `furi_timer_free` returns. Also keep storage and long work out of draw and input callbacks.\n- **Possible extras:** Check the `.fam` fields (`appid`, `apptype`, `entry_point`, `requires`). Check that the other API names in the tutorial are in `api_symbols.csv` for your target.\n\nTwo things would help me when you send the files:\n- Which firmware and SDK version you target. I'll assume official 1.5.1 unless you say otherwise.\n- Whether you can build with `ufbt`. If you can't, I'll report the update as not compiled, and the result would be untested on a device either way."
+  ]
+}

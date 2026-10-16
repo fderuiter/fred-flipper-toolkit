@@ -1,0 +1,105 @@
+{
+  "id": "P04",
+  "kind": "positive",
+  "prompt": "Implement UART receive in my Flipper app; frames arrive in bursts and I need an overflow counter.",
+  "started": "2026-10-16T18:44:36+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-native"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/hardware-communications.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-native"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.2142202,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1807,
+      "cache_read_input_tokens": 39401,
+      "cache_creation_input_tokens": 21272
+    },
+    "text": "I couldn't find your app in this workspace. The working directory only has `.claude/skills/` (the Flipper skill files). There's no `application.fam`, no C sources and no SDK, so I haven't written anything yet. I don't want to make up an app structure and attach UART code to it.\n\nTo build it into your app, I need:\n\n1. **The app itself.** Copy or clone it into this directory, or tell me its path. I'll check `application.fam` and any build hooks before changing anything.\n2. **Firmware and SDK target.** Is it official firmware, and which version or API? My notes cover official 1.5.1 (API 88.2). Momentum and Unleashed have different APIs.\n3. **UART details.** Which port (the USART pins 13/14 or the LPUART pins 15/16), the baud rate, and roughly how big a burst is (bytes per burst and how often).\n4. **Frame format.** How a frame starts, how its length is given, whether it has a CRC, and the maximum frame size. If you'd rather keep it simple, I can just hand raw bytes to your code and leave framing to you.\n\nHere's what I plan to build, following the official-firmware rules:\n\n- **Getting the port:** I'll call `furi_hal_serial_control_acquire`. If it returns NULL, something else (logging or an expansion module) is using the port. The app will say \"port busy\" instead of retrying forever.\n- **Receive interrupt:** this runs in interrupt context, so it can't log, allocate memory or block. It reads the available bytes, writes them to a `FuriStreamBuffer` without waiting, and if the buffer can't take everything it adds the missing bytes to an `overflow_bytes` counter. It doesn't drop anything silently.\n- **Worker thread:** it reads from the buffer with a timeout and runs a frame parser with a maximum frame length. It resyncs on a bad length or CRC and also when the gap between bytes is too long. It sends finished frames to the app. If the app's queue is full, it counts the frame as dropped, but it never drops the Back/exit event.\n- **Counters:** separate counts for bytes lost to overflow, framing errors, resyncs and dropped frames, shown on screen or in the log. The buffer size will be based on your burst rate times the longest time the worker might be held up.\n- **Shutdown order:** set a stop flag and wake the worker, stop receiving, deinit and release the port, wait for the worker to finish, then free the buffer once nothing can still write to it.\n- **Tests:** the frame parser will have no Flipper calls in it, so I can test it on a PC with burst, truncated-frame and garbage-input cases. Whether it really keeps up with bursts at full line speed can only be checked on a real Flipper, and that stays untested until someone runs it there.\n\nSend the app (or its path) and the frame details and I'll implement it."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native",
+        "args": "Implement UART receive in the user's FAP; frames arrive in bursts; need an overflow counter."
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P04/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P04/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P04/ws/.claude/skills/flipper-core/references/hardware-communications.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I couldn't find your app in this workspace. The working directory only has `.claude/skills/` (the Flipper skill files). There's no `application.fam`, no C sources and no SDK, so I haven't written anything yet. I don't want to make up an app structure and attach UART code to it.\n\nTo build it into your app, I need:\n\n1. **The app itself.** Copy or clone it into this directory, or tell me its path. I'll check `application.fam` and any build hooks before changing anything.\n2. **Firmware and SDK target.** Is it official firmware, and which version or API? My notes cover official 1.5.1 (API 88.2). Momentum and Unleashed have different APIs.\n3. **UART details.** Which port (the USART pins 13/14 or the LPUART pins 15/16), the baud rate, and roughly how big a burst is (bytes per burst and how often).\n4. **Frame format.** How a frame starts, how its length is given, whether it has a CRC, and the maximum frame size. If you'd rather keep it simple, I can just hand raw bytes to your code and leave framing to you.\n\nHere's what I plan to build, following the official-firmware rules:\n\n- **Getting the port:** I'll call `furi_hal_serial_control_acquire`. If it returns NULL, something else (logging or an expansion module) is using the port. The app will say \"port busy\" instead of retrying forever.\n- **Receive interrupt:** this runs in interrupt context, so it can't log, allocate memory or block. It reads the available bytes, writes them to a `FuriStreamBuffer` without waiting, and if the buffer can't take everything it adds the missing bytes to an `overflow_bytes` counter. It doesn't drop anything silently.\n- **Worker thread:** it reads from the buffer with a timeout and runs a frame parser with a maximum frame length. It resyncs on a bad length or CRC and also when the gap between bytes is too long. It sends finished frames to the app. If the app's queue is full, it counts the frame as dropped, but it never drops the Back/exit event.\n- **Counters:** separate counts for bytes lost to overflow, framing errors, resyncs and dropped frames, shown on screen or in the log. The buffer size will be based on your burst rate times the longest time the worker might be held up.\n- **Shutdown order:** set a stop flag and wake the worker, stop receiving, deinit and release the port, wait for the worker to finish, then free the buffer once nothing can still write to it.\n- **Tests:** the frame parser will have no Flipper calls in it, so I can test it on a PC with burst, truncated-frame and garbage-input cases. Whether it really keeps up with bursts at full line speed can only be checked on a real Flipper, and that stays untested until someone runs it there.\n\nSend the app (or its path) and the frame details and I'll implement it."
+  ]
+}

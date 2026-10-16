@@ -1,0 +1,95 @@
+{
+  "id": "A03",
+  "kind": "ambiguous",
+  "prompt": "This Momentum firmware example uses a momentum_* settings API; make it work on my official-firmware Flipper.",
+  "started": "2026-10-16T18:43:05+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [
+    "flipper-native",
+    "flipper-verify"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/compatibility.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.07151969999999999,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1041,
+      "cache_read_input_tokens": 40177,
+      "cache_creation_input_tokens": 14270
+    },
+    "text": "I can't port the example yet, and I haven't changed anything.\n\n- **No example code in the workspace.** The working directory (`/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A03/ws`) is empty. Without the Momentum source, I can't tell which `momentum_*` calls it uses.\n- **Skill references blocked.** The Flipper skill told me to read its reference files first, including the compatibility rules and evidence policy. The session denied access to them because they sit outside the working directory, and nobody was available to approve the read. So I can't check API availability against the pinned official-firmware symbol list. I won't guess at what the official SDK exports.\n\nThe Flipper skill treats official firmware 1.5.1 (API 88.2) as the researched baseline, so I'd assume that unless you say otherwise.\n\nI need two things from you:\n1. **The example source.** Copy the files into the workspace, or paste them here. Tell me which `momentum_*` functions or headers it calls, if you already know.\n2. **Your firmware version.** Check Settings \u2192 About on the Flipper. If it isn't 1.5.1, tell me.\n\nOnce I have those, I'll replace each `momentum_*` call with whatever the official SDK exports. That will probably mean the standard storage and `FlipperFormat` APIs for settings. Where the official SDK has no equivalent, I'll flag it instead of inventing an API.\n\nIf you'd rather I read the skill references, you could copy them into the workspace, or allow reads from that skills directory."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A03/config/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A03/config/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A03/config/skills/flipper-core/references/compatibility.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't port the example yet, and I haven't changed anything.\n\n- **No example code in the workspace.** The working directory (`/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A03/ws`) is empty. Without the Momentum source, I can't tell which `momentum_*` calls it uses.\n- **Skill references blocked.** The Flipper skill told me to read its reference files first, including the compatibility rules and evidence policy. The session denied access to them because they sit outside the working directory, and nobody was available to approve the read. So I can't check API availability against the pinned official-firmware symbol list. I won't guess at what the official SDK exports.\n\nThe Flipper skill treats official firmware 1.5.1 (API 88.2) as the researched baseline, so I'd assume that unless you say otherwise.\n\nI need two things from you:\n1. **The example source.** Copy the files into the workspace, or paste them here. Tell me which `momentum_*` functions or headers it calls, if you already know.\n2. **Your firmware version.** Check Settings \u2192 About on the Flipper. If it isn't 1.5.1, tell me.\n\nOnce I have those, I'll replace each `momentum_*` call with whatever the official SDK exports. That will probably mean the standard storage and `FlipperFormat` APIs for settings. Where the official SDK has no equivalent, I'll flag it instead of inventing an API.\n\nIf you'd rather I read the skill references, you could copy them into the workspace, or allow reads from that skills directory."
+  ]
+}

@@ -1,0 +1,104 @@
+{
+  "id": "H02",
+  "kind": "positive",
+  "prompt": "Go through my FAP teardown code and look for anything that could use freed memory",
+  "started": "2026-10-16T18:45:57+00:00",
+  "expected": [
+    "flipper-review"
+  ],
+  "acceptable": [
+    "flipper-core"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-review"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-review"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.18546159999999998,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1218,
+      "cache_read_input_tokens": 62308,
+      "cache_creation_input_tokens": 18576
+    },
+    "text": "I couldn't do the review because your FAP code isn't in this workspace. The working directory (`/tmp/fred-eval/runs/2026-10-16-activation-opus55-heldout-r2/H02/ws`) holds only the `.claude/skills/` reference files. I found no `.c`, `.h` or `application.fam` files, and it isn't a git repository, so there's no branch or diff to check either.\n\nTo go ahead, I need one of these:\n- **The path** to your app's source, if it's somewhere else on this machine.\n- **The code pasted here**: at least the app's alloc/free functions, the main entry point, and every callback (timer, worker thread, serial RX/IRQ, input/draw, ViewDispatcher event) that touches state freed on exit.\n- **Crash text, if you have it**, plus your firmware version or fork and SDK version. A crash on exit or on leaving a mode would narrow the search.\n\nOnce I have the code, I'll check the patterns that most often cause use-after-free in a FAP's teardown:\n- **Timers:** state freed after `furi_timer_stop` but before `furi_timer_free`. Stop doesn't guarantee that a callback already running has finished.\n- **Worker threads:** freeing what a thread uses before it has been woken and joined. Also joining while holding a lock the thread needs, which deadlocks instead.\n- **Serial RX/IRQ callbacks:** still able to fire into a freed stream or context after release.\n- **GUI:** a ViewPort, or views in a ViewDispatcher, freed before being removed from the GUI. Also draw or input callbacks reading a freed model.\n- **Queues and events:** items still queued that point into freed memory, or a context freed while events are still in flight.\n- **Failed startup:** partial-init failure paths that free things that were never created, or free them twice.\n- **Records:** a service opened with `furi_record_open` that the app frees or keeps using after `furi_record_close`.\n\nFor each problem I'll give the file and function, the sequence of events that triggers it, what goes wrong, and whether it's traced in the source or only suspected. I'll also give a fix and a test that would show it works. I won't make edits unless you ask for them."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-review",
+        "args": "Review FAP teardown code for use-after-free"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-heldout-r2/H02/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-heldout-r2/H02/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.{c,h,fam}"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I couldn't do the review because your FAP code isn't in this workspace. The working directory (`/tmp/fred-eval/runs/2026-10-16-activation-opus55-heldout-r2/H02/ws`) holds only the `.claude/skills/` reference files. I found no `.c`, `.h` or `application.fam` files, and it isn't a git repository, so there's no branch or diff to check either.\n\nTo go ahead, I need one of these:\n- **The path** to your app's source, if it's somewhere else on this machine.\n- **The code pasted here**: at least the app's alloc/free functions, the main entry point, and every callback (timer, worker thread, serial RX/IRQ, input/draw, ViewDispatcher event) that touches state freed on exit.\n- **Crash text, if you have it**, plus your firmware version or fork and SDK version. A crash on exit or on leaving a mode would narrow the search.\n\nOnce I have the code, I'll check the patterns that most often cause use-after-free in a FAP's teardown:\n- **Timers:** state freed after `furi_timer_stop` but before `furi_timer_free`. Stop doesn't guarantee that a callback already running has finished.\n- **Worker threads:** freeing what a thread uses before it has been woken and joined. Also joining while holding a lock the thread needs, which deadlocks instead.\n- **Serial RX/IRQ callbacks:** still able to fire into a freed stream or context after release.\n- **GUI:** a ViewPort, or views in a ViewDispatcher, freed before being removed from the GUI. Also draw or input callbacks reading a freed model.\n- **Queues and events:** items still queued that point into freed memory, or a context freed while events are still in flight.\n- **Failed startup:** partial-init failure paths that free things that were never created, or free them twice.\n- **Records:** a service opened with `furi_record_open` that the app frees or keeps using after `furi_record_close`.\n\nFor each problem I'll give the file and function, the sequence of events that triggers it, what goes wrong, and whether it's traced in the source or only suspected. I'll also give a fix and a test that would show it works. I won't make edits unless you ask for them."
+  ]
+}

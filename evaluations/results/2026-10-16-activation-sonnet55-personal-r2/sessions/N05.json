@@ -1,0 +1,77 @@
+{
+  "id": "N05",
+  "kind": "negative",
+  "prompt": "Fix the flaky GitHub Actions cache step in my Rust project.",
+  "started": "2026-10-16T18:42:54+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.054879599999999994,
+    "num_turns": 4,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 479,
+      "cache_read_input_tokens": 38536,
+      "cache_creation_input_tokens": 11556
+    },
+    "text": "I can't fix the cache step yet because the working directory (`/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/N05/ws`) is empty. It has no `.github/workflows/` files, no `Cargo.toml` and no `Cargo.lock`.\n\nYou could do one of these:\n- Point me to the right directory, or add the repo to this session.\n- Paste the workflow YAML here, plus the failing cache step's log output if you have it.\n\nSome common causes of a flaky Rust cache step are:\n- Cache keys that don't include `Cargo.lock`.\n- Caching all of `target/`, which gets huge and hits the size limit.\n- Parallel jobs with different cache keys saving the same cache.\n- `restore-keys` fallbacks that restore stale caches.\n- The `actions/cache` version being out of date.\n\nI'd need to see your workflow to tell which of these applies."
+  },
+  "tool_events": [
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": ".github/**/*.{yml,yaml}"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/Cargo.{toml,lock}"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't fix the cache step yet because the working directory (`/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/N05/ws`) is empty. It has no `.github/workflows/` files, no `Cargo.toml` and no `Cargo.lock`.\n\nYou could do one of these:\n- Point me to the right directory, or add the repo to this session.\n- Paste the workflow YAML here, plus the failing cache step's log output if you have it.\n\nSome common causes of a flaky Rust cache step are:\n- Cache keys that don't include `Cargo.lock`.\n- Caching all of `target/`, which gets huge and hits the size limit.\n- Parallel jobs with different cache keys saving the same cache.\n- `restore-keys` fallbacks that restore stale caches.\n- The `actions/cache` version being out of date.\n\nI'd need to see your workflow to tell which of these applies."
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "id": "N06",
+  "kind": "negative",
+  "prompt": "What's a good name for my cat? She likes dolphins.",
+  "started": "2026-10-16T18:37:34+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0504682,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 297,
+      "cache_read_input_tokens": 4742,
+      "cache_creation_input_tokens": 11755
+    },
+    "text": "Here are some dolphin-inspired names for her:\n\n**Direct nods**\n- **Delphi**: from the Greek *delphis* (dolphin), and it sounds elegant\n- **Flipper**: the classic, a bit cheeky for a cat\n- **Pod**: short and cute\n\n**Ocean-flavored**\n- **Marina**\n- **Coral**\n- **Misty**\n- **Pearl**\n- **Luna**: moon over the sea\n\n**Playful**\n- **Echo**: dolphins use echolocation\n- **Splash**\n- **Bubbles**\n- **Finley** (or **Finn**): \"fin\" in there\n\nMy pick is **Delphi**. It's unusual and pretty, it has the dolphin connection built in, and it works well as a call-out-the-door name.\n\nIf you tell me her coloring or personality, like sleek and gray, chatty or mischievous, I can narrow it down."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "Here are some dolphin-inspired names for her:\n\n**Direct nods**\n- **Delphi**: from the Greek *delphis* (dolphin), and it sounds elegant\n- **Flipper**: the classic, a bit cheeky for a cat\n- **Pod**: short and cute\n\n**Ocean-flavored**\n- **Marina**\n- **Coral**\n- **Misty**\n- **Pearl**\n- **Luna**: moon over the sea\n\n**Playful**\n- **Echo**: dolphins use echolocation\n- **Splash**\n- **Bubbles**\n- **Finley** (or **Finn**): \"fin\" in there\n\nMy pick is **Delphi**. It's unusual and pretty, it has the dolphin connection built in, and it works well as a call-out-the-door name.\n\nIf you tell me her coloring or personality, like sleek and gray, chatty or mischievous, I can narrow it down."
+  ]
+}

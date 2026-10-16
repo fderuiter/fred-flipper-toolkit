@@ -1,0 +1,111 @@
+{
+  "id": "P04",
+  "kind": "positive",
+  "prompt": "Implement UART receive in my Flipper app; frames arrive in bursts and I need an overflow counter.",
+  "started": "2026-10-16T18:43:29+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-native"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/hardware-communications.md",
+    "flipper-core/references/runtime-ui.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-native"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.10773920000000001,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1633,
+      "cache_read_input_tokens": 40772,
+      "cache_creation_input_tokens": 21830
+    },
+    "text": "There's no FAP source in this workspace to change. The only files are the `.claude/skills` folders, so there's no `application.fam`, no sources, and no `api_symbols.csv`. I haven't written any code yet, because the frame format and the existing app structure are things I'd otherwise have to guess.\n\nI can design the receive path from the shared rules. It would work like this:\n- **IRQ callback:** the serial RX callback does nothing except copy the available bytes into a `FuriStreamBuffer` with zero timeout. If the send is short, it adds the shortfall to an `overflow_bytes` counter. It doesn't allocate, log, or block.\n- **Worker thread:** the worker reads from the stream with a timeout and runs a framing state machine. The machine enforces a maximum frame length, an inter-byte timeout, and resync on a bad length or CRC. It posts parsed frames to the app through a queue and counts any frame it has to drop there.\n- **Counters:** the app keeps separate counts for stream overflow, queue-full drops, framing errors and resyncs, and the UI shows them.\n- **Teardown:**\n  1. Set the stop flag.\n  2. Stop async RX.\n  3. Deinit and release the serial handle.\n  4. Wake and join the worker.\n  5. Drain the queue.\n  6. Free the stream buffer last.\n- **Busy handle:** if `furi_hal_serial_control_acquire` returns NULL, the app reports the interface as busy and doesn't retry.\n- **Host tests:** the framing logic goes in a pure C file with host tests for split frames, back-to-back bursts, garbage between frames, and an oversized length.\n\nTo write it, I need these from you:\n1. **Project:** where is your app's source? Paste it, add it to this workspace, or tell me to create a new FAP skeleton.\n2. **Frame format:** what are the start byte or sync pattern, length field, CRC, and maximum frame size?\n3. **Link:** which UART (USART or LPUART on the expansion header) and what baud rate?\n4. **Burst size:** roughly how many frames or bytes arrive in a burst, and how fast? I'll use that to size the stream buffer.\n5. **SDK:** should I target official firmware 1.5.1 (API 88.2), which is the skill's baseline, or something else?\n\nEven with the code written, nothing about burst behavior at line rate will be verified until it's run on hardware. I can compile it and run the host tests only if you authorize installing the toolchain."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P04/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P04/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P04/ws/.claude/skills/flipper-core/references/hardware-communications.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P04/ws/.claude/skills/flipper-core/references/runtime-ui.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "There's no FAP source in this workspace to change. The only files are the `.claude/skills` folders, so there's no `application.fam`, no sources, and no `api_symbols.csv`. I haven't written any code yet, because the frame format and the existing app structure are things I'd otherwise have to guess.\n\nI can design the receive path from the shared rules. It would work like this:\n- **IRQ callback:** the serial RX callback does nothing except copy the available bytes into a `FuriStreamBuffer` with zero timeout. If the send is short, it adds the shortfall to an `overflow_bytes` counter. It doesn't allocate, log, or block.\n- **Worker thread:** the worker reads from the stream with a timeout and runs a framing state machine. The machine enforces a maximum frame length, an inter-byte timeout, and resync on a bad length or CRC. It posts parsed frames to the app through a queue and counts any frame it has to drop there.\n- **Counters:** the app keeps separate counts for stream overflow, queue-full drops, framing errors and resyncs, and the UI shows them.\n- **Teardown:**\n  1. Set the stop flag.\n  2. Stop async RX.\n  3. Deinit and release the serial handle.\n  4. Wake and join the worker.\n  5. Drain the queue.\n  6. Free the stream buffer last.\n- **Busy handle:** if `furi_hal_serial_control_acquire` returns NULL, the app reports the interface as busy and doesn't retry.\n- **Host tests:** the framing logic goes in a pure C file with host tests for split frames, back-to-back bursts, garbage between frames, and an oversized length.\n\nTo write it, I need these from you:\n1. **Project:** where is your app's source? Paste it, add it to this workspace, or tell me to create a new FAP skeleton.\n2. **Frame format:** what are the start byte or sync pattern, length field, CRC, and maximum frame size?\n3. **Link:** which UART (USART or LPUART on the expansion header) and what baud rate?\n4. **Burst size:** roughly how many frames or bytes arrive in a burst, and how fast? I'll use that to size the stream buffer.\n5. **SDK:** should I target official firmware 1.5.1 (API 88.2), which is the skill's baseline, or something else?\n\nEven with the code written, nothing about burst behavior at line rate will be verified until it's run on hardware. I can compile it and run the host tests only if you authorize installing the toolchain."
+  ]
+}

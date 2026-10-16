@@ -1,0 +1,106 @@
+{
+  "id": "A04",
+  "kind": "ambiguous",
+  "prompt": "Here's a 2022 tutorial using `furi_alloc` and `furi_record_open(\"gui\")` without close \u2014 update it for my FAP.",
+  "started": "2026-10-16T18:39:38+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-core",
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-native"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/runtime-ui.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-native"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0987945,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1361,
+      "cache_read_input_tokens": 40885,
+      "cache_creation_input_tokens": 20271
+    },
+    "text": "I can't update anything yet. The workspace has no tutorial text and no FAP source, only the `.claude/skills` files. There's no `application.fam`, no `.c` files, and nothing from the 2022 tutorial.\n\nI need two things from you:\n1. The tutorial code. Paste it here or put it in the working directory.\n2. Your FAP's source, or at least `application.fam` and the file where the code lives. Say which firmware and SDK you target. The pinned baseline is official 1.5.1, API 88.2, and I'll assume that unless you say otherwise.\n\nMeanwhile, here is what I'd change, based on the pinned rules.\n\n**`furi_alloc`**\n- It isn't in the pinned exports, so don't assume it exists. Replace it with `malloc`/`free`, or use the module's `*_alloc`/`*_free` pairs for GUI objects.\n- `malloc` doesn't return NULL on exhaustion. It crashes, and it also crashes if called from an ISR. A NULL check therefore doesn't count as OOM handling. Bound your sizes instead, and check `count \u00d7 size` for overflow before allocating.\n- For large or sustained buffers, use fixed or reused buffers rather than repeated allocation.\n\n**`furi_record_open(\"gui\")` with no close**\n- A record is a borrowed service reference. Pair every open with a `furi_record_close`, and never free the service itself.\n- Use the `RECORD_GUI` macro rather than the `\"gui\"` string. A misspelled record name blocks forever.\n- Close the record last in teardown, after you've detached the ViewPort or views with `gui_remove_view_port`, and after you've freed the queue, mutex and the rest.\n- The missing close is a holder-count leak, not necessarily an immediate panic.\n\n**The rest of the 2022 tutorial**\n- Check each of its API calls against `api_symbols.csv`.\n- Use `view_port_update` for redraws.\n- Keep draw and input callbacks short. They should only snapshot state or post to a queue.\n- Never drop the Back event when the queue is full.\n- Run `furi_timer_free` only after nothing can still call into the timer's context.\n\nSend the files and I'll make the changes. I'll report what I inspected separately from what I built or tested. I can't test on a device, so device behavior will be listed as pending."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/A04/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/A04/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/A04/ws/.claude/skills/flipper-core/references/runtime-ui.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I'll start by looking at what's in the workspace, and load the Flipper native skill.",
+    "I can't update anything yet. The workspace has no tutorial text and no FAP source, only the `.claude/skills` files. There's no `application.fam`, no `.c` files, and nothing from the 2022 tutorial.\n\nI need two things from you:\n1. The tutorial code. Paste it here or put it in the working directory.\n2. Your FAP's source, or at least `application.fam` and the file where the code lives. Say which firmware and SDK you target. The pinned baseline is official 1.5.1, API 88.2, and I'll assume that unless you say otherwise.\n\nMeanwhile, here is what I'd change, based on the pinned rules.\n\n**`furi_alloc`**\n- It isn't in the pinned exports, so don't assume it exists. Replace it with `malloc`/`free`, or use the module's `*_alloc`/`*_free` pairs for GUI objects.\n- `malloc` doesn't return NULL on exhaustion. It crashes, and it also crashes if called from an ISR. A NULL check therefore doesn't count as OOM handling. Bound your sizes instead, and check `count \u00d7 size` for overflow before allocating.\n- For large or sustained buffers, use fixed or reused buffers rather than repeated allocation.\n\n**`furi_record_open(\"gui\")` with no close**\n- A record is a borrowed service reference. Pair every open with a `furi_record_close`, and never free the service itself.\n- Use the `RECORD_GUI` macro rather than the `\"gui\"` string. A misspelled record name blocks forever.\n- Close the record last in teardown, after you've detached the ViewPort or views with `gui_remove_view_port`, and after you've freed the queue, mutex and the rest.\n- The missing close is a holder-count leak, not necessarily an immediate panic.\n\n**The rest of the 2022 tutorial**\n- Check each of its API calls against `api_symbols.csv`.\n- Use `view_port_update` for redraws.\n- Keep draw and input callbacks short. They should only snapshot state or post to a queue.\n- Never drop the Back event when the queue is full.\n- Run `furi_timer_free` only after nothing can still call into the timer's context.\n\nSend the files and I'll make the changes. I'll report what I inspected separately from what I built or tested. I can't test on a device, so device behavior will be listed as pending."
+  ]
+}

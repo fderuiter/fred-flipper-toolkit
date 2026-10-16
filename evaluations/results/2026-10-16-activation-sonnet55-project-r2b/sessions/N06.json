@@ -1,0 +1,58 @@
+{
+  "id": "N06",
+  "kind": "negative",
+  "prompt": "What's a good name for my cat? She likes dolphins.",
+  "started": "2026-10-16T18:43:54+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0481071,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 265,
+      "cache_read_input_tokens": 5291,
+      "cache_creation_input_tokens": 11231
+    },
+    "text": "Here are some dolphin-inspired names for her:\n\n**Direct nods**\n- **Delphi**: from the Greek *delphis*, \"dolphin\"\n- **Flipper**: a classic, if a bit on the nose\n- **Echo**: dolphins navigate by echolocation\n\n**Ocean-flavored**\n- **Marina**\n- **Coral**\n- **Pearl**\n- **Misty**\n- **Tide**\n\n**Playful**\n- **Pod**\n- **Splash**\n- **Finn**\n- **Squeak**: dolphins are chatty\n\nMy top pick is **Delphi**. It sounds elegant, it has a real dolphin connection, and it works well as a cat name. **Echo** is a close second if she's a vocal cat.\n\nIf you tell me her color or personality, I can narrow it down."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "Here are some dolphin-inspired names for her:\n\n**Direct nods**\n- **Delphi**: from the Greek *delphis*, \"dolphin\"\n- **Flipper**: a classic, if a bit on the nose\n- **Echo**: dolphins navigate by echolocation\n\n**Ocean-flavored**\n- **Marina**\n- **Coral**\n- **Pearl**\n- **Misty**\n- **Tide**\n\n**Playful**\n- **Pod**\n- **Splash**\n- **Finn**\n- **Squeak**: dolphins are chatty\n\nMy top pick is **Delphi**. It sounds elegant, it has a real dolphin connection, and it works well as a cat name. **Echo** is a close second if she's a vocal cat.\n\nIf you tell me her color or personality, I can narrow it down."
+  ]
+}

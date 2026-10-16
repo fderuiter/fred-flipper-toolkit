@@ -1,0 +1,88 @@
+{
+  "id": "P01",
+  "kind": "positive",
+  "prompt": "Can a stock Flipper Zero on official firmware act as a remote for my Bluetooth LE ceiling fan? It needs to connect to the fan and write a characteristic.",
+  "started": "2026-10-16T18:42:34+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-native"
+  ],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/capability-map.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0735784,
+    "num_turns": 6,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1354,
+      "cache_read_input_tokens": 39984,
+      "cache_creation_input_tokens": 14007
+    },
+    "text": "**No. A stock Flipper Zero on official firmware can't connect to your fan and write a characteristic.** I couldn't open the skill's reference files because the session denied read access outside the working directory. So this comes from general knowledge of the official SDK, not checked against pinned API sources.\n\n**Why not**\n- The public SDK only exposes the BLE *peripheral* (GATT server) role. The Flipper can advertise and be connected to, for example by the phone app, the serial profile or HID emulation.\n- It has no *central* (client) role in the public API. That means no scanning-then-connecting, no service discovery and no GATT write to another device's characteristic.\n- The BLE chip (STM32WB55) can do it in silicon. The stock radio stack firmware and the exported API don't expose it, so a normal app can't use it.\n- Third-party firmware doesn't change this much. I'm not aware of a fork that adds a general BLE client, but I haven't checked any of them.\n\n**What can work instead**\n1. **A different device acting as the remote.** An ESP32 board running BLE central code can connect and write the characteristic. You can drive it from the Flipper over UART/GPIO, or skip the Flipper and use a phone app such as nRF Connect or a small script. This is the most realistic route if you want a Flipper in the loop.\n2. **A check on how the fan is controlled.** Some cheap fans and lights take commands in BLE *advertisements* rather than over a connection. If yours does, the Flipper's extra-beacon advertising API might be enough. Capture what the fan's own app sends to find out. If it connects and writes a characteristic, as you describe, this doesn't apply.\n3. **Another remote hardware route.** If the fan also has an IR or sub-GHz remote, the Flipper handles those natively.\n\nDo you know the fan's model or app? I can help work out which of these fits, or sketch the ESP32 side."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P01/config/skills/flipper-core/references/capability-map.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P01/config/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P01/config/skills/flipper-core/references/evidence-policy.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "**No. A stock Flipper Zero on official firmware can't connect to your fan and write a characteristic.** I couldn't open the skill's reference files because the session denied read access outside the working directory. So this comes from general knowledge of the official SDK, not checked against pinned API sources.\n\n**Why not**\n- The public SDK only exposes the BLE *peripheral* (GATT server) role. The Flipper can advertise and be connected to, for example by the phone app, the serial profile or HID emulation.\n- It has no *central* (client) role in the public API. That means no scanning-then-connecting, no service discovery and no GATT write to another device's characteristic.\n- The BLE chip (STM32WB55) can do it in silicon. The stock radio stack firmware and the exported API don't expose it, so a normal app can't use it.\n- Third-party firmware doesn't change this much. I'm not aware of a fork that adds a general BLE client, but I haven't checked any of them.\n\n**What can work instead**\n1. **A different device acting as the remote.** An ESP32 board running BLE central code can connect and write the characteristic. You can drive it from the Flipper over UART/GPIO, or skip the Flipper and use a phone app such as nRF Connect or a small script. This is the most realistic route if you want a Flipper in the loop.\n2. **A check on how the fan is controlled.** Some cheap fans and lights take commands in BLE *advertisements* rather than over a connection. If yours does, the Flipper's extra-beacon advertising API might be enough. Capture what the fan's own app sends to find out. If it connects and writes a characteristic, as you describe, this doesn't apply.\n3. **Another remote hardware route.** If the fan also has an IR or sub-GHz remote, the Flipper handles those natively.\n\nDo you know the fan's model or app? I can help work out which of these fits, or sketch the ESP32 side."
+  ]
+}

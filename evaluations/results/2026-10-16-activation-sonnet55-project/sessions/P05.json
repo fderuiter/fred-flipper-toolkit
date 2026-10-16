@@ -1,0 +1,110 @@
+{
+  "id": "P05",
+  "kind": "positive",
+  "prompt": "Review this Flipper app's app_free() for use-after-free and leaks.",
+  "started": "2026-10-16T18:37:11+00:00",
+  "expected": [
+    "flipper-review"
+  ],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-native"
+  ],
+  "loaded_fred": [
+    "flipper-review"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-review"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0934982,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 909,
+      "cache_read_input_tokens": 61442,
+      "cache_creation_input_tokens": 19562
+    },
+    "text": "I can't review `app_free()` because there's no app code in the workspace. The working directory has no `.c` or `.h` files, and a search for `app_free` found nothing. The only files here are the FRED skill and reference documents under `.claude/skills/`.\n\n**Scope inspected:** the whole workspace. I found nothing to review, so I'm making no claims about use-after-free or leaks.\n\n**What I need:** one of these:\n- the path to the app's source, if it's somewhere else on this machine\n- the source pasted into the chat, or the `app_alloc()` / `app_free()` pair plus the app struct and any timer, worker or callback code that touches it\n\nTeardown is only reviewable alongside the allocation side. The relevant questions are what `app_free()` frees, which callbacks, timers and threads could still be running when it does, and whether every acquired resource is released. For a useful review I'd also like:\n- the firmware and SDK version, since the shared rules here assume official firmware 1.5.1 (API 88.2)\n- any crash text, if there is one\n\nI'll then report severity-ranked findings, each with the interleaving that triggers it, an evidence level, and a fix. The review stays read-only unless you ask for fixes."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-review"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "app_free",
+        "output_mode": "content"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P05/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P05/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.[ch]"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P05/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't review `app_free()` because there's no app code in the workspace. The working directory has no `.c` or `.h` files, and a search for `app_free` found nothing. The only files here are the FRED skill and reference documents under `.claude/skills/`.\n\n**Scope inspected:** the whole workspace. I found nothing to review, so I'm making no claims about use-after-free or leaks.\n\n**What I need:** one of these:\n- the path to the app's source, if it's somewhere else on this machine\n- the source pasted into the chat, or the `app_alloc()` / `app_free()` pair plus the app struct and any timer, worker or callback code that touches it\n\nTeardown is only reviewable alongside the allocation side. The relevant questions are what `app_free()` frees, which callbacks, timers and threads could still be running when it does, and whether every acquired resource is released. For a useful review I'd also like:\n- the firmware and SDK version, since the shared rules here assume official firmware 1.5.1 (API 88.2)\n- any crash text, if there is one\n\nI'll then report severity-ranked findings, each with the interleaving that triggers it, an evidence level, and a fix. The review stays read-only unless you ask for fixes."
+  ]
+}

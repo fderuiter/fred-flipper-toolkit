@@ -1,6 +1,6 @@
 ---
 name: flipper-core
-description: Flipper Zero feasibility and compatibility planning. Use when deciding whether something can run on a Flipper Zero, choosing between a native FAP, JavaScript, built-in app, firmware change, host companion or external microcontroller, checking which firmware/SDK/API a project targets, or tracing whether an API is really exported. Not for routine edits to an already-scoped FAP, generic C questions, or prose that merely mentions Flipper.
+description: Flipper Zero feasibility, compatibility and capability checks. Use when deciding whether something can run on a Flipper Zero or which surface fits (native FAP, JavaScript, built-in app, firmware change, host companion, external microcontroller); when porting code or examples from Momentum, Unleashed or another firmware fork; when checking whether a Flipper API, record or command really exists; or before wiring, powering or driving GPIO pins or radios. Not for routine edits to an already-scoped FAP, generic C questions, or prose that merely mentions Flipper.
 license: MIT
 compatibility: Researched against official Flipper Zero firmware 1.5.1, target f7, API 88.2. Install with flipper-native, flipper-review and flipper-verify as sibling directories.
 metadata:

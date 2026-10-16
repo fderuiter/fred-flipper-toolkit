@@ -1,0 +1,76 @@
+{
+  "id": "N05",
+  "kind": "negative",
+  "prompt": "Fix the flaky GitHub Actions cache step in my Rust project.",
+  "started": "2026-10-16T18:37:33+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.058361600000000007,
+    "num_turns": 4,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 608,
+      "cache_read_input_tokens": 37976,
+      "cache_creation_input_tokens": 12118
+    },
+    "text": "I can't fix it yet because the working directory has no Rust project in it. I searched `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/N05/ws` and found no `.github/` workflows, no `Cargo.toml` or `Cargo.lock`, and no `.rs`, `.yml`, `.yaml` or `.toml` files.\n\nCould you do one of these?\n- Point me to the right directory or repo, if the project is somewhere else.\n- Paste the workflow file, usually `.github/workflows/*.yml`, along with the failing cache step's log output.\n\nFlaky cache steps in Rust projects usually come from a few causes. Which one it is depends on your workflow:\n- **Cache key:** the key doesn't hash `Cargo.lock`, or it includes something that changes every run.\n- **Cached paths:** the `target/` directory is cached whole, so the cache grows until it hits size limits or restores stale artifacts.\n- **Parallel jobs:** several jobs write the same key, so saves collide with \"Unable to reserve cache\" errors.\n- **Toolchain drift:** the Rust version isn't in the key, so an old cache gets restored after a toolchain update.\n\nOnce I can see the workflow, I can tell you which of these applies and fix it."
+  },
+  "tool_events": [
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": ".github/**/*.{yml,yaml}"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "Cargo.*"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.{yml,yaml,toml,rs}"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't fix it yet because the working directory has no Rust project in it. I searched `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/N05/ws` and found no `.github/` workflows, no `Cargo.toml` or `Cargo.lock`, and no `.rs`, `.yml`, `.yaml` or `.toml` files.\n\nCould you do one of these?\n- Point me to the right directory or repo, if the project is somewhere else.\n- Paste the workflow file, usually `.github/workflows/*.yml`, along with the failing cache step's log output.\n\nFlaky cache steps in Rust projects usually come from a few causes. Which one it is depends on your workflow:\n- **Cache key:** the key doesn't hash `Cargo.lock`, or it includes something that changes every run.\n- **Cached paths:** the `target/` directory is cached whole, so the cache grows until it hits size limits or restores stale artifacts.\n- **Parallel jobs:** several jobs write the same key, so saves collide with \"Unable to reserve cache\" errors.\n- **Toolchain drift:** the Rust version isn't in the key, so an old cache gets restored after a toolchain update.\n\nOnce I can see the workflow, I can tell you which of these applies and fix it."
+  ]
+}

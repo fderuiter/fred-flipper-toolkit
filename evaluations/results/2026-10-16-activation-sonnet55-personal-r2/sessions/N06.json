@@ -1,0 +1,58 @@
+{
+  "id": "N06",
+  "kind": "negative",
+  "prompt": "What's a good name for my cat? She likes dolphins.",
+  "started": "2026-10-16T18:42:56+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.048839099999999996,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 343,
+      "cache_read_input_tokens": 5291,
+      "cache_creation_input_tokens": 11219
+    },
+    "text": "Here are some dolphin-inspired names for her:\n\n**Direct dolphin nods**\n- **Flipper**: the classic TV dolphin\n- **Delphi**: from *Delphinus*, the dolphin constellation\n- **Finley** or **Finn**: playful and a bit fin-themed\n\n**Ocean and sea vibes**\n- **Marina**\n- **Nerida**: Greek for \"sea nymph\"\n- **Coral**\n- **Pearl**\n- **Misty**: sea mist\n\n**Cute and quirky**\n- **Echo**: dolphins use echolocation\n- **Splash**\n- **Bubbles**\n- **Pod**: a group of dolphins, and it's short and funny for a cat\n\n**My pick:** **Delphi**. It sounds elegant, it's a real link to the Latin and Greek roots of \"dolphin,\" and it works well as a cat name. **Echo** is a close second if she's chatty.\n\nIf you tell me her color or personality (sleek and gray, sassy, sleepy), I can narrow the list."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "Here are some dolphin-inspired names for her:\n\n**Direct dolphin nods**\n- **Flipper**: the classic TV dolphin\n- **Delphi**: from *Delphinus*, the dolphin constellation\n- **Finley** or **Finn**: playful and a bit fin-themed\n\n**Ocean and sea vibes**\n- **Marina**\n- **Nerida**: Greek for \"sea nymph\"\n- **Coral**\n- **Pearl**\n- **Misty**: sea mist\n\n**Cute and quirky**\n- **Echo**: dolphins use echolocation\n- **Splash**\n- **Bubbles**\n- **Pod**: a group of dolphins, and it's short and funny for a cat\n\n**My pick:** **Delphi**. It sounds elegant, it's a real link to the Latin and Greek roots of \"dolphin,\" and it works well as a cat name. **Echo** is a close second if she's chatty.\n\nIf you tell me her color or personality (sleek and gray, sassy, sleepy), I can narrow the list."
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "id": "N05",
+  "kind": "negative",
+  "prompt": "Fix the flaky GitHub Actions cache step in my Rust project.",
+  "started": "2026-10-16T18:43:54+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0575221,
+    "num_turns": 4,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 566,
+      "cache_read_input_tokens": 38581,
+      "cache_creation_input_tokens": 11998
+    },
+    "text": "I couldn't find anything to fix. The working directory (`/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/N05/ws`) has no `.github/` workflows, no `Cargo.toml` or `Cargo.lock`, and no Rust source. The only files in it are Flipper Zero skill docs under `.claude/skills/`. It's also not a git repository.\n\nIs the project in a different directory, or did it not get copied into this session? If you can point me to it, I'll look at the workflow. You could also paste the workflow YAML and the failing cache step's log.\n\nRust cache flakiness usually comes from a few causes, which I'd check first:\n- **Cache key:** the key doesn't include `Cargo.lock` or the toolchain version, so restores are stale or miss.\n- **Cached paths:** `target/` is cached along with `~/.cargo/registry`, which makes the cache huge or corrupt.\n- **Concurrent saves:** parallel matrix jobs save to the same key and collide.\n- **Cache action:** the job uses a hand-rolled `actions/cache` setup instead of `Swatinem/rust-cache`, which handles most of this for you."
+  },
+  "tool_events": [
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": ".github/**/*.{yml,yaml}"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "Cargo.*"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I couldn't find anything to fix. The working directory (`/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/N05/ws`) has no `.github/` workflows, no `Cargo.toml` or `Cargo.lock`, and no Rust source. The only files in it are Flipper Zero skill docs under `.claude/skills/`. It's also not a git repository.\n\nIs the project in a different directory, or did it not get copied into this session? If you can point me to it, I'll look at the workflow. You could also paste the workflow YAML and the failing cache step's log.\n\nRust cache flakiness usually comes from a few causes, which I'd check first:\n- **Cache key:** the key doesn't include `Cargo.lock` or the toolchain version, so restores are stale or miss.\n- **Cached paths:** `target/` is cached along with `~/.cargo/registry`, which makes the cache huge or corrupt.\n- **Concurrent saves:** parallel matrix jobs save to the same key and collide.\n- **Cache action:** the job uses a hand-rolled `actions/cache` setup instead of `Swatinem/rust-cache`, which handles most of this for you."
+  ]
+}

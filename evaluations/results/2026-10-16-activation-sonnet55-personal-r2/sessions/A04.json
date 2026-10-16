@@ -1,0 +1,98 @@
+{
+  "id": "A04",
+  "kind": "ambiguous",
+  "prompt": "Here's a 2022 tutorial using `furi_alloc` and `furi_record_open(\"gui\")` without close \u2014 update it for my FAP.",
+  "started": "2026-10-16T18:43:06+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-core",
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-native"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-native"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0708699,
+    "num_turns": 6,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1042,
+      "cache_read_input_tokens": 40419,
+      "cache_creation_input_tokens": 14099
+    },
+    "text": "I can't update the tutorial yet. Two things are missing, and I couldn't get past either one.\n\n1. **I couldn't read the skill's reference files.** The Flipper native skill tells me to read its shared engineering and evidence rules before changing any code. Both reads were denied because those files sit outside the working directory, and nobody can approve prompts in this session. The skill says not to continue from memory when that happens, so I've stopped.\n\n2. **The workspace is empty.** `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A04/ws` has no files. I have neither the tutorial text nor your FAP source (`application.fam`, the `.c` files).\n\nTo go ahead, I need these from you:\n- **The tutorial and your FAP:** put them in the workspace, or paste the tutorial text here.\n- **Your target firmware or SDK:** for example, official firmware at a specific release. I'll check each API against that firmware's `api_symbols.csv`.\n- **The reference files:** either copy `flipper-core/references/` into the workspace, or allow reads from the skill directory.\n\nHere is what I expect to change, based on the two patterns you named. I haven't checked any of it against your code or SDK.\n- **`furi_alloc`:** I believe it isn't a current API. In your code it would normally become `malloc`/`free`, or a typed alloc function such as `view_port_alloc()`. I'll confirm which once I see your code.\n- **`furi_record_open(\"gui\")` with no close:** this leaks the record. Every open needs a matching `furi_record_close`, and the tutorial should use the `RECORD_GUI` macro instead of a string literal. The close belongs in teardown, after removing the view port from the GUI and before freeing it. Also, a failed init must still clean up whatever it already opened."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A04/config/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A04/config/skills/flipper-core/references/evidence-policy.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't update the tutorial yet. Two things are missing, and I couldn't get past either one.\n\n1. **I couldn't read the skill's reference files.** The Flipper native skill tells me to read its shared engineering and evidence rules before changing any code. Both reads were denied because those files sit outside the working directory, and nobody can approve prompts in this session. The skill says not to continue from memory when that happens, so I've stopped.\n\n2. **The workspace is empty.** `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A04/ws` has no files. I have neither the tutorial text nor your FAP source (`application.fam`, the `.c` files).\n\nTo go ahead, I need these from you:\n- **The tutorial and your FAP:** put them in the workspace, or paste the tutorial text here.\n- **Your target firmware or SDK:** for example, official firmware at a specific release. I'll check each API against that firmware's `api_symbols.csv`.\n- **The reference files:** either copy `flipper-core/references/` into the workspace, or allow reads from the skill directory.\n\nHere is what I expect to change, based on the two patterns you named. I haven't checked any of it against your code or SDK.\n- **`furi_alloc`:** I believe it isn't a current API. In your code it would normally become `malloc`/`free`, or a typed alloc function such as `view_port_alloc()`. I'll confirm which once I see your code.\n- **`furi_record_open(\"gui\")` with no close:** this leaks the record. Every open needs a matching `furi_record_close`, and the tutorial should use the `RECORD_GUI` macro instead of a string literal. The close belongs in teardown, after removing the view port from the GUI and before freeing it. Also, a failed init must still clean up whatever it already opened."
+  ]
+}

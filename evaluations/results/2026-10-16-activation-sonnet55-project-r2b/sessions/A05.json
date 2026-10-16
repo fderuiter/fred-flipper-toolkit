@@ -1,0 +1,102 @@
+{
+  "id": "A05",
+  "kind": "ambiguous",
+  "prompt": "I don't have an SDK installed or a Flipper with me. Can you confirm my app works?",
+  "started": "2026-10-16T18:44:05+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0879779,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1011,
+      "cache_read_input_tokens": 40599,
+      "cache_creation_input_tokens": 18449
+    },
+    "text": "I can't confirm your app works, because there's no app in this workspace to check. The only files here are the FRED skill and reference files under `.claude/skills/`. I found no `application.fam`, no C sources, no icons and no `dist/` folder.\n\nEven with the source, I couldn't confirm it works in this session, for two reasons:\n\n- **Compiling:** There's no trusted SDK or toolchain here. I'd mark the compile check `blocked`, not `pass`. Downloading the SDK needs your explicit go-ahead. I'd tell you the exact source, version pin and effects first. I'd pin it to the official 1.5.1 baseline (commit `9e810dc`, API 88.2) so the setup doesn't silently pick the moving release channel.\n- **Device behavior:** With no Flipper, nothing about UI, teardown, GPIO or radio can be marked as passing. A successful build, host tests or an emulator wouldn't change that. I'd write a device test plan for you to run later.\n\nWithout hardware or an SDK, I could still do these:\n1. Read the manifest (`application.fam`) and any build hooks, since FAM is executable Python.\n2. Check the imports and API calls against the 1.5.1 exports.\n3. Review the code for lifecycle, ownership and callback-context bugs.\n4. Run host tests on any parser logic.\n5. Give you a report that lists each check as pass, fail, blocked or not-run.\n\nCould you add the app's source to this workspace, for example by uploading it or pointing me at a repo? Then I'll start with the manifest and API check. Tell me if you also want to authorize an SDK download."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/A05/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/A05/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/A05/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't confirm your app works, because there's no app in this workspace to check. The only files here are the FRED skill and reference files under `.claude/skills/`. I found no `application.fam`, no C sources, no icons and no `dist/` folder.\n\nEven with the source, I couldn't confirm it works in this session, for two reasons:\n\n- **Compiling:** There's no trusted SDK or toolchain here. I'd mark the compile check `blocked`, not `pass`. Downloading the SDK needs your explicit go-ahead. I'd tell you the exact source, version pin and effects first. I'd pin it to the official 1.5.1 baseline (commit `9e810dc`, API 88.2) so the setup doesn't silently pick the moving release channel.\n- **Device behavior:** With no Flipper, nothing about UI, teardown, GPIO or radio can be marked as passing. A successful build, host tests or an emulator wouldn't change that. I'd write a device test plan for you to run later.\n\nWithout hardware or an SDK, I could still do these:\n1. Read the manifest (`application.fam`) and any build hooks, since FAM is executable Python.\n2. Check the imports and API calls against the 1.5.1 exports.\n3. Review the code for lifecycle, ownership and callback-context bugs.\n4. Run host tests on any parser logic.\n5. Give you a report that lists each check as pass, fail, blocked or not-run.\n\nCould you add the app's source to this workspace, for example by uploading it or pointing me at a repo? Then I'll start with the manifest and API check. Tell me if you also want to authorize an SDK download."
+  ]
+}

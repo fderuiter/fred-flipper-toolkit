@@ -1,0 +1,75 @@
+{
+  "id": "A02",
+  "kind": "ambiguous",
+  "prompt": "Use RECORD_PASSTHROUGH to share my app state with the GUI service.",
+  "started": "2026-10-16T18:37:40+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-core",
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": false,
+  "reasons": [
+    "missing expected ['flipper-native']"
+  ],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0658969,
+    "num_turns": 3,
+    "usage": {
+      "input_tokens": 4,
+      "output_tokens": 782,
+      "cache_read_input_tokens": 21249,
+      "cache_creation_input_tokens": 13986
+    },
+    "text": "`RECORD_PASSTHROUGH` isn't a real Flipper Zero API, so I can't use it to share your app state with the GUI service.\n\nThe workspace has no app source, only the Flipper skill references. Those references say the same thing. `RECORD_PASSTHROUGH` is not defined in the pinned firmware's `api_symbols.csv` or in the public headers (rule C-REC-002 in `.claude/skills/flipper-core/references/sources.json`). If I wrote code that used it, the build would fail or I'd be inventing an API.\n\nWhat the GUI service is, and how to share state with it, depends on what you're doing:\n\n- **Your app draws its own UI.** Keep state in your own struct, guarded by a mutex. Draw it from a `ViewPort` draw callback, and call `view_port_update()` when the state changes. Open the GUI with `furi_record_open(RECORD_GUI)` and close it with `furi_record_close(RECORD_GUI)` on exit. `RECORD_GUI` is the real record name.\n- **Several threads need the state.** Pass events through a `FuriMessageQueue` to the thread that owns the UI, rather than sharing raw state.\n- **You meant something else by \"GUI service\".** An example is a companion desktop app. In that case it would need a transport such as UART or USB CDC. Tell me which one.\n\nIf you saw `RECORD_PASSTHROUGH` in a doc, a snippet, or a fork's source, send me where. I can check whether it's a real symbol in that fork. If you tell me which of the cases above fits, I can write the code. If your app's source is somewhere else, point me to it and I'll work from that."
+  },
+  "tool_events": [
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "RECORD_PASSTHROUGH",
+        "output_mode": "content",
+        "-C": 3
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I'll search the workspace for RECORD_PASSTHROUGH first.",
+    "`RECORD_PASSTHROUGH` isn't a real Flipper Zero API, so I can't use it to share your app state with the GUI service.\n\nThe workspace has no app source, only the Flipper skill references. Those references say the same thing. `RECORD_PASSTHROUGH` is not defined in the pinned firmware's `api_symbols.csv` or in the public headers (rule C-REC-002 in `.claude/skills/flipper-core/references/sources.json`). If I wrote code that used it, the build would fail or I'd be inventing an API.\n\nWhat the GUI service is, and how to share state with it, depends on what you're doing:\n\n- **Your app draws its own UI.** Keep state in your own struct, guarded by a mutex. Draw it from a `ViewPort` draw callback, and call `view_port_update()` when the state changes. Open the GUI with `furi_record_open(RECORD_GUI)` and close it with `furi_record_close(RECORD_GUI)` on exit. `RECORD_GUI` is the real record name.\n- **Several threads need the state.** Pass events through a `FuriMessageQueue` to the thread that owns the UI, rather than sharing raw state.\n- **You meant something else by \"GUI service\".** An example is a companion desktop app. In that case it would need a transport such as UART or USB CDC. Tell me which one.\n\nIf you saw `RECORD_PASSTHROUGH` in a doc, a snippet, or a fork's source, send me where. I can check whether it's a real symbol in that fork. If you tell me which of the cases above fits, I can write the code. If your app's source is somewhere else, point me to it and I'll work from that."
+  ]
+}

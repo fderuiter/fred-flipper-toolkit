@@ -1,0 +1,101 @@
+{
+  "id": "A01",
+  "kind": "ambiguous",
+  "prompt": "Build my FAP with ufbt and then run `ufbt test` to make sure it works.",
+  "started": "2026-10-16T18:37:38+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0887264,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1034,
+      "cache_read_input_tokens": 39584,
+      "cache_creation_input_tokens": 18604
+    },
+    "text": "I couldn't build anything, and I haven't run `ufbt test`.\n\n**Build: blocked.** The working directory has no FAP project in it. There is no `application.fam`, no C sources, and no `dist/` directory. The only files are the `.claude/skills/flipper-*` documentation. With no manifest, `ufbt` has nothing to build.\n\n**`ufbt test`: not run.** That subcommand doesn't exist in ufbt, so it would fail with an unknown-command error whatever the project looked like. It wouldn't tell you anything about your app. The checks ufbt does offer are:\n- `ufbt` builds the FAP.\n- `ufbt lint` checks formatting and naming only. It is not a test and doesn't show the app works.\n- Host-side unit tests would need a separate harness, which I'd set up if your parsing or logic code can run off-device.\n- Behavior on a real Flipper can only be checked on the device. I can write a device test plan for you to run.\n\n**What I need from you:**\n1. The path to your FAP project, or the files copied into this workspace.\n2. Whether a trusted ufbt and SDK is already installed. A first `ufbt` run downloads an SDK and toolchain, and the default is the moving release channel. I'd rather pin it to official firmware 1.5.1 (API 88.2). I'll ask you before downloading anything.\n\nOnce the project is here, I'll read `application.fam` and any build hooks first, since the FAM file is executable Python. Then I'll build and report the exact command, versions, exit code and artifact hash."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/application.fam"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A01/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A01/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A01/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I couldn't build anything, and I haven't run `ufbt test`.\n\n**Build: blocked.** The working directory has no FAP project in it. There is no `application.fam`, no C sources, and no `dist/` directory. The only files are the `.claude/skills/flipper-*` documentation. With no manifest, `ufbt` has nothing to build.\n\n**`ufbt test`: not run.** That subcommand doesn't exist in ufbt, so it would fail with an unknown-command error whatever the project looked like. It wouldn't tell you anything about your app. The checks ufbt does offer are:\n- `ufbt` builds the FAP.\n- `ufbt lint` checks formatting and naming only. It is not a test and doesn't show the app works.\n- Host-side unit tests would need a separate harness, which I'd set up if your parsing or logic code can run off-device.\n- Behavior on a real Flipper can only be checked on the device. I can write a device test plan for you to run.\n\n**What I need from you:**\n1. The path to your FAP project, or the files copied into this workspace.\n2. Whether a trusted ufbt and SDK is already installed. A first `ufbt` run downloads an SDK and toolchain, and the default is the moving release channel. I'd rather pin it to official firmware 1.5.1 (API 88.2). I'll ask you before downloading anything.\n\nOnce the project is here, I'll read `application.fam` and any build hooks first, since the FAM file is executable Python. Then I'll build and report the exact command, versions, exit code and artifact hash."
+  ]
+}

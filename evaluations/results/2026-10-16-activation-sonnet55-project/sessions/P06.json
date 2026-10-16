@@ -1,0 +1,112 @@
+{
+  "id": "P06",
+  "kind": "positive",
+  "prompt": "My FAP freezes when I press Back while the worker thread is reading the SD card. Why?",
+  "started": "2026-10-16T18:37:11+00:00",
+  "expected": [
+    "flipper-review"
+  ],
+  "acceptable": [
+    "flipper-native"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-review"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-review"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.10251819999999999,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1515,
+      "cache_read_input_tokens": 61522,
+      "cache_creation_input_tokens": 20300
+    },
+    "text": "I can't point to the exact line yet, because the working directory has no `.c` or `.h` files. Everything below is a hypothesis from the usual teardown failure patterns, not a trace of your code. It's unreproduced and not checked against your source.\n\n**Most likely cause: the Back handler joins a worker that's stuck in an SD read.**\n1. Back runs in the GUI or dispatcher thread. The handler sets a stop flag and calls `furi_thread_join(worker)` there.\n2. The worker is blocked in a `storage_file_read` or `storage_file_open` call. The storage service can be slow, especially with a bad or slow card. The worker only checks the stop flag between calls, so it can't see the flag in time.\n3. The GUI thread then waits on the worker, which makes the UI look frozen.\n\nA second cause has the same symptom: the worker takes a mutex that the draw or input callback also needs, and the Back handler joins while holding that mutex. That is a deadlock.\n\n**Other things to check:**\n- **A stop request that never wakes the worker.** If the worker waits on a queue or semaphore with `FuriWaitForever` and the stop path only sets a flag, nothing wakes it. Post an event or use a bounded timeout.\n- **The Back event goes through a full queue.** If the worker fills the queue and the Back message is dropped or blocks on `furi_message_queue_put`, the exit never happens. Back/exit should use a flag or a path that can't be dropped.\n- **A timer callback is still running.** `furi_timer_stop` doesn't wait for a callback that's already running. Calling `furi_timer_free` or `furi_timer_flush` from the callback itself deadlocks the timer daemon.\n\n**Fix pattern, if it is the join:**\n1. Set an atomic or mutex-guarded `stopping` flag.\n2. Wake the worker with an event or message.\n3. Check the flag between chunked reads. Use small reads, not one huge read.\n4. Join outside any lock the worker needs.\n5. After the join, close the file handle and the storage record, and free the memory.\n\nTo confirm the cause, run it with `ufbt cli` logging and look for the last `FURI_LOG` line before the freeze. If it froze and didn't crash, the cause is a wait. If the device reboots into a crash screen, send me the crash text.\n\nPlease share the app source, especially the worker function, the Back/input callback, and the free/teardown function. Also tell me the firmware version and SDK. Then I can give you a traced finding with the exact line and a specific fix."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-review"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.[ch]"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P06/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P06/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.{c,h,fam}"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "join|worker|Back|storage",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P06/ws/.claude/skills/flipper-core/references/runtime-ui.md",
+        "output_mode": "content",
+        "-i": true,
+        "head_limit": 40
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't point to the exact line yet, because the working directory has no `.c` or `.h` files. Everything below is a hypothesis from the usual teardown failure patterns, not a trace of your code. It's unreproduced and not checked against your source.\n\n**Most likely cause: the Back handler joins a worker that's stuck in an SD read.**\n1. Back runs in the GUI or dispatcher thread. The handler sets a stop flag and calls `furi_thread_join(worker)` there.\n2. The worker is blocked in a `storage_file_read` or `storage_file_open` call. The storage service can be slow, especially with a bad or slow card. The worker only checks the stop flag between calls, so it can't see the flag in time.\n3. The GUI thread then waits on the worker, which makes the UI look frozen.\n\nA second cause has the same symptom: the worker takes a mutex that the draw or input callback also needs, and the Back handler joins while holding that mutex. That is a deadlock.\n\n**Other things to check:**\n- **A stop request that never wakes the worker.** If the worker waits on a queue or semaphore with `FuriWaitForever` and the stop path only sets a flag, nothing wakes it. Post an event or use a bounded timeout.\n- **The Back event goes through a full queue.** If the worker fills the queue and the Back message is dropped or blocks on `furi_message_queue_put`, the exit never happens. Back/exit should use a flag or a path that can't be dropped.\n- **A timer callback is still running.** `furi_timer_stop` doesn't wait for a callback that's already running. Calling `furi_timer_free` or `furi_timer_flush` from the callback itself deadlocks the timer daemon.\n\n**Fix pattern, if it is the join:**\n1. Set an atomic or mutex-guarded `stopping` flag.\n2. Wake the worker with an event or message.\n3. Check the flag between chunked reads. Use small reads, not one huge read.\n4. Join outside any lock the worker needs.\n5. After the join, close the file handle and the storage record, and free the memory.\n\nTo confirm the cause, run it with `ufbt cli` logging and look for the last `FURI_LOG` line before the freeze. If it froze and didn't crash, the cause is a wait. If the device reboots into a crash screen, send me the crash text.\n\nPlease share the app source, especially the worker function, the Back/input callback, and the free/teardown function. Also tell me the firmware version and SDK. Then I can give you a traced finding with the exact line and a specific fix."
+  ]
+}

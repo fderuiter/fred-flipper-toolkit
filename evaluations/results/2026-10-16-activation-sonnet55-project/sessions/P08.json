@@ -1,0 +1,125 @@
+{
+  "id": "P08",
+  "kind": "positive",
+  "prompt": "Firmware moved to a new API version; compare these two api_symbols.csv files and plan my app's migration.",
+  "started": "2026-10-16T18:37:11+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_paths": [
+    "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P08"
+  ],
+  "isolation_ok": false,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1004931,
+    "num_turns": 10,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1400,
+      "cache_read_input_tokens": 61571,
+      "cache_creation_input_tokens": 20080
+    },
+    "text": "I can't plan the migration yet. The workspace has no `api_symbols.csv` files and no app source. It holds only the `.claude/skills` directories. I couldn't look outside the workspace, because that search was denied.\n\n**What I need from you:**\n1. **The two CSVs.** Put the old and new `api_symbols.csv` in the working directory, for example `old/api_symbols.csv` and `new/api_symbols.csv`. Tell me the firmware version and commit each one comes from, plus the API version and target (for example f7). The target is in the CSV's `Version` row.\n2. **Your app's source.** I need the `application.fam` and the `.c` and `.h` files, so I can match changed symbols to your call sites.\n3. **Your build setup.** I need to know whether a trusted `ufbt` or SDK toolchain is already installed. I won't download an SDK or toolchain unless you tell me the exact source and pin you want. Without a trusted toolchain, the rebuild on the new API is marked `blocked`, not `pass`.\n\n**How I'll do the comparison once I have them:**\n- Diff the two tables by symbol name and entry type. Each symbol will be either removed, added, or changed in signature or status. For example, a `+` (exported) flag changing to `-` means the symbol is no longer exported.\n- Only the symbols your app actually uses matter, so I'll cross-reference them against your sources. Each affected call site gets a `file:line` and a proposed fix.\n- Check the `application.fam` fields and any build hooks against the new SDK.\n- Report each evidence field separately. The CSV diff is source-confirmed. A rebuild is `pass`, `fail` or `blocked`. Device behavior stays `not-run`, with a separate device test plan. Compiling doesn't prove it works on hardware.\n\nIf the CSVs are somewhere else on this machine, tell me the path. I may need that directory added to what I'm allowed to read. You can also paste the contents here."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/api_symbols.csv"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P08/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P08/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.csv"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/application.fam"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "Entry,Status,Name",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P08",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/P08/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't plan the migration yet. The workspace has no `api_symbols.csv` files and no app source. It holds only the `.claude/skills` directories. I couldn't look outside the workspace, because that search was denied.\n\n**What I need from you:**\n1. **The two CSVs.** Put the old and new `api_symbols.csv` in the working directory, for example `old/api_symbols.csv` and `new/api_symbols.csv`. Tell me the firmware version and commit each one comes from, plus the API version and target (for example f7). The target is in the CSV's `Version` row.\n2. **Your app's source.** I need the `application.fam` and the `.c` and `.h` files, so I can match changed symbols to your call sites.\n3. **Your build setup.** I need to know whether a trusted `ufbt` or SDK toolchain is already installed. I won't download an SDK or toolchain unless you tell me the exact source and pin you want. Without a trusted toolchain, the rebuild on the new API is marked `blocked`, not `pass`.\n\n**How I'll do the comparison once I have them:**\n- Diff the two tables by symbol name and entry type. Each symbol will be either removed, added, or changed in signature or status. For example, a `+` (exported) flag changing to `-` means the symbol is no longer exported.\n- Only the symbols your app actually uses matter, so I'll cross-reference them against your sources. Each affected call site gets a `file:line` and a proposed fix.\n- Check the `application.fam` fields and any build hooks against the new SDK.\n- Report each evidence field separately. The CSV diff is source-confirmed. A rebuild is `pass`, `fail` or `blocked`. Device behavior stays `not-run`, with a separate device test plan. Compiling doesn't prove it works on hardware.\n\nIf the CSVs are somewhere else on this machine, tell me the path. I may need that directory added to what I'm allowed to read. You can also paste the contents here."
+  ]
+}

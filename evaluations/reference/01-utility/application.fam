@@ -1,0 +1,10 @@
+# Reviewer-side reference solution for FRED task 01. MIT licensed, original.
+App(
+    appid="fred_tally",
+    name="Tally Counter",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="fred_tally_app",
+    requires=["gui"],
+    stack_size=1 * 1024,
+    fap_category="Tools",
+)

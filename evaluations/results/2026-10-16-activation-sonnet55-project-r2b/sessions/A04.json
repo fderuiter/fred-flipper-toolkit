@@ -1,0 +1,105 @@
+{
+  "id": "A04",
+  "kind": "ambiguous",
+  "prompt": "Here's a 2022 tutorial using `furi_alloc` and `furi_record_open(\"gui\")` without close \u2014 update it for my FAP.",
+  "started": "2026-10-16T18:44:03+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-core",
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-native"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/runtime-ui.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-native"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0973792,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1186,
+      "cache_read_input_tokens": 40872,
+      "cache_creation_input_tokens": 20355
+    },
+    "text": "I can't update anything yet, because the workspace has neither the tutorial nor your FAP. It holds only the `.claude/skills/` folders. There's no `application.fam`, no `.c` files and no tutorial text, and nothing was pasted into the message.\n\nPlease send either of these:\n- **The FAP source:** put the project in the working directory, or paste the files that matter (`application.fam` and the `.c` files).\n- **The tutorial:** paste the code, or put the file in the working directory.\n\nI haven't built or run anything.\n\nI already know what to change from the pinned baseline (official firmware 1.5.1, API 88.2):\n- **`furi_alloc`:** this isn't an established API at the baseline, so I won't carry it over. Use `malloc`/`free`, or a `*_alloc`/`*_free` pair for the Furi object you need. `malloc` crashes on out-of-memory instead of returning NULL, so a NULL check won't handle that case. Instead, bound sizes up front and check that `count \u00d7 size` can't overflow.\n- **`furi_record_open(\"gui\")`:** every open needs a matching `furi_record_close(RECORD_GUI)`, with the name taken from `<gui/gui.h>`. Closing goes last in teardown, after the ViewPort or ViewDispatcher is detached and freed. I'll also handle partial-init failure paths so an early error doesn't leak the record.\n- **Other 2022 patterns:** I'll check the rest against `api_symbols.csv` for your target SDK, since a header alone doesn't show that an API is available to a FAP. Examples are timer callbacks that free state, and input callbacks that block or do storage work.\n\nIf you tell me which firmware or SDK version you build against, I'll use that instead of the 1.5.1 baseline."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/A04/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/A04/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/A04/ws/.claude/skills/flipper-core/references/runtime-ui.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't update anything yet, because the workspace has neither the tutorial nor your FAP. It holds only the `.claude/skills/` folders. There's no `application.fam`, no `.c` files and no tutorial text, and nothing was pasted into the message.\n\nPlease send either of these:\n- **The FAP source:** put the project in the working directory, or paste the files that matter (`application.fam` and the `.c` files).\n- **The tutorial:** paste the code, or put the file in the working directory.\n\nI haven't built or run anything.\n\nI already know what to change from the pinned baseline (official firmware 1.5.1, API 88.2):\n- **`furi_alloc`:** this isn't an established API at the baseline, so I won't carry it over. Use `malloc`/`free`, or a `*_alloc`/`*_free` pair for the Furi object you need. `malloc` crashes on out-of-memory instead of returning NULL, so a NULL check won't handle that case. Instead, bound sizes up front and check that `count \u00d7 size` can't overflow.\n- **`furi_record_open(\"gui\")`:** every open needs a matching `furi_record_close(RECORD_GUI)`, with the name taken from `<gui/gui.h>`. Closing goes last in teardown, after the ViewPort or ViewDispatcher is detached and freed. I'll also handle partial-init failure paths so an early error doesn't leak the record.\n- **Other 2022 patterns:** I'll check the rest against `api_symbols.csv` for your target SDK, since a header alone doesn't show that an API is available to a FAP. Examples are timer callbacks that free state, and input callbacks that block or do storage work.\n\nIf you tell me which firmware or SDK version you build against, I'll use that instead of the 1.5.1 baseline."
+  ]
+}

@@ -1,0 +1,111 @@
+{
+  "id": "P05",
+  "kind": "positive",
+  "prompt": "Review this Flipper app's app_free() for use-after-free and leaks.",
+  "started": "2026-10-16T18:39:07+00:00",
+  "expected": [
+    "flipper-review"
+  ],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-native"
+  ],
+  "loaded_fred": [
+    "flipper-review"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-review"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.08833339999999999,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1110,
+      "cache_read_input_tokens": 62974,
+      "cache_creation_input_tokens": 17730
+    },
+    "text": "I can't review `app_free()` yet because the workspace has no source for it. A glob for `*.c`, `*.h`, `*.cpp`, `*.fam` and `*.py` found nothing, and a grep for `app_free` found no matches.\n\nThe only files here are the review skill's reference documents, so there is nothing to trace for use-after-free or leaks. I haven't guessed at the code or invented findings.\n\nTo go ahead, I need one of these:\n- The path to the app's source, if it is somewhere outside this working directory.\n- The code pasted here. `app_free()` plus the `app_alloc()` and struct definition would be the minimum. The timer, worker-thread, ViewPort and callback registrations matter most, because use-after-free in Flipper apps usually comes from a producer still running when teardown frees its state.\n\nOnce I have the code, I'll check these things:\n- Which producers exist: timers, worker threads, GUI and input callbacks, UART/IRQ callbacks.\n- Whether each producer is stopped and quiesced before the memory it touches is freed. `furi_timer_stop` doesn't wait for a running callback, so it doesn't count as quiescence.\n- Whether any thread join happens while holding a lock the thread needs.\n- Whether anything queued is drained before the queue is freed.\n- Whether GUI and record handling is balanced: `view_port_enabled_set(false)` then `gui_remove_view_port`, `furi_record_close`, and view and dispatcher teardown order.\n- Whether every allocation has a matching free, including on early-failure paths in `app_alloc()`.\n\nFindings will be ranked by severity. Each will give the interleaving, the consequence, an evidence level (source trace or hypothesis), and a fix."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-review"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "app_free",
+        "output_mode": "content"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P05/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P05/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.[ch]"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.{c,h,cpp,fam,py}",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P05/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't review `app_free()` yet because the workspace has no source for it. A glob for `*.c`, `*.h`, `*.cpp`, `*.fam` and `*.py` found nothing, and a grep for `app_free` found no matches.\n\nThe only files here are the review skill's reference documents, so there is nothing to trace for use-after-free or leaks. I haven't guessed at the code or invented findings.\n\nTo go ahead, I need one of these:\n- The path to the app's source, if it is somewhere outside this working directory.\n- The code pasted here. `app_free()` plus the `app_alloc()` and struct definition would be the minimum. The timer, worker-thread, ViewPort and callback registrations matter most, because use-after-free in Flipper apps usually comes from a producer still running when teardown frees its state.\n\nOnce I have the code, I'll check these things:\n- Which producers exist: timers, worker threads, GUI and input callbacks, UART/IRQ callbacks.\n- Whether each producer is stopped and quiesced before the memory it touches is freed. `furi_timer_stop` doesn't wait for a running callback, so it doesn't count as quiescence.\n- Whether any thread join happens while holding a lock the thread needs.\n- Whether anything queued is drained before the queue is freed.\n- Whether GUI and record handling is balanced: `view_port_enabled_set(false)` then `gui_remove_view_port`, `furi_record_close`, and view and dispatcher teardown order.\n- Whether every allocation has a matching free, including on early-failure paths in `app_alloc()`.\n\nFindings will be ranked by severity. Each will give the interleaving, the consequence, an evidence level (source trace or hypothesis), and a fix."
+  ]
+}

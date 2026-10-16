@@ -1,0 +1,71 @@
+{
+  "id": "N05",
+  "kind": "negative",
+  "prompt": "Fix the flaky GitHub Actions cache step in my Rust project.",
+  "started": "2026-10-16T18:45:03+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1243892,
+    "num_turns": 3,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 827,
+      "cache_read_input_tokens": 38326,
+      "cache_creation_input_tokens": 12520
+    },
+    "text": "I couldn't find a Rust project or a GitHub Actions workflow in this workspace, so I haven't changed anything. The working directory (`/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/N05/ws`) only has `.claude/skills/flipper-*` skill files. There's no `.github/workflows/*.yml`, `Cargo.toml` or `Cargo.lock`, and it isn't a git repository.\n\nTo fix it, I need one of these:\n- the repo in this workspace, or its path if it's somewhere else on this machine,\n- the workflow YAML pasted here, plus a log from a run where the cache step failed or missed,\n- or the GitHub repo name, if you want me to look at it with `gh`.\n\nCommon causes of a flaky Rust cache step, which I'll check first:\n- **The cache key includes something that changes every run**, like a timestamp, `github.sha` or the `target/` contents, so the cache never hits. It should be based on `hashFiles('**/Cargo.lock')`, the toolchain version and the OS.\n- **The whole `target/` directory is cached by hand**, which is huge and slow, and saving it can time out. `Swatinem/rust-cache@v2` handles this better than a hand-written `actions/cache` step.\n- **Parallel matrix jobs save to the same key**, which causes \"Unable to reserve cache\" errors. Add the matrix values to the key, or set a `shared-key` or `key` per job.\n- **The cache is outgrowing GitHub's 10 GB per-repo limit**, so entries get evicted. Clear out `target/` before saving, or cache less of it.\n- **The toolchain isn't pinned**, so a floating `stable` changes and invalidates the cache. Pin it in `rust-toolchain.toml`."
+  },
+  "tool_events": [
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/{*.yml,*.yaml,Cargo.toml,Cargo.lock}"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I couldn't find a Rust project or a GitHub Actions workflow in this workspace, so I haven't changed anything. The working directory (`/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/N05/ws`) only has `.claude/skills/flipper-*` skill files. There's no `.github/workflows/*.yml`, `Cargo.toml` or `Cargo.lock`, and it isn't a git repository.\n\nTo fix it, I need one of these:\n- the repo in this workspace, or its path if it's somewhere else on this machine,\n- the workflow YAML pasted here, plus a log from a run where the cache step failed or missed,\n- or the GitHub repo name, if you want me to look at it with `gh`.\n\nCommon causes of a flaky Rust cache step, which I'll check first:\n- **The cache key includes something that changes every run**, like a timestamp, `github.sha` or the `target/` contents, so the cache never hits. It should be based on `hashFiles('**/Cargo.lock')`, the toolchain version and the OS.\n- **The whole `target/` directory is cached by hand**, which is huge and slow, and saving it can time out. `Swatinem/rust-cache@v2` handles this better than a hand-written `actions/cache` step.\n- **Parallel matrix jobs save to the same key**, which causes \"Unable to reserve cache\" errors. Add the matrix values to the key, or set a `shared-key` or `key` per job.\n- **The cache is outgrowing GitHub's 10 GB per-repo limit**, so entries get evicted. Clear out `target/` before saving, or cache less of it.\n- **The toolchain isn't pinned**, so a floating `stable` changes and invalidates the cache. Pin it in `rust-toolchain.toml`."
+  ]
+}

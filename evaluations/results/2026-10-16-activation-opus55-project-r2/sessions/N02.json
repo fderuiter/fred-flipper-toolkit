@@ -1,0 +1,58 @@
+{
+  "id": "N02",
+  "kind": "negative",
+  "prompt": "How do I reverse a linked list in C?",
+  "started": "2026-10-16T18:44:59+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1172004,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 1107,
+      "cache_read_input_tokens": 4742,
+      "cache_creation_input_tokens": 11763
+    },
+    "text": "Reverse it in place by walking the list once and turning each `next` pointer around so it points to the previous node. This takes O(n) time and O(1) extra memory.\n\n```c\n#include <stdio.h>\n#include <stdlib.h>\n\nstruct node {\n    int value;\n    struct node *next;\n};\n\nstruct node *reverse(struct node *head)\n{\n    struct node *prev = NULL;\n\n    while (head != NULL) {\n        struct node *next = head->next;  /* save the rest of the list */\n        head->next = prev;               /* point this node backwards */\n        prev = head;                     /* move prev forward */\n        head = next;                     /* move head forward */\n    }\n    return prev;  /* prev is the new head */\n}\n```\n\n**How it works:** At each step, `prev` is the part you've already reversed and `head` is the part you haven't reached yet. You take one node off the front of the remaining part and put it at the front of the reversed part. When nothing is left, `prev` is the whole reversed list.\n\n```\nstart:   NULL    1 -> 2 -> 3 -> NULL\nstep 1:  1 -> NULL    2 -> 3 -> NULL\nstep 2:  2 -> 1 -> NULL    3 -> NULL\nstep 3:  3 -> 2 -> 1 -> NULL\n```\n\n**Usage:**\n\n```c\nstatic struct node *push(struct node *head, int value)\n{\n    struct node *n = malloc(sizeof *n);\n    if (!n) { perror(\"malloc\"); exit(1); }\n    n->value = value;\n    n->next = head;\n    return n;\n}\n\nstatic void print(const struct node *n)\n{\n    for (; n; n = n->next)\n        printf(\"%d \", n->value);\n    putchar('\\n');\n}\n\nint main(void)\n{\n    struct node *list = NULL;\n    for (int i = 5; i >= 1; i--)\n        list = push(list, i);      /* 1 2 3 4 5 */\n\n    print(list);\n    list = reverse(list);          /* reassign: the head changes! */\n    print(list);                   /* 5 4 3 2 1 */\n\n    while (list) {                 /* free */\n        struct node *next = list->next;\n        free(list);\n        list = next;\n    }\n    return 0;\n}\n```\n\n**Variants:**\n\n- **Pointer-to-pointer version:** Use this if you want the function to update the caller's head pointer itself:\n  ```c\n  void reverse_inplace(struct node **headp)\n  {\n      *headp = reverse(*headp);\n  }\n  ```\n- **Recursive version:** It's short, but it uses O(n) stack space and can overflow on long lists, so the loop version is usually better:\n  ```c\n  struct node *reverse_rec(struct node *head)\n  {\n      if (!head || !head->next)\n          return head;\n      struct node *rest = reverse_rec(head->next);\n      head->next->next = head;\n      head->next = NULL;\n      return rest;\n  }\n  ```\n- **Doubly linked list:** Swap `next` and `prev` in every node, then return the old tail as the new head.\n\n**Common mistakes:**\n\n- Forgetting to save `head->next` before you overwrite it. You lose the rest of the list.\n- Forgetting to reassign the head (`list = reverse(list)`). Your old head is now the tail, so the list looks like it has only one node."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "Reverse it in place by walking the list once and turning each `next` pointer around so it points to the previous node. This takes O(n) time and O(1) extra memory.\n\n```c\n#include <stdio.h>\n#include <stdlib.h>\n\nstruct node {\n    int value;\n    struct node *next;\n};\n\nstruct node *reverse(struct node *head)\n{\n    struct node *prev = NULL;\n\n    while (head != NULL) {\n        struct node *next = head->next;  /* save the rest of the list */\n        head->next = prev;               /* point this node backwards */\n        prev = head;                     /* move prev forward */\n        head = next;                     /* move head forward */\n    }\n    return prev;  /* prev is the new head */\n}\n```\n\n**How it works:** At each step, `prev` is the part you've already reversed and `head` is the part you haven't reached yet. You take one node off the front of the remaining part and put it at the front of the reversed part. When nothing is left, `prev` is the whole reversed list.\n\n```\nstart:   NULL    1 -> 2 -> 3 -> NULL\nstep 1:  1 -> NULL    2 -> 3 -> NULL\nstep 2:  2 -> 1 -> NULL    3 -> NULL\nstep 3:  3 -> 2 -> 1 -> NULL\n```\n\n**Usage:**\n\n```c\nstatic struct node *push(struct node *head, int value)\n{\n    struct node *n = malloc(sizeof *n);\n    if (!n) { perror(\"malloc\"); exit(1); }\n    n->value = value;\n    n->next = head;\n    return n;\n}\n\nstatic void print(const struct node *n)\n{\n    for (; n; n = n->next)\n        printf(\"%d \", n->value);\n    putchar('\\n');\n}\n\nint main(void)\n{\n    struct node *list = NULL;\n    for (int i = 5; i >= 1; i--)\n        list = push(list, i);      /* 1 2 3 4 5 */\n\n    print(list);\n    list = reverse(list);          /* reassign: the head changes! */\n    print(list);                   /* 5 4 3 2 1 */\n\n    while (list) {                 /* free */\n        struct node *next = list->next;\n        free(list);\n        list = next;\n    }\n    return 0;\n}\n```\n\n**Variants:**\n\n- **Pointer-to-pointer version:** Use this if you want the function to update the caller's head pointer itself:\n  ```c\n  void reverse_inplace(struct node **headp)\n  {\n      *headp = reverse(*headp);\n  }\n  ```\n- **Recursive version:** It's short, but it uses O(n) stack space and can overflow on long lists, so the loop version is usually better:\n  ```c\n  struct node *reverse_rec(struct node *head)\n  {\n      if (!head || !head->next)\n          return head;\n      struct node *rest = reverse_rec(head->next);\n      head->next->next = head;\n      head->next = NULL;\n      return rest;\n  }\n  ```\n- **Doubly linked list:** Swap `next` and `prev` in every node, then return the old tail as the new head.\n\n**Common mistakes:**\n\n- Forgetting to save `head->next` before you overwrite it. You lose the rest of the list.\n- Forgetting to reassign the head (`list = reverse(list)`). Your old head is now the tail, so the list looks like it has only one node."
+  ]
+}

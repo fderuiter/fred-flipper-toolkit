@@ -1,0 +1,104 @@
+{
+  "id": "A03",
+  "kind": "ambiguous",
+  "prompt": "This Momentum firmware example uses a momentum_* settings API; make it work on my official-firmware Flipper.",
+  "started": "2026-10-16T18:45:12+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [
+    "flipper-native",
+    "flipper-verify"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/compatibility.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.2187312,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1639,
+      "cache_read_input_tokens": 65276,
+      "cache_creation_input_tokens": 21608
+    },
+    "text": "I couldn't start the port because the example isn't in the workspace. The working directory only has the `.claude/skills/` files. Please paste the source, or drop the example's folder (its `.c`/`.h` files and `application.fam`) into the working directory.\n\n**What I can tell you now:**\n\n- **The `momentum_*` settings calls are Momentum-only.** Momentum is a separate firmware with its own set of functions available to apps. On official firmware those calls will either fail to compile or fail to load on the device. Changing the SDK version won't fix that; the calls have to be replaced.\n- **Official firmware has no shared settings store for apps.** The usual port is for the app to keep its own small settings file on the SD card. Each `momentum_settings.<field>` read becomes a field in the app's own settings struct. The app loads it at startup with safe defaults, checks the values, and saves it when they change. If the example has a settings screen, it moves into the app.\n- **Some settings may have no official equivalent.** If the example reads a Momentum-only system setting (for example a theme, asset pack or other firmware-wide option), that becomes a fixed default or an app-local option. It can't come from the system on official firmware.\n- **I haven't checked yet** whether the specific calls are missing from official firmware, or which official storage functions are available to apps. I'll check both against official firmware 1.5.1 (app API 88.2) once I see the code.\n\n**Things that would help:**\n\n1. **The example code.** This is the one thing I need to start.\n2. **Your Flipper's firmware version** (Settings \u2192 About, or the `info` screen in qFlipper). I'll assume official 1.5.1 if you don't know.\n3. **Whether `ufbt` is installed.** If not, I'll make the changes and tell you how to build them, but I won't report a successful build I didn't run.\n\nOnce I have the code, I'll list every Momentum-only call it uses, replace each one, and report what was built and what still needs a test on your Flipper."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core",
+        "args": "Port a Momentum firmware example using momentum_* settings API to official firmware"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A03/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A03/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A03/ws/.claude/skills/flipper-core/references/compatibility.md"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "(?i)momentum|FORK-001",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A03/ws/.claude/skills",
+        "output_mode": "content"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I couldn't start the port because the example isn't in the workspace. The working directory only has the `.claude/skills/` files. Please paste the source, or drop the example's folder (its `.c`/`.h` files and `application.fam`) into the working directory.\n\n**What I can tell you now:**\n\n- **The `momentum_*` settings calls are Momentum-only.** Momentum is a separate firmware with its own set of functions available to apps. On official firmware those calls will either fail to compile or fail to load on the device. Changing the SDK version won't fix that; the calls have to be replaced.\n- **Official firmware has no shared settings store for apps.** The usual port is for the app to keep its own small settings file on the SD card. Each `momentum_settings.<field>` read becomes a field in the app's own settings struct. The app loads it at startup with safe defaults, checks the values, and saves it when they change. If the example has a settings screen, it moves into the app.\n- **Some settings may have no official equivalent.** If the example reads a Momentum-only system setting (for example a theme, asset pack or other firmware-wide option), that becomes a fixed default or an app-local option. It can't come from the system on official firmware.\n- **I haven't checked yet** whether the specific calls are missing from official firmware, or which official storage functions are available to apps. I'll check both against official firmware 1.5.1 (app API 88.2) once I see the code.\n\n**Things that would help:**\n\n1. **The example code.** This is the one thing I need to start.\n2. **Your Flipper's firmware version** (Settings \u2192 About, or the `info` screen in qFlipper). I'll assume official 1.5.1 if you don't know.\n3. **Whether `ufbt` is installed.** If not, I'll make the changes and tell you how to build them, but I won't report a successful build I didn't run.\n\nOnce I have the code, I'll list every Momentum-only call it uses, replace each one, and report what was built and what still needs a test on your Flipper."
+  ]
+}

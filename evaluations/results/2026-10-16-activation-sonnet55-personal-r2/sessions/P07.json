@@ -1,0 +1,102 @@
+{
+  "id": "P07",
+  "kind": "positive",
+  "prompt": "Pin my uFBT build to the 1.5.1 SDK and tell me exactly what the build does and doesn't prove.",
+  "started": "2026-10-16T18:42:34+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/build-debug-release.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.074439,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1389,
+      "cache_read_input_tokens": 40130,
+      "cache_creation_input_tokens": 14131
+    },
+    "text": "I stopped without pinning anything, for two reasons.\n\n**1. The shared references couldn't be read.**\n- The flipper-verify skill requires `engineering-rules.md` and `evidence-policy.md` from flipper-core before it does anything. I also tried `build-debug-release.md`.\n- All three reads were denied. The files are outside the allowed working directories, and this session has no way to approve access.\n- The skill says to stop in that case and not continue from memory. So the message it requires is: **\"Broken installation: FRED shared references are missing. Install flipper-core, flipper-native, flipper-review and flipper-verify together as sibling directories.\"**\n- The files may exist and just be out of reach, so the installation may be fine. Either way I can't follow the skill's evidence rules from here.\n\n**2. There is no project in the working directory.**\n- A glob of `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P07/ws` returned nothing.\n- With no `application.fam`, sources, or existing uFBT state, there is nothing to pin and nothing to build.\n\n**What a 1.5.1 pin would and wouldn't prove**\nI haven't run anything, so this is what I expect, not a result. I'm not stating exact commands or hashes, since I'd have to take them from memory.\n- **What it would prove:** The pin would show that the project compiled, linked, and passed the SDK's import checks against the 1.5.1 SDK on the day you ran it. That holds only if you record the SDK version, its URL, its SHA-256, the toolchain version, and the build's exit code and log. A fresh build artifact with its own hash would also be part of that evidence.\n- **What it wouldn't prove:**\n  - It wouldn't show the app runs correctly on a Flipper. Compiling doesn't count as a device test.\n  - It wouldn't cover Momentum, Unleashed, or any other firmware. Each of those needs its own build and device test.\n  - It wouldn't catch logic, lifecycle, or parser bugs, and it wouldn't show catalog acceptance.\n  - Lint only checks formatting.\n  - A cached `dist/` artifact doesn't count as a fresh build.\n  - If the first-run bootstrap picks the moving release channel, the pin silently isn't 1.5.1. Bootstrap needs to be pinned too.\n- **Download authority:** Setting up uFBT with 1.5.1 downloads an SDK and toolchain. I'd need your go-ahead on the exact source and pin before doing that.\n\n**What I need from you**\n- Put the project in the working directory, or tell me where it is.\n- Allow reads of the skill's `flipper-core/references/` directory, or confirm the installation is intact.\n- Confirm I may download the 1.5.1 SDK and toolchain."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P07/config/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P07/config/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P07/config/skills/flipper-core/references/build-debug-release.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I stopped without pinning anything, for two reasons.\n\n**1. The shared references couldn't be read.**\n- The flipper-verify skill requires `engineering-rules.md` and `evidence-policy.md` from flipper-core before it does anything. I also tried `build-debug-release.md`.\n- All three reads were denied. The files are outside the allowed working directories, and this session has no way to approve access.\n- The skill says to stop in that case and not continue from memory. So the message it requires is: **\"Broken installation: FRED shared references are missing. Install flipper-core, flipper-native, flipper-review and flipper-verify together as sibling directories.\"**\n- The files may exist and just be out of reach, so the installation may be fine. Either way I can't follow the skill's evidence rules from here.\n\n**2. There is no project in the working directory.**\n- A glob of `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P07/ws` returned nothing.\n- With no `application.fam`, sources, or existing uFBT state, there is nothing to pin and nothing to build.\n\n**What a 1.5.1 pin would and wouldn't prove**\nI haven't run anything, so this is what I expect, not a result. I'm not stating exact commands or hashes, since I'd have to take them from memory.\n- **What it would prove:** The pin would show that the project compiled, linked, and passed the SDK's import checks against the 1.5.1 SDK on the day you ran it. That holds only if you record the SDK version, its URL, its SHA-256, the toolchain version, and the build's exit code and log. A fresh build artifact with its own hash would also be part of that evidence.\n- **What it wouldn't prove:**\n  - It wouldn't show the app runs correctly on a Flipper. Compiling doesn't count as a device test.\n  - It wouldn't cover Momentum, Unleashed, or any other firmware. Each of those needs its own build and device test.\n  - It wouldn't catch logic, lifecycle, or parser bugs, and it wouldn't show catalog acceptance.\n  - Lint only checks formatting.\n  - A cached `dist/` artifact doesn't count as a fresh build.\n  - If the first-run bootstrap picks the moving release channel, the pin silently isn't 1.5.1. Bootstrap needs to be pinned too.\n- **Download authority:** Setting up uFBT with 1.5.1 downloads an SDK and toolchain. I'd need your go-ahead on the exact source and pin before doing that.\n\n**What I need from you**\n- Put the project in the working directory, or tell me where it is.\n- Allow reads of the skill's `flipper-core/references/` directory, or confirm the installation is intact.\n- Confirm I may download the 1.5.1 SDK and toolchain."
+  ]
+}

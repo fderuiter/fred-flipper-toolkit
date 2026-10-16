@@ -1,0 +1,57 @@
+{
+  "id": "N01",
+  "kind": "negative",
+  "prompt": "Proofread this blog paragraph: 'I took my Flipper Zero to DEF CON and it was a hit.'",
+  "started": "2026-10-16T18:37:29+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.049948200000000005,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 237,
+      "cache_read_input_tokens": 4742,
+      "cache_creation_input_tokens": 11775
+    },
+    "text": "The sentence is already correct. There are no spelling, grammar, or punctuation errors:\n\n\"I took my Flipper Zero to DEF CON and it was a hit.\"\n\n\"Flipper Zero\" and \"DEF CON\" are capitalized the way their owners write them.\n\nI have two optional style suggestions:\n\n- **Pronoun clarity:** \"it\" could mean the Flipper Zero or DEF CON. Most readers will take it to mean the Flipper. To be explicit, you could write \"...and it was a hit with the crowd\" or \"...and the Flipper was a hit.\"\n- **Detail:** \"a hit\" is a bit generic. Adding a specific, like \"people kept asking me to demo it,\" would make the paragraph more vivid."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "The sentence is already correct. There are no spelling, grammar, or punctuation errors:\n\n\"I took my Flipper Zero to DEF CON and it was a hit.\"\n\n\"Flipper Zero\" and \"DEF CON\" are capitalized the way their owners write them.\n\nI have two optional style suggestions:\n\n- **Pronoun clarity:** \"it\" could mean the Flipper Zero or DEF CON. Most readers will take it to mean the Flipper. To be explicit, you could write \"...and it was a hit with the crowd\" or \"...and the Flipper was a hit.\"\n- **Detail:** \"a hit\" is a bit generic. Adding a specific, like \"people kept asking me to demo it,\" would make the paragraph more vivid."
+  ]
+}

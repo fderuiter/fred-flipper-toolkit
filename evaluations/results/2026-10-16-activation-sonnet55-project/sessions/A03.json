@@ -1,0 +1,108 @@
+{
+  "id": "A03",
+  "kind": "ambiguous",
+  "prompt": "This Momentum firmware example uses a momentum_* settings API; make it work on my official-firmware Flipper.",
+  "started": "2026-10-16T18:37:41+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [
+    "flipper-native",
+    "flipper-verify"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-native"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-native"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": false,
+  "reasons": [
+    "missing expected ['flipper-core']"
+  ],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0878536,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 843,
+      "cache_read_input_tokens": 40236,
+      "cache_creation_input_tokens": 18847
+    },
+    "text": "I can't find the Momentum example in the workspace. Apart from the `.claude/skills` files, it's empty, and nothing contains `momentum_` or an `application.fam`.\n\nCan you give me one of these?\n- The path to the example, if it's somewhere else on this machine.\n- The code pasted into the chat.\n- A repo or file URL.\n\nWith the code I'll port it to official firmware. The baseline is 1.5.1 (API 88.2, f7). The fork's `momentum_*` settings calls aren't in the official API table, so I'll check each one against the exports rather than guess. Where there's no official equivalent, I'll replace it with your own settings file in the app's data directory. Settings from the Momentum file won't carry over automatically.\n\nIf you're on a different official version, tell me which, because the exports differ between releases."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A03/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A03/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "momentum_|application\\.fam",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project/A03/ws",
+        "glob": "!.claude/**",
+        "output_mode": "files_with_matches"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't find the Momentum example in the workspace. Apart from the `.claude/skills` files, it's empty, and nothing contains `momentum_` or an `application.fam`.\n\nCan you give me one of these?\n- The path to the example, if it's somewhere else on this machine.\n- The code pasted into the chat.\n- A repo or file URL.\n\nWith the code I'll port it to official firmware. The baseline is 1.5.1 (API 88.2, f7). The fork's `momentum_*` settings calls aren't in the official API table, so I'll check each one against the exports rather than guess. Where there's no official equivalent, I'll replace it with your own settings file in the app's data directory. Settings from the Momentum file won't carry over automatically.\n\nIf you're on a different official version, tell me which, because the exports differ between releases."
+  ]
+}

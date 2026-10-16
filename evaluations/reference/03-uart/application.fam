@@ -1,0 +1,10 @@
+# Reviewer-side reference solution for FRED task 03. MIT licensed, original.
+App(
+    appid="fred_soil_uart",
+    name="Soil Sensor (UART)",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="fred_soil_uart_app",
+    requires=["gui"],
+    stack_size=2 * 1024,
+    fap_category="GPIO",
+)

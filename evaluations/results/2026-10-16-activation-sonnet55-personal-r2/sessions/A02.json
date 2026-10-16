@@ -1,0 +1,76 @@
+{
+  "id": "A02",
+  "kind": "ambiguous",
+  "prompt": "Use RECORD_PASSTHROUGH to share my app state with the GUI service.",
+  "started": "2026-10-16T18:43:03+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-core",
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": false,
+  "reasons": [
+    "missing expected ['flipper-native']"
+  ],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.053682099999999996,
+    "num_turns": 3,
+    "usage": {
+      "input_tokens": 4,
+      "output_tokens": 520,
+      "cache_read_input_tokens": 21821,
+      "cache_creation_input_tokens": 11573
+    },
+    "text": "I can't do this yet. The workspace is empty, and `RECORD_PASSTHROUGH` doesn't appear anywhere in it. I also have no tool, function, or skill by that name, so I don't know what it does or how it connects to the GUI service.\n\nI'd rather not guess. A guess could send your app state to the wrong place.\n\nCould you tell me one of these?\n- **Where it lives:** the path to the project or library that defines `RECORD_PASSTHROUGH`. It may be an env var, config flag, API call, or CLI option.\n- **How it's used:** the GUI service's endpoint or docs, and which parts of the app state you want shared.\n- **Which app:** if the app isn't in this directory, where it is.\n\nOnce I can see what `RECORD_PASSTHROUGH` is, I'll set it up. I'll check with you before sending anything to an external service."
+  },
+  "tool_events": [
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "RECORD_PASSTHROUGH",
+        "output_mode": "content",
+        "-C": 5
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I'll start by searching the workspace for `RECORD_PASSTHROUGH`.",
+    "I can't do this yet. The workspace is empty, and `RECORD_PASSTHROUGH` doesn't appear anywhere in it. I also have no tool, function, or skill by that name, so I don't know what it does or how it connects to the GUI service.\n\nI'd rather not guess. A guess could send your app state to the wrong place.\n\nCould you tell me one of these?\n- **Where it lives:** the path to the project or library that defines `RECORD_PASSTHROUGH`. It may be an env var, config flag, API call, or CLI option.\n- **How it's used:** the GUI service's endpoint or docs, and which parts of the app state you want shared.\n- **Which app:** if the app isn't in this directory, where it is.\n\nOnce I can see what `RECORD_PASSTHROUGH` is, I'll set it up. I'll check with you before sending anything to an external service."
+  ]
+}

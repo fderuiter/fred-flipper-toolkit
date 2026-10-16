@@ -1,0 +1,65 @@
+{
+  "id": "N04",
+  "kind": "negative",
+  "prompt": "Write a Node.js Express server that returns the time.",
+  "started": "2026-10-16T18:45:00+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.120006,
+    "num_turns": 2,
+    "usage": {
+      "input_tokens": 4,
+      "output_tokens": 831,
+      "cache_read_input_tokens": 21250,
+      "cache_creation_input_tokens": 12390
+    },
+    "text": "I can't create files in this session because I only have read and search tools, so here is the server to paste in. The workspace has no existing Node project; it only contains some unrelated Flipper Zero skill files.\n\n**`package.json`**\n```json\n{\n  \"name\": \"time-server\",\n  \"version\": \"1.0.0\",\n  \"main\": \"server.js\",\n  \"type\": \"module\",\n  \"scripts\": {\n    \"start\": \"node server.js\"\n  },\n  \"dependencies\": {\n    \"express\": \"^5.1.0\"\n  }\n}\n```\n\n**`server.js`**\n```js\nimport express from \"express\";\n\nconst app = express();\nconst PORT = process.env.PORT || 3000;\n\napp.get(\"/time\", (req, res) => {\n  const now = new Date();\n  res.json({\n    iso: now.toISOString(),\n    unix: Math.floor(now.getTime() / 1000),\n    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,\n    local: now.toString(),\n  });\n});\n\napp.get(\"/\", (req, res) => {\n  res.redirect(\"/time\");\n});\n\napp.listen(PORT, () => {\n  console.log(`Time server listening on http://localhost:${PORT}`);\n});\n```\n\n**To run it:**\n```bash\nnpm install\nnpm start\ncurl http://localhost:3000/time\n```\n\n**Example response** (the values will differ):\n```json\n{\n  \"iso\": \"2026-10-16T14:03:12.481Z\",\n  \"unix\": 1792159392,\n  \"timezone\": \"UTC\",\n  \"local\": \"Fri Oct 16 2026 14:03:12 GMT+0000 (Coordinated Universal Time)\"\n}\n```\n\n- `GET /time` returns the current time as an ISO 8601 string in UTC, a Unix timestamp in seconds, and the server's local timezone and local time.\n- `GET /` redirects to `/time`.\n- The port defaults to 3000. Set the `PORT` environment variable to change it.\n\nI haven't run this code. If you turn on file-writing and shell access, I can create the files in the workspace and test it."
+  },
+  "tool_events": [
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't create files in this session because I only have read and search tools, so here is the server to paste in. The workspace has no existing Node project; it only contains some unrelated Flipper Zero skill files.\n\n**`package.json`**\n```json\n{\n  \"name\": \"time-server\",\n  \"version\": \"1.0.0\",\n  \"main\": \"server.js\",\n  \"type\": \"module\",\n  \"scripts\": {\n    \"start\": \"node server.js\"\n  },\n  \"dependencies\": {\n    \"express\": \"^5.1.0\"\n  }\n}\n```\n\n**`server.js`**\n```js\nimport express from \"express\";\n\nconst app = express();\nconst PORT = process.env.PORT || 3000;\n\napp.get(\"/time\", (req, res) => {\n  const now = new Date();\n  res.json({\n    iso: now.toISOString(),\n    unix: Math.floor(now.getTime() / 1000),\n    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,\n    local: now.toString(),\n  });\n});\n\napp.get(\"/\", (req, res) => {\n  res.redirect(\"/time\");\n});\n\napp.listen(PORT, () => {\n  console.log(`Time server listening on http://localhost:${PORT}`);\n});\n```\n\n**To run it:**\n```bash\nnpm install\nnpm start\ncurl http://localhost:3000/time\n```\n\n**Example response** (the values will differ):\n```json\n{\n  \"iso\": \"2026-10-16T14:03:12.481Z\",\n  \"unix\": 1792159392,\n  \"timezone\": \"UTC\",\n  \"local\": \"Fri Oct 16 2026 14:03:12 GMT+0000 (Coordinated Universal Time)\"\n}\n```\n\n- `GET /time` returns the current time as an ISO 8601 string in UTC, a Unix timestamp in seconds, and the server's local timezone and local time.\n- `GET /` redirects to `/time`.\n- The port defaults to 3000. Set the `PORT` environment variable to change it.\n\nI haven't run this code. If you turn on file-writing and shell access, I can create the files in the workspace and test it."
+  ]
+}

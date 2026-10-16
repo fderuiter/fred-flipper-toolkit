@@ -1,0 +1,118 @@
+{
+  "id": "P07",
+  "kind": "positive",
+  "prompt": "Pin my uFBT build to the 1.5.1 SDK and tell me exactly what the build does and doesn't prove.",
+  "started": "2026-10-16T18:39:07+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/build-debug-release.md",
+    "flipper-core/references/compatibility.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.12157309999999999,
+    "num_turns": 9,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 2047,
+      "cache_read_input_tokens": 67871,
+      "cache_creation_input_tokens": 23575
+    },
+    "text": "I haven't pinned anything yet. The workspace has no Flipper project, and pinning would download an SDK and toolchain, which needs your go-ahead first.\n\n**What I found**\n- `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P07/ws` has no `application.fam`, no source files and no `dist/`. The only files are the `.claude/skills` folders.\n- So there is no uFBT build to pin yet. Either the project is somewhere else or it wasn't copied in. Where is it?\n\n**How I'd pin it once the project is here**\n1. Read `application.fam` and any build hooks first. The manifest is executable Python, so I read it before building and never evaluate it in a helper.\n2. Set `UFBT_HOME=$PWD/.ufbt-1.5.1` so your global `~/.ufbt` isn't touched.\n3. Run `ufbt update --branch=1.5.1`. This selects the 1.5.1 release tag instead of uFBT's default moving `release` channel [C-BASE-004].\n4. Check the downloaded SDK zip against SHA-256 `dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe`. That is the hash the update index publishes; no downloaded bytes have been checked [C-BASE-003]. The source is `https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip`.\n5. Run `ufbt` to build, and record the toolchain versions, the exit code and the SHA-256 of the new `dist/*.fap`.\n6. Optionally commit the pin as a small script or CI config that sets `UFBT_HOME` and runs `ufbt update --branch=1.5.1`.\n\n**Do you authorize the download?** The command downloads the SDK and toolchain and writes into `.ufbt-1.5.1`. I'll run it once you say yes and give me the project path.\n\n**What the build will prove**\n\n| Evidence | Status | Meaning |\n|---|---|---|\n| Baseline | Researched | Official 1.5.1, commit `9e810dc`, f7, API 88.2. Nothing has been compiled or run yet. |\n| Compiled | Not yet run | After a successful build: the source compiles and links against the 1.5.1 SDK headers and API table. Imports resolve at link time. |\n| `ufbt lint` | Formatting only | It isn't static analysis. There is no `ufbt test`. |\n| Host tests | Not run | They cover extracted logic only. |\n| Device behavior | Not run | See below. |\n\n**What the build will not prove**\n- **Device behavior.** UI, input handling, teardown, timing, memory pressure, radio and GPIO behavior all need a real Flipper.\n- **Load-time success on a device.** The device loader is the final authority on that.\n- **Other firmware.** Momentum, Unleashed and other forks are separate lineages and need their own builds and tests.\n- **Bit-for-bit reproducibility.** That needs matching hashes from two clean builds.\n- **Pinning scope.** The pin covers the SDK and toolchain. It doesn't pin the uFBT bootstrap (0.2.6 is the researched version), which `pip` installs separately. I'd record both.\n- **Fresh artifacts.** A cached `dist/` file from an earlier run doesn't count as a fresh build. I'd rebuild clean and hash the result.\n- **Catalog acceptance.** Building says nothing about the catalog's rules or review.\n\nDevice test cases would go in a separate plan. Nothing gets published or flashed as part of this."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P07/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P07/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P07/ws/.claude/skills/flipper-core/references/build-debug-release.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P07/ws/.claude/skills/flipper-core/references/compatibility.md"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "C-BASE-00[1-5]|C-BUILD-001",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P07/ws/.claude/skills/flipper-core/references/sources.json",
+        "output_mode": "content",
+        "-A": 6
+      }
+    }
+  ],
+  "assistant_text": [
+    "I haven't pinned anything yet. The workspace has no Flipper project, and pinning would download an SDK and toolchain, which needs your go-ahead first.\n\n**What I found**\n- `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P07/ws` has no `application.fam`, no source files and no `dist/`. The only files are the `.claude/skills` folders.\n- So there is no uFBT build to pin yet. Either the project is somewhere else or it wasn't copied in. Where is it?\n\n**How I'd pin it once the project is here**\n1. Read `application.fam` and any build hooks first. The manifest is executable Python, so I read it before building and never evaluate it in a helper.\n2. Set `UFBT_HOME=$PWD/.ufbt-1.5.1` so your global `~/.ufbt` isn't touched.\n3. Run `ufbt update --branch=1.5.1`. This selects the 1.5.1 release tag instead of uFBT's default moving `release` channel [C-BASE-004].\n4. Check the downloaded SDK zip against SHA-256 `dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe`. That is the hash the update index publishes; no downloaded bytes have been checked [C-BASE-003]. The source is `https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip`.\n5. Run `ufbt` to build, and record the toolchain versions, the exit code and the SHA-256 of the new `dist/*.fap`.\n6. Optionally commit the pin as a small script or CI config that sets `UFBT_HOME` and runs `ufbt update --branch=1.5.1`.\n\n**Do you authorize the download?** The command downloads the SDK and toolchain and writes into `.ufbt-1.5.1`. I'll run it once you say yes and give me the project path.\n\n**What the build will prove**\n\n| Evidence | Status | Meaning |\n|---|---|---|\n| Baseline | Researched | Official 1.5.1, commit `9e810dc`, f7, API 88.2. Nothing has been compiled or run yet. |\n| Compiled | Not yet run | After a successful build: the source compiles and links against the 1.5.1 SDK headers and API table. Imports resolve at link time. |\n| `ufbt lint` | Formatting only | It isn't static analysis. There is no `ufbt test`. |\n| Host tests | Not run | They cover extracted logic only. |\n| Device behavior | Not run | See below. |\n\n**What the build will not prove**\n- **Device behavior.** UI, input handling, teardown, timing, memory pressure, radio and GPIO behavior all need a real Flipper.\n- **Load-time success on a device.** The device loader is the final authority on that.\n- **Other firmware.** Momentum, Unleashed and other forks are separate lineages and need their own builds and tests.\n- **Bit-for-bit reproducibility.** That needs matching hashes from two clean builds.\n- **Pinning scope.** The pin covers the SDK and toolchain. It doesn't pin the uFBT bootstrap (0.2.6 is the researched version), which `pip` installs separately. I'd record both.\n- **Fresh artifacts.** A cached `dist/` file from an earlier run doesn't count as a fresh build. I'd rebuild clean and hash the result.\n- **Catalog acceptance.** Building says nothing about the catalog's rules or review.\n\nDevice test cases would go in a separate plan. Nothing gets published or flashed as part of this."
+  ]
+}

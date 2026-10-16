@@ -1,0 +1,103 @@
+{
+  "id": "A01",
+  "kind": "ambiguous",
+  "prompt": "Build my FAP with ufbt and then run `ufbt test` to make sure it works.",
+  "started": "2026-10-16T18:42:58+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/build-debug-release.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0722961,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1185,
+      "cache_read_input_tokens": 39861,
+      "cache_creation_input_tokens": 14112
+    },
+    "text": "I couldn't build or test anything. Two things stopped me, and `ufbt test` is a third problem.\n\n- **Shared references blocked.** The flipper-verify skill requires me to read its shared FRED reference files before running any checks. Those files are in the skill's `config/skills/flipper-core/references/` directory. Reading them was denied because the directory is outside the allowed working directories, and this session has no way to approve it. The skill says to stop in this case, so I did. I haven't worked around it from memory.\n- **No project to build.** The working directory `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A01/ws` is empty. There is no `application.fam`, no source and no `dist/`. If your FAP is somewhere else, tell me the path or copy it into the working directory.\n- **`ufbt test` isn't a real command.** ufbt has no `test` target, and the skill lists it as a command not to invent. If I ran it, the result wouldn't show your app works. A build with `ufbt` (the default target, or `ufbt faps`) is the real compile check. It proves the app compiles and links against the SDK and nothing more. Behavior needs host tests (if you have any) or a device test plan.\n\nI also have no shell tool in this session, so I couldn't run `ufbt` even with a project in place. A first `ufbt` run would also download an SDK and toolchain. By default that follows the moving release channel, so I'd want you to approve a pinned version first. Which firmware or SDK version are you targeting?\n\nTo continue, I need:\n1. Your FAP in the working directory.\n2. Read access to the skill's references directory, or confirmation that I can proceed without them.\n3. A shell and permission to run `ufbt`, with the SDK version to pin.\n\nUntil then, the compile status is **blocked**, not pass, and nothing has been tested."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A01/config/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A01/config/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A01/config/skills/flipper-core/references/build-debug-release.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A01/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I couldn't build or test anything. Two things stopped me, and `ufbt test` is a third problem.\n\n- **Shared references blocked.** The flipper-verify skill requires me to read its shared FRED reference files before running any checks. Those files are in the skill's `config/skills/flipper-core/references/` directory. Reading them was denied because the directory is outside the allowed working directories, and this session has no way to approve it. The skill says to stop in this case, so I did. I haven't worked around it from memory.\n- **No project to build.** The working directory `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A01/ws` is empty. There is no `application.fam`, no source and no `dist/`. If your FAP is somewhere else, tell me the path or copy it into the working directory.\n- **`ufbt test` isn't a real command.** ufbt has no `test` target, and the skill lists it as a command not to invent. If I ran it, the result wouldn't show your app works. A build with `ufbt` (the default target, or `ufbt faps`) is the real compile check. It proves the app compiles and links against the SDK and nothing more. Behavior needs host tests (if you have any) or a device test plan.\n\nI also have no shell tool in this session, so I couldn't run `ufbt` even with a project in place. A first `ufbt` run would also download an SDK and toolchain. By default that follows the moving release channel, so I'd want you to approve a pinned version first. Which firmware or SDK version are you targeting?\n\nTo continue, I need:\n1. Your FAP in the working directory.\n2. Read access to the skill's references directory, or confirmation that I can proceed without them.\n3. A shell and permission to run `ufbt`, with the SDK version to pin.\n\nUntil then, the compile status is **blocked**, not pass, and nothing has been tested."
+  ]
+}

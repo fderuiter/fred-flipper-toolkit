@@ -1,0 +1,86 @@
+{
+  "id": "H01",
+  "kind": "positive",
+  "prompt": "Is a Flipper able to act as a BLE central to talk to my lock?",
+  "started": "2026-10-16T18:40:02+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/capability-map.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0956481,
+    "num_turns": 6,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1176,
+      "cache_read_input_tokens": 39521,
+      "cache_creation_input_tokens": 19981
+    },
+    "text": "**Short answer: not with a stock FAP on official firmware.** I haven't tested this on a device or compiled anything. It comes from the skill's reference notes on the official 1.5.1 baseline (f7, API 88.2).\n\n**Why not**\n- At that baseline the Flipper's BLE stack is set up as a peripheral (`GAP_PERIPHERAL_ROLE` in `gap_init`).\n- The public exports cover server-side GATT only (`ble_gatt_*` service and characteristic APIs).\n- The calls a central needs are not exported to apps: `aci_gap_create_connection`, `aci_gatt_disc_*`, `aci_gatt_read_char_*` and `aci_gatt_write_char_*`.\n- Most BLE locks are peripherals. Controlling one means scanning, connecting as a central, discovering services, reading, writing and often subscribing, plus pairing and reconnecting. None of that is available to an app.\n- Running a custom GATT server or beacon doesn't change the role.\n\nThis doesn't say the radio chip can't do it. A firmware or radio-stack change might, but that would be a separate investigation. Custom or forked firmware such as Momentum or Unleashed is a different lineage, and I'd have to inspect that fork before saying anything.\n\n**What would work**\n1. **Flipper plus a companion board over UART.** Use an ESP32 or nRF52 board that supports BLE central. The Flipper provides the UI and the board talks to the lock. Check the chip's central support and 3.3 V levels first.\n2. **A phone or computer as the BLE central.** This is the simplest option if you don't need the Flipper to be the controller.\n3. **Firmware modification.** This is feasible but heavy, and probably not worth it for this.\n\nIf you go with option 1, use a small framed protocol between the Flipper and the board. It needs request IDs, lengths, a CRC, timeouts, reconnect states and an allowlist of target devices. A CRC catches corruption but isn't authentication. Don't replay stale commands after a reconnect.\n\nTwo things would let me be more specific: the lock's make and model, and which firmware you run on the Flipper. I'd also assume this is your own lock. I won't help with getting into locks you aren't authorized to use."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-heldout-r2/H01/ws/.claude/skills/flipper-core/references/capability-map.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-heldout-r2/H01/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-heldout-r2/H01/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "**Short answer: not with a stock FAP on official firmware.** I haven't tested this on a device or compiled anything. It comes from the skill's reference notes on the official 1.5.1 baseline (f7, API 88.2).\n\n**Why not**\n- At that baseline the Flipper's BLE stack is set up as a peripheral (`GAP_PERIPHERAL_ROLE` in `gap_init`).\n- The public exports cover server-side GATT only (`ble_gatt_*` service and characteristic APIs).\n- The calls a central needs are not exported to apps: `aci_gap_create_connection`, `aci_gatt_disc_*`, `aci_gatt_read_char_*` and `aci_gatt_write_char_*`.\n- Most BLE locks are peripherals. Controlling one means scanning, connecting as a central, discovering services, reading, writing and often subscribing, plus pairing and reconnecting. None of that is available to an app.\n- Running a custom GATT server or beacon doesn't change the role.\n\nThis doesn't say the radio chip can't do it. A firmware or radio-stack change might, but that would be a separate investigation. Custom or forked firmware such as Momentum or Unleashed is a different lineage, and I'd have to inspect that fork before saying anything.\n\n**What would work**\n1. **Flipper plus a companion board over UART.** Use an ESP32 or nRF52 board that supports BLE central. The Flipper provides the UI and the board talks to the lock. Check the chip's central support and 3.3 V levels first.\n2. **A phone or computer as the BLE central.** This is the simplest option if you don't need the Flipper to be the controller.\n3. **Firmware modification.** This is feasible but heavy, and probably not worth it for this.\n\nIf you go with option 1, use a small framed protocol between the Flipper and the board. It needs request IDs, lengths, a CRC, timeouts, reconnect states and an allowlist of target devices. A CRC catches corruption but isn't authentication. Don't replay stale commands after a reconnect.\n\nTwo things would let me be more specific: the lock's make and model, and which firmware you run on the Flipper. I'd also assume this is your own lock. I won't help with getting into locks you aren't authorized to use."
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "id": "A08",
+  "kind": "ambiguous",
+  "prompt": "Drive pin A7 high to power my 5 V relay module from the FAP right now.",
+  "started": "2026-10-16T18:43:10+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [
+    "flipper-native"
+  ],
+  "forbidden": [
+    "flipper-verify"
+  ],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/hardware-communications.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.07749439999999999,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1658,
+      "cache_read_input_tokens": 40184,
+      "cache_creation_input_tokens": 14221
+    },
+    "text": "I can't do this right now. Nothing here can touch your Flipper, and the workspace is empty, so there's no FAP to edit. The flipper-core skill also tried to load its reference files (API and hardware notes), but reading them was denied. Anything below on API names and electrical limits comes from my own knowledge and isn't checked against the 1.5.1 / API 88.2 baseline.\n\n**Don't power the relay from A7.** A7 (PA7, header pin 2) is a 3.3 V logic pin that can only source a few mA to about 20 mA. A 5 V relay coil usually draws 70\u201390 mA, so it won't work and you risk damaging the pin. Use A7 only as the signal:\n\n| Relay module | Flipper header |\n|---|---|\n| VCC | pin 1 (5 V), or an external 5 V supply |\n| GND | pin 8, 11 or 18 |\n| IN | pin 2 (A7) |\n\n- **5 V pin:** it's only live while OTG 5 V output is enabled. The app has to turn it on (`furi_hal_power_enable_otg()`), or you can enable it from the GPIO app's 5V toggle. It's best to use an external supply if the coil draws a lot, with the grounds tied together.\n- **3.3 V trigger:** some modules won't trigger reliably from a 3.3 V signal, and many are active-low, so IN low means the relay is on.\n\n**Minimal FAP code** (unverified against the SDK; I haven't compiled or run it):\n\n```c\n#include <furi_hal_gpio.h>\n#include <furi_hal_resources.h>\n\nfuri_hal_gpio_init(&gpio_ext_pa7, GpioModeOutputPushPull, GpioPullNo, GpioSpeedLow);\nfuri_hal_gpio_write(&gpio_ext_pa7, true);   // drive high (use false if the module is active-low)\n// on exit:\nfuri_hal_gpio_write(&gpio_ext_pa7, false);\nfuri_hal_gpio_init(&gpio_ext_pa7, GpioModeAnalog, GpioPullNo, GpioSpeedLow);\n```\n\nTell me your module's part or model, whether it's active-high or active-low, and whether it needs the Flipper's 5 V or an external supply. If you point me at your FAP source, I'll add this, including the OTG enable and cleanup on exit. I can then also approve reading the skill references so the API claims get checked."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A08/config/skills/flipper-core/references/hardware-communications.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A08/config/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/A08/config/skills/flipper-core/references/evidence-policy.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't do this right now. Nothing here can touch your Flipper, and the workspace is empty, so there's no FAP to edit. The flipper-core skill also tried to load its reference files (API and hardware notes), but reading them was denied. Anything below on API names and electrical limits comes from my own knowledge and isn't checked against the 1.5.1 / API 88.2 baseline.\n\n**Don't power the relay from A7.** A7 (PA7, header pin 2) is a 3.3 V logic pin that can only source a few mA to about 20 mA. A 5 V relay coil usually draws 70\u201390 mA, so it won't work and you risk damaging the pin. Use A7 only as the signal:\n\n| Relay module | Flipper header |\n|---|---|\n| VCC | pin 1 (5 V), or an external 5 V supply |\n| GND | pin 8, 11 or 18 |\n| IN | pin 2 (A7) |\n\n- **5 V pin:** it's only live while OTG 5 V output is enabled. The app has to turn it on (`furi_hal_power_enable_otg()`), or you can enable it from the GPIO app's 5V toggle. It's best to use an external supply if the coil draws a lot, with the grounds tied together.\n- **3.3 V trigger:** some modules won't trigger reliably from a 3.3 V signal, and many are active-low, so IN low means the relay is on.\n\n**Minimal FAP code** (unverified against the SDK; I haven't compiled or run it):\n\n```c\n#include <furi_hal_gpio.h>\n#include <furi_hal_resources.h>\n\nfuri_hal_gpio_init(&gpio_ext_pa7, GpioModeOutputPushPull, GpioPullNo, GpioSpeedLow);\nfuri_hal_gpio_write(&gpio_ext_pa7, true);   // drive high (use false if the module is active-low)\n// on exit:\nfuri_hal_gpio_write(&gpio_ext_pa7, false);\nfuri_hal_gpio_init(&gpio_ext_pa7, GpioModeAnalog, GpioPullNo, GpioSpeedLow);\n```\n\nTell me your module's part or model, whether it's active-high or active-low, and whether it needs the Flipper's 5 V or an external supply. If you point me at your FAP source, I'll add this, including the OTG enable and cleanup on exit. I can then also approve reading the skill references so the API claims get checked."
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "id": "P02",
+  "kind": "positive",
+  "prompt": "Should I write my GPIO blinker as a JavaScript script or a native FAP? It needs to toggle a pin every 10 ms.",
+  "started": "2026-10-16T18:42:34+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/capability-map.md",
+    "flipper-core/references/compatibility.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0805689,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1911,
+      "cache_read_input_tokens": 39909,
+      "cache_creation_input_tokens": 14364
+    },
+    "text": "**Write it as a native FAP.** I couldn't check this against the pinned 1.5.1 / API 88.2 references. Reading the skill's reference files was denied (they're outside the allowed directories, and this session can't approve prompts). So the API names below come from memory and aren't checked against `api_symbols.csv`.\n\n**Why native**\n- **Timing:** Toggling every 10 ms gives a 50 Hz square wave. Both surfaces run on the 1 kHz FreeRTOS tick, so 10 ms is about 10 ticks.\n  - A native `FuriTimer` (periodic) or a thread loop using absolute deadlines keeps the period steady. Timer callbacks run in the timer service thread, so keep them short.\n  - In JS, each toggle goes through the interpreter and `delay()`. The jitter and drift are larger, and the interpreter's own overhead is added to every cycle. Accumulated drift is worse, because a relative delay adds the interpreter time to each period.\n- **Lifecycle:** In a FAP you control the timer, GPIO state and teardown. On exit you can put the pin back to analog or input mode, so it isn't left driving the line.\n- **Headroom:** If you later need a tighter period or lower jitter, a native app can move to a hardware timer. JS can't.\n\n**When JS would be fine**\nIf the pin is for something loose, like an LED, and \u00b1several ms of jitter doesn't matter, a JS script is quicker to write. I haven't confirmed that the 1.5.1 JS runtime exposes a `gpio` module, so check that first.\n\n**Sketch of the native approach**\n1. Call `furi_hal_gpio_init(pin, GpioModeOutputPushPull, GpioPullNo, GpioSpeedLow)` on a header pin such as `&gpio_ext_pa7`.\n2. Start a periodic `furi_timer_alloc(cb, FuriTimerTypePeriodic, ctx)` with `furi_timer_start(t, furi_ms_to_ticks(10))`.\n3. In the callback, toggle a stored state with `furi_hal_gpio_write(pin, state)`.\n4. On exit, call `furi_timer_stop` and then `furi_timer_free`, then `furi_hal_gpio_init(pin, GpioModeAnalog, ...)` to release the pin.\n\n**Unverified or unknown**\n- The exact symbol names and signatures on API 88.2, and whether your pin choice is exported to external apps.\n- Whether you're on official firmware. If you're on Momentum or Unleashed, the answer is provisional until I inspect that fork.\n- The electrical side: the pin voltage (3.3 V logic) and what it drives. Check the load before connecting it.\n\nIf you share your firmware version and what the pin drives, I can fill in the compatibility card and hand off to the native-app skill. If you can grant read access to the skill's reference directory, I can check the API names against `api_symbols.csv` first."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P02/config/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P02/config/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P02/config/skills/flipper-core/references/capability-map.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P02/config/skills/flipper-core/references/compatibility.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "**Write it as a native FAP.** I couldn't check this against the pinned 1.5.1 / API 88.2 references. Reading the skill's reference files was denied (they're outside the allowed directories, and this session can't approve prompts). So the API names below come from memory and aren't checked against `api_symbols.csv`.\n\n**Why native**\n- **Timing:** Toggling every 10 ms gives a 50 Hz square wave. Both surfaces run on the 1 kHz FreeRTOS tick, so 10 ms is about 10 ticks.\n  - A native `FuriTimer` (periodic) or a thread loop using absolute deadlines keeps the period steady. Timer callbacks run in the timer service thread, so keep them short.\n  - In JS, each toggle goes through the interpreter and `delay()`. The jitter and drift are larger, and the interpreter's own overhead is added to every cycle. Accumulated drift is worse, because a relative delay adds the interpreter time to each period.\n- **Lifecycle:** In a FAP you control the timer, GPIO state and teardown. On exit you can put the pin back to analog or input mode, so it isn't left driving the line.\n- **Headroom:** If you later need a tighter period or lower jitter, a native app can move to a hardware timer. JS can't.\n\n**When JS would be fine**\nIf the pin is for something loose, like an LED, and \u00b1several ms of jitter doesn't matter, a JS script is quicker to write. I haven't confirmed that the 1.5.1 JS runtime exposes a `gpio` module, so check that first.\n\n**Sketch of the native approach**\n1. Call `furi_hal_gpio_init(pin, GpioModeOutputPushPull, GpioPullNo, GpioSpeedLow)` on a header pin such as `&gpio_ext_pa7`.\n2. Start a periodic `furi_timer_alloc(cb, FuriTimerTypePeriodic, ctx)` with `furi_timer_start(t, furi_ms_to_ticks(10))`.\n3. In the callback, toggle a stored state with `furi_hal_gpio_write(pin, state)`.\n4. On exit, call `furi_timer_stop` and then `furi_timer_free`, then `furi_hal_gpio_init(pin, GpioModeAnalog, ...)` to release the pin.\n\n**Unverified or unknown**\n- The exact symbol names and signatures on API 88.2, and whether your pin choice is exported to external apps.\n- Whether you're on official firmware. If you're on Momentum or Unleashed, the answer is provisional until I inspect that fork.\n- The electrical side: the pin voltage (3.3 V logic) and what it drives. Check the load before connecting it.\n\nIf you share your firmware version and what the pin drives, I can fill in the compatibility card and hand off to the native-app skill. If you can grant read access to the skill's reference directory, I can check the API names against `api_symbols.csv` first."
+  ]
+}

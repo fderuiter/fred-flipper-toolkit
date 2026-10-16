@@ -1,0 +1,103 @@
+{
+  "id": "A01",
+  "kind": "ambiguous",
+  "prompt": "Build my FAP with ufbt and then run `ufbt test` to make sure it works.",
+  "started": "2026-10-16T18:45:11+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/build-debug-release.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.2011382,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1344,
+      "cache_read_input_tokens": 39571,
+      "cache_creation_input_tokens": 20790
+    },
+    "text": "I didn't build or test anything. There are three problems, and the first two would stop this even if the third were fixed.\n\n1. **There's no app in this folder.** The working directory (`/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A01/ws`) only contains `.claude/skills/`. There's no `application.fam` and no app source code, so `ufbt` has nothing to build.\n\n2. **`ufbt test` doesn't exist.** uFBT has no test command. The nearest real commands are:\n   - `ufbt` on its own builds the FAP into `dist/`.\n   - `ufbt lint` only checks formatting and naming. It doesn't show that the app works.\n   - Firmware unit tests run on the Flipper itself, not on your computer. Device commands like `ufbt launch` deploy to the Flipper, and I'd only run them with your separate go-ahead.\n\n   A successful build only shows that the app compiles and links. Checking that it works means either host tests on logic pulled out of the app (parsers, state machines) or testing on a real Flipper.\n\n3. **I can't run commands in this session.** I only have tools to read and search files, not a shell, so I can't run `ufbt`.\n\n**To go ahead:**\n- Put your app (the folder with `application.fam`) in the working directory or give me its path, and run this in a session with shell access.\n- Tell me which SDK to build against. If you don't, the first `ufbt` run downloads whatever the latest release is, which can change over time. I'd suggest pinning 1.5.1 and keeping the SDK inside the project so your global setup isn't touched:\n  ```\n  UFBT_HOME=$PWD/.ufbt-1.5.1 ufbt update --branch=1.5.1\n  UFBT_HOME=$PWD/.ufbt-1.5.1 ufbt\n  UFBT_HOME=$PWD/.ufbt-1.5.1 ufbt lint\n  ```\n  The first command downloads the SDK and toolchain, so please confirm you're OK with that.\n- If you want tests beyond compiling, I can set up host tests for the app's logic, write a test plan to run on your Flipper, or both.\n\nOnce I can see the app, I'll check `application.fam` and any build hooks first, because the build runs that file as Python."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify",
+        "args": "Build FAP with ufbt and run `ufbt test`"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A01/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A01/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A01/ws/.claude/skills/flipper-core/references/build-debug-release.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I didn't build or test anything. There are three problems, and the first two would stop this even if the third were fixed.\n\n1. **There's no app in this folder.** The working directory (`/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A01/ws`) only contains `.claude/skills/`. There's no `application.fam` and no app source code, so `ufbt` has nothing to build.\n\n2. **`ufbt test` doesn't exist.** uFBT has no test command. The nearest real commands are:\n   - `ufbt` on its own builds the FAP into `dist/`.\n   - `ufbt lint` only checks formatting and naming. It doesn't show that the app works.\n   - Firmware unit tests run on the Flipper itself, not on your computer. Device commands like `ufbt launch` deploy to the Flipper, and I'd only run them with your separate go-ahead.\n\n   A successful build only shows that the app compiles and links. Checking that it works means either host tests on logic pulled out of the app (parsers, state machines) or testing on a real Flipper.\n\n3. **I can't run commands in this session.** I only have tools to read and search files, not a shell, so I can't run `ufbt`.\n\n**To go ahead:**\n- Put your app (the folder with `application.fam`) in the working directory or give me its path, and run this in a session with shell access.\n- Tell me which SDK to build against. If you don't, the first `ufbt` run downloads whatever the latest release is, which can change over time. I'd suggest pinning 1.5.1 and keeping the SDK inside the project so your global setup isn't touched:\n  ```\n  UFBT_HOME=$PWD/.ufbt-1.5.1 ufbt update --branch=1.5.1\n  UFBT_HOME=$PWD/.ufbt-1.5.1 ufbt\n  UFBT_HOME=$PWD/.ufbt-1.5.1 ufbt lint\n  ```\n  The first command downloads the SDK and toolchain, so please confirm you're OK with that.\n- If you want tests beyond compiling, I can set up host tests for the app's logic, write a test plan to run on your Flipper, or both.\n\nOnce I can see the app, I'll check `application.fam` and any build hooks first, because the build runs that file as Python."
+  ]
+}

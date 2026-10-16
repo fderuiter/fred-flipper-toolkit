@@ -1,0 +1,116 @@
+{
+  "id": "P08",
+  "kind": "positive",
+  "prompt": "Firmware moved to a new API version; compare these two api_symbols.csv files and plan my app's migration.",
+  "started": "2026-10-16T18:43:29+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0942786,
+    "num_turns": 9,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1474,
+      "cache_read_input_tokens": 63146,
+      "cache_creation_input_tokens": 18302
+    },
+    "text": "I can't start the comparison yet. The workspace has no `api_symbols.csv` files, no app source and no `scripts/compare_api.py`. It holds only the FRED skill files under `.claude/skills/`.\n\nTo go ahead I need:\n\n1. **The two CSVs.** Put them in the working directory with distinguishable names, such as `old/api_symbols.csv` and `new/api_symbols.csv`. Tell me which firmware each one comes from: the version or commit, the target (f7 or f18), and the API version number. The API version is in each file's header row, for example `Version,+,88.2,...`. If you can't share the files, paste the contents instead.\n2. **Your app source.** I need the `.c` and `.h` files and `application.fam`. That lets me match each removed or changed symbol to the call sites it breaks.\n3. **Which firmware lineage the new version is.** The checks in the skill I'm using treat official firmware as the baseline: 1.5.1, API 88.2. If the new firmware is Momentum, Unleashed or another fork, I'll treat it as a separate lineage and say what I can't confirm.\n\nOnce I have those, this is how I'll run it:\n\n- **Diff the two tables.** I'll go through added, removed and changed rows by type (functions, variables, headers). I'll also check whether any `+` or `-` export flags flipped, since an exported symbol is what a FAP can actually link against. A symbol with only a header and no export doesn't count. I'll use `scripts/compare_api.py` as a cross-check only if you have it. I won't run it before reading it.\n- **Map the changes to your app.** Each removed or changed symbol gets traced to the files and lines that use it, then classed as a hard break (link or load failure), a signature or semantic change, or a deprecation. Where a symbol was renamed or moved, I'll name the replacement only if it appears in the new table. Otherwise I'll mark it unresolved.\n- **Write the migration plan.** It will list fixes in order, with one status per check: compile, static, host and device. I'll give an exact rebuild command for the target SDK. I won't call anything passed unless I actually ran it, and compiling doesn't count as a device test.\n- **Write a separate device test plan** for the behavior a build can't show.\n\nI won't download an SDK or toolchain without your say-so. If I need one to rebuild, I'll tell you the exact source, pin and effects first. Until then, compilation will show as `blocked`."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/api_symbols*.csv"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P08/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P08/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.csv"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/compare_api.py"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P08/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't start the comparison yet. The workspace has no `api_symbols.csv` files, no app source and no `scripts/compare_api.py`. It holds only the FRED skill files under `.claude/skills/`.\n\nTo go ahead I need:\n\n1. **The two CSVs.** Put them in the working directory with distinguishable names, such as `old/api_symbols.csv` and `new/api_symbols.csv`. Tell me which firmware each one comes from: the version or commit, the target (f7 or f18), and the API version number. The API version is in each file's header row, for example `Version,+,88.2,...`. If you can't share the files, paste the contents instead.\n2. **Your app source.** I need the `.c` and `.h` files and `application.fam`. That lets me match each removed or changed symbol to the call sites it breaks.\n3. **Which firmware lineage the new version is.** The checks in the skill I'm using treat official firmware as the baseline: 1.5.1, API 88.2. If the new firmware is Momentum, Unleashed or another fork, I'll treat it as a separate lineage and say what I can't confirm.\n\nOnce I have those, this is how I'll run it:\n\n- **Diff the two tables.** I'll go through added, removed and changed rows by type (functions, variables, headers). I'll also check whether any `+` or `-` export flags flipped, since an exported symbol is what a FAP can actually link against. A symbol with only a header and no export doesn't count. I'll use `scripts/compare_api.py` as a cross-check only if you have it. I won't run it before reading it.\n- **Map the changes to your app.** Each removed or changed symbol gets traced to the files and lines that use it, then classed as a hard break (link or load failure), a signature or semantic change, or a deprecation. Where a symbol was renamed or moved, I'll name the replacement only if it appears in the new table. Otherwise I'll mark it unresolved.\n- **Write the migration plan.** It will list fixes in order, with one status per check: compile, static, host and device. I'll give an exact rebuild command for the target SDK. I won't call anything passed unless I actually ran it, and compiling doesn't count as a device test.\n- **Write a separate device test plan** for the behavior a build can't show.\n\nI won't download an SDK or toolchain without your say-so. If I need one to rebuild, I'll tell you the exact source, pin and effects first. Until then, compilation will show as `blocked`."
+  ]
+}

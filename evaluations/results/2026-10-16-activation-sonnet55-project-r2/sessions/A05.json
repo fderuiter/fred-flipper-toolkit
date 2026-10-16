@@ -1,0 +1,102 @@
+{
+  "id": "A05",
+  "kind": "ambiguous",
+  "prompt": "I don't have an SDK installed or a Flipper with me. Can you confirm my app works?",
+  "started": "2026-10-16T18:39:39+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.08906159999999999,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1121,
+      "cache_read_input_tokens": 40596,
+      "cache_creation_input_tokens": 18445
+    },
+    "text": "I can't confirm your app works. There's no app in this workspace to check.\n\nThe workspace has only the FRED skill files under `.claude/skills/`. It has no `application.fam`, no `.c` or `.h` sources, no icons or assets, and no build output. The directory isn't a git repository either, so there's no history to inspect.\n\nHere is where each check stands:\n\n| Check | Status | Reason |\n|---|---|---|\n| Source inspected | not-run | No app source is present. |\n| Static checks (`ufbt lint`) | blocked | There's no app and no `ufbt`. Lint only checks formatting anyway. |\n| Compiled | blocked | No SDK or toolchain is installed, and there's no app to build. |\n| Host tests | not-run | There's no app and no test harness. |\n| Device behavior | not-run | You don't have a Flipper with you. |\n\nWithout an SDK, a compile can't pass, and without a device, behavior can't pass. I won't call the app working based on a read-through of the code. The most I can offer without either is a source review for lifecycle, ownership and parser bugs, which counts as `inferred` evidence only.\n\nTo go further, I need one of these from you:\n1. **The app source.** Upload or paste the project, including `application.fam`. I can then review it, check the manifest and imports against the official 1.5.1 baseline (API 88.2), and flag likely build failures.\n2. **A build.** If you want a real compile, I'd need to download the SDK and toolchain with `ufbt`. That's a download and a change to this environment, so I'd pin the exact SDK version and get your OK first. It would give you a \"compiled\" result, but it wouldn't show the app works on a device.\n3. **A device test plan.** I can write one for when you have the Flipper back, so the hardware cases are listed and waiting.\n\nWhich would you like, and where is the app?"
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/A05/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/A05/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/A05/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't confirm your app works. There's no app in this workspace to check.\n\nThe workspace has only the FRED skill files under `.claude/skills/`. It has no `application.fam`, no `.c` or `.h` sources, no icons or assets, and no build output. The directory isn't a git repository either, so there's no history to inspect.\n\nHere is where each check stands:\n\n| Check | Status | Reason |\n|---|---|---|\n| Source inspected | not-run | No app source is present. |\n| Static checks (`ufbt lint`) | blocked | There's no app and no `ufbt`. Lint only checks formatting anyway. |\n| Compiled | blocked | No SDK or toolchain is installed, and there's no app to build. |\n| Host tests | not-run | There's no app and no test harness. |\n| Device behavior | not-run | You don't have a Flipper with you. |\n\nWithout an SDK, a compile can't pass, and without a device, behavior can't pass. I won't call the app working based on a read-through of the code. The most I can offer without either is a source review for lifecycle, ownership and parser bugs, which counts as `inferred` evidence only.\n\nTo go further, I need one of these from you:\n1. **The app source.** Upload or paste the project, including `application.fam`. I can then review it, check the manifest and imports against the official 1.5.1 baseline (API 88.2), and flag likely build failures.\n2. **A build.** If you want a real compile, I'd need to download the SDK and toolchain with `ufbt`. That's a download and a change to this environment, so I'd pin the exact SDK version and get your OK first. It would give you a \"compiled\" result, but it wouldn't show the app works on a device.\n3. **A device test plan.** I can write one for when you have the Flipper back, so the hardware cases are listed and waiting.\n\nWhich would you like, and where is the app?"
+  ]
+}

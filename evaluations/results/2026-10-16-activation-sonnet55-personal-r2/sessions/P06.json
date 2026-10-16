@@ -1,0 +1,104 @@
+{
+  "id": "P06",
+  "kind": "positive",
+  "prompt": "My FAP freezes when I press Back while the worker thread is reading the SD card. Why?",
+  "started": "2026-10-16T18:42:34+00:00",
+  "expected": [
+    "flipper-review"
+  ],
+  "acceptable": [
+    "flipper-native"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-review"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-review"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.07256040000000001,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1298,
+      "cache_read_input_tokens": 40044,
+      "cache_creation_input_tokens": 13891
+    },
+    "text": "I can't give you a diagnosis yet. Two things are blocking me.\n\n**1. The review skill's required references were blocked.**\n- The `flipper-review` skill requires me to read two shared files first: `engineering-rules.md` and `evidence-policy.md`, both under `flipper-core/references/`.\n- Both reads were denied automatically. The files are outside the allowed working directories, and this session has no way to approve them.\n- The skill says to stop and not continue from memory when those files can't be read. The reason was a permission denial rather than missing files, but the effect is the same, so I'm stopping the review.\n- The skill's own message for this case reads \"Broken installation: FRED shared references are missing.\" That wording doesn't fit here, because the files may well be installed. They just aren't readable from this session.\n\n**2. There's no code to look at.** The workspace (`/tmp/fred-eval/.../P06/ws`) has no files in it. I found no `.c` or `.h` files and nothing else. Even with the references, I'd have nothing to trace.\n\n**What I can say without the code**\nThe usual cause of a Back-press freeze with a busy worker is a teardown deadlock. I can't confirm that's your case. Something like this happens:\n- The Back callback sets a stop flag (or goes straight to teardown), then calls `furi_thread_join()` on the worker from the GUI or dispatcher thread.\n- The worker is blocked in SD I/O, or is waiting on something the GUI thread must service. Examples are a mutex the GUI thread holds, a `view_dispatcher_send_custom_event`, or a full message queue.\n- The join never returns, so the GUI thread stops and the app looks frozen.\n\nThis is a hypothesis, not a finding.\n\n**To continue, either:**\n- Put the FAP source in the workspace, at least the worker, the Back/exit handler, and the app alloc/free code. Allow reads of the skill references too, or tell me to proceed without them.\n- Or paste the relevant functions here. If you have a crash or log output, include it, along with your firmware and SDK version."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-review"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.[ch]"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P06/config/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P06/config/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "Next I'll read the shared references the skill requires, and look for the source.",
+    "I can't give you a diagnosis yet. Two things are blocking me.\n\n**1. The review skill's required references were blocked.**\n- The `flipper-review` skill requires me to read two shared files first: `engineering-rules.md` and `evidence-policy.md`, both under `flipper-core/references/`.\n- Both reads were denied automatically. The files are outside the allowed working directories, and this session has no way to approve them.\n- The skill says to stop and not continue from memory when those files can't be read. The reason was a permission denial rather than missing files, but the effect is the same, so I'm stopping the review.\n- The skill's own message for this case reads \"Broken installation: FRED shared references are missing.\" That wording doesn't fit here, because the files may well be installed. They just aren't readable from this session.\n\n**2. There's no code to look at.** The workspace (`/tmp/fred-eval/.../P06/ws`) has no files in it. I found no `.c` or `.h` files and nothing else. Even with the references, I'd have nothing to trace.\n\n**What I can say without the code**\nThe usual cause of a Back-press freeze with a busy worker is a teardown deadlock. I can't confirm that's your case. Something like this happens:\n- The Back callback sets a stop flag (or goes straight to teardown), then calls `furi_thread_join()` on the worker from the GUI or dispatcher thread.\n- The worker is blocked in SD I/O, or is waiting on something the GUI thread must service. Examples are a mutex the GUI thread holds, a `view_dispatcher_send_custom_event`, or a full message queue.\n- The join never returns, so the GUI thread stops and the app looks frozen.\n\nThis is a hypothesis, not a finding.\n\n**To continue, either:**\n- Put the FAP source in the workspace, at least the worker, the Back/exit handler, and the app alloc/free code. Allow reads of the skill references too, or tell me to proceed without them.\n- Or paste the relevant functions here. If you have a crash or log output, include it, along with your firmware and SDK version."
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "id": "H06",
+  "kind": "negative",
+  "prompt": "Explain how C struct padding works",
+  "started": "2026-10-16T18:45:57+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.13044840000000002,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 1769,
+      "cache_read_input_tokens": 4742,
+      "cache_creation_input_tokens": 11764
+    },
+    "text": "# How C struct padding works\n\n## Why padding exists\n\nMost CPUs read memory fastest, and sometimes can only read it at all, when a value sits at an address that's a multiple of its size. A 4-byte `int` wants an address divisible by 4, and an 8-byte `double` wants one divisible by 8. This requirement is called the type's **alignment**. To meet it, the compiler adds unused **padding bytes** inside and at the end of structs.\n\n## The rules\n\n1. **Each member starts at an offset that's a multiple of its alignment.** If the previous member ended somewhere else, padding fills the gap.\n2. **The struct's alignment equals the largest alignment of any member.**\n3. **The struct's total size is rounded up to a multiple of its alignment.** This keeps every element of an array of these structs aligned.\n\nThe C standard doesn't fix the alignment values. They come from the platform ABI. The numbers below are typical for x86-64 and ARM64: `char`=1, `short`=2, `int`=4, `double`/pointer/`long` (on Linux)=8.\n\n## Worked example\n\n```c\nstruct Bad {\n    char  a;   // offset 0, size 1\n               // 3 bytes padding (so b starts at 4)\n    int   b;   // offset 4, size 4\n    char  c;   // offset 8, size 1\n               // 7 bytes padding (so d starts at 16)\n    double d;  // offset 16, size 8\n};             // size = 24, alignment = 8\n```\n\n```\noffset: 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 ........ 23\n        [a][ pad  ][    b     ][c][        pad         ][     d      ]\n```\n\nThat's 14 bytes of data in a 24-byte struct. If you reorder the members from largest to smallest alignment:\n\n```c\nstruct Good {\n    double d;  // offset 0\n    int    b;  // offset 8\n    char   a;  // offset 12\n    char   c;  // offset 13\n               // 2 bytes tail padding -> size 16\n};             // size = 16, alignment = 8\n```\n\nThe data is the same but the struct is 8 bytes smaller. Across a large array, that saves memory and cache space.\n\n### Tail padding\n\n```c\nstruct T { int x; char y; };  // 4 + 1 = 5 bytes of data, sizeof == 8\n```\n\nThe 3 bytes at the end are there so that in `struct T arr[2]`, `arr[1].x` still lands on a multiple of 4.\n\n## Inspecting layout\n\n```c\n#include <stdio.h>\n#include <stddef.h>\n#include <stdalign.h>\n\nprintf(\"size=%zu align=%zu\\n\", sizeof(struct Bad), alignof(struct Bad));\nprintf(\"offset of d = %zu\\n\", offsetof(struct Bad, d));\n```\n\nYou can also lock a layout in at compile time:\n\n```c\n_Static_assert(sizeof(struct Good) == 16, \"unexpected padding\");\n```\n\nTools that show layouts directly:\n- `pahole` (from dwarves) prints each struct with its holes marked.\n- `-Wpadded` makes GCC or Clang warn whenever padding is inserted.\n\n## Controlling padding\n\n**Removing it (packing):**\n```c\nstruct __attribute__((packed)) P { char a; int b; };   // GCC/Clang: sizeof == 5\n#pragma pack(push, 1) /* ... */ #pragma pack(pop)       // MSVC, also GCC/Clang\n```\nPacked structs are useful for matching wire formats or file headers, but they have costs:\n- Access can be slower.\n- On some architectures (older ARM, some RISC-V setups), unaligned access can fault.\n- Taking a pointer to a packed member (`int *p = &pkt.b;`) gives you a misaligned pointer, and dereferencing it is undefined behavior. Recent GCC and Clang warn about this.\n\n**Adding more alignment:**\n```c\nstruct alignas(64) CacheLine { ... };   // C11 <stdalign.h>; C23 makes alignas a keyword\n```\nThis is mainly used to keep data that different threads write to on separate cache lines (avoiding \"false sharing\"), or for SIMD buffers.\n\n## Common pitfalls\n\n- **Writing structs directly to files or the network** (`fwrite(&s, sizeof s, 1, f)`): padding, endianness, and alignment rules all differ between compilers and platforms. Serialize the fields one at a time instead, or use a packed struct with fixed-width types.\n- **Comparing structs with `memcmp`**: padding bytes can hold arbitrary values, so two structs with equal members can still compare unequal. Compare members, or `memset` the structs to zero before filling them.\n- **Leaking information**: copying a struct to user space or over the network can expose stale data left in its padding bytes. This has caused real kernel bugs. Zero the struct first.\n- **Bit-fields** follow their own implementation-defined packing rules, so don't rely on their layout being portable.\n\n## Rule of thumb\n\nOrder members from largest to smallest alignment, check `sizeof` and `offsetof` when the layout matters, and only pack when an external format requires an exact byte layout."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "# How C struct padding works\n\n## Why padding exists\n\nMost CPUs read memory fastest, and sometimes can only read it at all, when a value sits at an address that's a multiple of its size. A 4-byte `int` wants an address divisible by 4, and an 8-byte `double` wants one divisible by 8. This requirement is called the type's **alignment**. To meet it, the compiler adds unused **padding bytes** inside and at the end of structs.\n\n## The rules\n\n1. **Each member starts at an offset that's a multiple of its alignment.** If the previous member ended somewhere else, padding fills the gap.\n2. **The struct's alignment equals the largest alignment of any member.**\n3. **The struct's total size is rounded up to a multiple of its alignment.** This keeps every element of an array of these structs aligned.\n\nThe C standard doesn't fix the alignment values. They come from the platform ABI. The numbers below are typical for x86-64 and ARM64: `char`=1, `short`=2, `int`=4, `double`/pointer/`long` (on Linux)=8.\n\n## Worked example\n\n```c\nstruct Bad {\n    char  a;   // offset 0, size 1\n               // 3 bytes padding (so b starts at 4)\n    int   b;   // offset 4, size 4\n    char  c;   // offset 8, size 1\n               // 7 bytes padding (so d starts at 16)\n    double d;  // offset 16, size 8\n};             // size = 24, alignment = 8\n```\n\n```\noffset: 0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 ........ 23\n        [a][ pad  ][    b     ][c][        pad         ][     d      ]\n```\n\nThat's 14 bytes of data in a 24-byte struct. If you reorder the members from largest to smallest alignment:\n\n```c\nstruct Good {\n    double d;  // offset 0\n    int    b;  // offset 8\n    char   a;  // offset 12\n    char   c;  // offset 13\n               // 2 bytes tail padding -> size 16\n};             // size = 16, alignment = 8\n```\n\nThe data is the same but the struct is 8 bytes smaller. Across a large array, that saves memory and cache space.\n\n### Tail padding\n\n```c\nstruct T { int x; char y; };  // 4 + 1 = 5 bytes of data, sizeof == 8\n```\n\nThe 3 bytes at the end are there so that in `struct T arr[2]`, `arr[1].x` still lands on a multiple of 4.\n\n## Inspecting layout\n\n```c\n#include <stdio.h>\n#include <stddef.h>\n#include <stdalign.h>\n\nprintf(\"size=%zu align=%zu\\n\", sizeof(struct Bad), alignof(struct Bad));\nprintf(\"offset of d = %zu\\n\", offsetof(struct Bad, d));\n```\n\nYou can also lock a layout in at compile time:\n\n```c\n_Static_assert(sizeof(struct Good) == 16, \"unexpected padding\");\n```\n\nTools that show layouts directly:\n- `pahole` (from dwarves) prints each struct with its holes marked.\n- `-Wpadded` makes GCC or Clang warn whenever padding is inserted.\n\n## Controlling padding\n\n**Removing it (packing):**\n```c\nstruct __attribute__((packed)) P { char a; int b; };   // GCC/Clang: sizeof == 5\n#pragma pack(push, 1) /* ... */ #pragma pack(pop)       // MSVC, also GCC/Clang\n```\nPacked structs are useful for matching wire formats or file headers, but they have costs:\n- Access can be slower.\n- On some architectures (older ARM, some RISC-V setups), unaligned access can fault.\n- Taking a pointer to a packed member (`int *p = &pkt.b;`) gives you a misaligned pointer, and dereferencing it is undefined behavior. Recent GCC and Clang warn about this.\n\n**Adding more alignment:**\n```c\nstruct alignas(64) CacheLine { ... };   // C11 <stdalign.h>; C23 makes alignas a keyword\n```\nThis is mainly used to keep data that different threads write to on separate cache lines (avoiding \"false sharing\"), or for SIMD buffers.\n\n## Common pitfalls\n\n- **Writing structs directly to files or the network** (`fwrite(&s, sizeof s, 1, f)`): padding, endianness, and alignment rules all differ between compilers and platforms. Serialize the fields one at a time instead, or use a packed struct with fixed-width types.\n- **Comparing structs with `memcmp`**: padding bytes can hold arbitrary values, so two structs with equal members can still compare unequal. Compare members, or `memset` the structs to zero before filling them.\n- **Leaking information**: copying a struct to user space or over the network can expose stale data left in its padding bytes. This has caused real kernel bugs. Zero the struct first.\n- **Bit-fields** follow their own implementation-defined packing rules, so don't rely on their layout being portable.\n\n## Rule of thumb\n\nOrder members from largest to smallest alignment, check `sizeof` and `offsetof` when the layout matters, and only pack when an external format requires an exact byte layout."
+  ]
+}

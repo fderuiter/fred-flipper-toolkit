@@ -1,0 +1,73 @@
+{
+  "id": "N03",
+  "kind": "negative",
+  "prompt": "Use my Claupper remote to approve the pending Claude Code action.",
+  "started": "2026-10-16T18:43:51+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0535781,
+    "num_turns": 3,
+    "usage": {
+      "input_tokens": 4,
+      "output_tokens": 482,
+      "cache_read_input_tokens": 21821,
+      "cache_creation_input_tokens": 11642
+    },
+    "text": "I can't approve it. I have no Claupper tool or integration in this session, and a search of the working directory found nothing named Claupper. Nothing was approved.\n\nI also can't see any pending Claude Code action from here. Approvals are handled by the permission prompt in the Claude app or terminal, outside anything I can call.\n\nTo approve it, use your Claupper remote or the Claude app and answer the prompt there. If Claupper is an MCP server or CLI you meant to have connected, tell me how it's set up (its name or install path). Then I can check whether it's reachable from this session."
+  },
+  "tool_events": [
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "claupper",
+        "-i": true,
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*laupper*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't approve it. I have no Claupper tool or integration in this session, and a search of the working directory found nothing named Claupper. Nothing was approved.\n\nI also can't see any pending Claude Code action from here. Approvals are handled by the permission prompt in the Claude app or terminal, outside anything I can call.\n\nTo approve it, use your Claupper remote or the Claude app and answer the prompt there. If Claupper is an MCP server or CLI you meant to have connected, tell me how it's set up (its name or install path). Then I can check whether it's reachable from this session."
+  ]
+}

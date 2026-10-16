@@ -1,0 +1,58 @@
+{
+  "id": "N01",
+  "kind": "negative",
+  "prompt": "Proofread this blog paragraph: 'I took my Flipper Zero to DEF CON and it was a hit.'",
+  "started": "2026-10-16T18:39:23+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.047971099999999996,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 252,
+      "cache_read_input_tokens": 5311,
+      "cache_creation_input_tokens": 11229
+    },
+    "text": "The sentence is clean. There are no spelling, grammar, or punctuation errors, and the product and event names are capitalized correctly (\"Flipper Zero\" and \"DEF CON\").\n\nIf you want it tighter or more specific, here are two optional tweaks:\n\n- **Punchier:** \"I took my Flipper Zero to DEF CON, and it was a hit.\" The comma before \"and\" is optional here because both clauses are short.\n- **More specific:** \"I took my Flipper Zero to DEF CON, and it was a hit with everyone who stopped by my table.\" Replace the added detail with whatever actually happened.\n\nAlso, \"a hit\" is a bit vague. If this is a full paragraph and not just the opening line, a concrete example would help, such as what people asked about or what you demoed."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "The sentence is clean. There are no spelling, grammar, or punctuation errors, and the product and event names are capitalized correctly (\"Flipper Zero\" and \"DEF CON\").\n\nIf you want it tighter or more specific, here are two optional tweaks:\n\n- **Punchier:** \"I took my Flipper Zero to DEF CON, and it was a hit.\" The comma before \"and\" is optional here because both clauses are short.\n- **More specific:** \"I took my Flipper Zero to DEF CON, and it was a hit with everyone who stopped by my table.\" Replace the added detail with whatever actually happened.\n\nAlso, \"a hit\" is a bit vague. If this is a full paragraph and not just the opening line, a concrete example would help, such as what people asked about or what you demoed."
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "id": "N01",
+  "kind": "negative",
+  "prompt": "Proofread this blog paragraph: 'I took my Flipper Zero to DEF CON and it was a hit.'",
+  "started": "2026-10-16T18:44:51+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1024804,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 361,
+      "cache_read_input_tokens": 4742,
+      "cache_creation_input_tokens": 11788
+    },
+    "text": "Your sentence is correct as written. The spelling, grammar and punctuation are all fine, and \"Flipper Zero\" and \"DEF CON\" are styled the official way.\n\n**Optional polish:**\n\n- **Comma before \"and\":** Both halves could stand alone as sentences, so you can add a comma: *\"I took my Flipper Zero to DEF CON, and it was a hit.\"* It's optional because both halves are short, but it adds a slight pause before the payoff.\n- **More detail:** \"It was a hit\" is a bit vague. Saying *with whom* or *why* would make it stronger for a blog, for example: *\"I took my Flipper Zero to DEF CON, and it was a hit with everyone at the hardware hacking village.\"*\n\nIf you share the rest of the paragraph, I'll proofread that too."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "Your sentence is correct as written. The spelling, grammar and punctuation are all fine, and \"Flipper Zero\" and \"DEF CON\" are styled the official way.\n\n**Optional polish:**\n\n- **Comma before \"and\":** Both halves could stand alone as sentences, so you can add a comma: *\"I took my Flipper Zero to DEF CON, and it was a hit.\"* It's optional because both halves are short, but it adds a slight pause before the payoff.\n- **More detail:** \"It was a hit\" is a bit vague. Saying *with whom* or *why* would make it stronger for a blog, for example: *\"I took my Flipper Zero to DEF CON, and it was a hit with everyone at the hardware hacking village.\"*\n\nIf you share the rest of the paragraph, I'll proofread that too."
+  ]
+}

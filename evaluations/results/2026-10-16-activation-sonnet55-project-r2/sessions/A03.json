@@ -1,0 +1,103 @@
+{
+  "id": "A03",
+  "kind": "ambiguous",
+  "prompt": "This Momentum firmware example uses a momentum_* settings API; make it work on my official-firmware Flipper.",
+  "started": "2026-10-16T18:39:37+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [
+    "flipper-native",
+    "flipper-verify"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/compatibility.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0992076,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1303,
+      "cache_read_input_tokens": 40656,
+      "cache_creation_input_tokens": 20525
+    },
+    "text": "I can't port it yet because the Momentum example isn't in the workspace. The only files here are the `.claude/skills/` guidance files. I also can't say what a `momentum_*` call maps to on official firmware, because I won't guess at API names.\n\nMomentum is a separate firmware lineage from official firmware. Its `momentum_*` settings API is not in the official SDK. Even if it compiled, a FAP that imports a symbol official firmware doesn't export will fail to load on your Flipper. The official-firmware baseline I have is 1.5.1 (f7, API 88.2). I haven't checked that against your device.\n\n**What I need from you:**\n1. The example source. Paste it, or put it in the working directory, including `application.fam`.\n2. Your firmware version, from the Flipper's Settings \u2192 About. If it isn't 1.5.1, I'll treat the API facts as unconfirmed.\n\n**What I'll do once I have it:**\n- List every `momentum_*` call and what the example uses it for, such as reading or saving a setting, or reading a global Momentum option.\n- Replace each call with an official-firmware equivalent where one exists:\n  - App-private settings usually become a small versioned file under `/ext/apps_data/<app>/`, read and written with the `storage` record.\n  - Standard system settings can come from the public `furi_hal_*` or `loader` interfaces if the official SDK exports them.\n- Tell you plainly about any `momentum_*` option that has no official equivalent, because that behavior can't be ported. I'll say so rather than invent a stand-in.\n- Fix the manifest and includes for official `ufbt`.\n\nI can't promise it will run on your device. Compiling would only show the source builds against the SDK. Whether it loads and behaves correctly on your Flipper has to be checked on the device."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/A03/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/A03/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/A03/ws/.claude/skills/flipper-core/references/compatibility.md"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "momentum|Momentum",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/A03/ws/.claude/skills/flipper-core",
+        "output_mode": "content"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't port it yet because the Momentum example isn't in the workspace. The only files here are the `.claude/skills/` guidance files. I also can't say what a `momentum_*` call maps to on official firmware, because I won't guess at API names.\n\nMomentum is a separate firmware lineage from official firmware. Its `momentum_*` settings API is not in the official SDK. Even if it compiled, a FAP that imports a symbol official firmware doesn't export will fail to load on your Flipper. The official-firmware baseline I have is 1.5.1 (f7, API 88.2). I haven't checked that against your device.\n\n**What I need from you:**\n1. The example source. Paste it, or put it in the working directory, including `application.fam`.\n2. Your firmware version, from the Flipper's Settings \u2192 About. If it isn't 1.5.1, I'll treat the API facts as unconfirmed.\n\n**What I'll do once I have it:**\n- List every `momentum_*` call and what the example uses it for, such as reading or saving a setting, or reading a global Momentum option.\n- Replace each call with an official-firmware equivalent where one exists:\n  - App-private settings usually become a small versioned file under `/ext/apps_data/<app>/`, read and written with the `storage` record.\n  - Standard system settings can come from the public `furi_hal_*` or `loader` interfaces if the official SDK exports them.\n- Tell you plainly about any `momentum_*` option that has no official equivalent, because that behavior can't be ported. I'll say so rather than invent a stand-in.\n- Fix the manifest and includes for official `ufbt`.\n\nI can't promise it will run on your device. Compiling would only show the source builds against the SDK. Whether it loads and behaves correctly on your Flipper has to be checked on the device."
+  ]
+}

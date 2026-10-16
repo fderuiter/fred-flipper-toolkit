@@ -1,0 +1,111 @@
+{
+  "id": "P05",
+  "kind": "positive",
+  "prompt": "Review this Flipper app's app_free() for use-after-free and leaks.",
+  "started": "2026-10-16T18:43:29+00:00",
+  "expected": [
+    "flipper-review"
+  ],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-native"
+  ],
+  "loaded_fred": [
+    "flipper-review"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-review"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0898744,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1090,
+      "cache_read_input_tokens": 62984,
+      "cache_creation_input_tokens": 18165
+    },
+    "text": "I can't review `app_free()` because there's no Flipper app source in the working directory. The only files here are the FRED skill and reference files under `.claude/skills/`. There are no `.c` or `.h` files, and a search for `app_free` found nothing. I didn't review anything and I'm not guessing at what the function does.\n\n**Reviewed:** nothing. **Not reviewed:** the app, its allocator, `app_free()` and any callbacks.\n\nTo do the review I need one of these:\n- the app's source directory copied into `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P05/ws`, or\n- the code pasted here. At minimum I need `app_alloc()`, `app_free()`, the app struct, and anything that starts timers, worker threads, UART or GUI callbacks.\n\nFirmware version and SDK would help too, but they aren't required.\n\nWith the source, I'll trace what each producer touches (timers, worker thread, GUI and input callbacks, serial RX) and whether it has stopped before `app_free()` releases shared state. I'll also check:\n- **Use-after-free:** whether the teardown order works. Stopping a timer doesn't prove its callback has finished, and the worker has to be joined before the queues or mutexes it uses are freed.\n- **Leaks:** records opened but never closed, views or ViewPorts not removed from the GUI, and objects left in queues.\n- **Partial-init paths:** whether a failure partway through `app_alloc()` frees exactly what was acquired.\n\nEach finding will come with a trigger, the consequence, an evidence level (source trace or hypothesis), a fix and a test."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-review"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "app_free",
+        "output_mode": "content"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P05/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P05/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.[ch]"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P05/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't review `app_free()` because there's no Flipper app source in the working directory. The only files here are the FRED skill and reference files under `.claude/skills/`. There are no `.c` or `.h` files, and a search for `app_free` found nothing. I didn't review anything and I'm not guessing at what the function does.\n\n**Reviewed:** nothing. **Not reviewed:** the app, its allocator, `app_free()` and any callbacks.\n\nTo do the review I need one of these:\n- the app's source directory copied into `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P05/ws`, or\n- the code pasted here. At minimum I need `app_alloc()`, `app_free()`, the app struct, and anything that starts timers, worker threads, UART or GUI callbacks.\n\nFirmware version and SDK would help too, but they aren't required.\n\nWith the source, I'll trace what each producer touches (timers, worker thread, GUI and input callbacks, serial RX) and whether it has stopped before `app_free()` releases shared state. I'll also check:\n- **Use-after-free:** whether the teardown order works. Stopping a timer doesn't prove its callback has finished, and the worker has to be joined before the queues or mutexes it uses are freed.\n- **Leaks:** records opened but never closed, views or ViewPorts not removed from the GUI, and objects left in queues.\n- **Partial-init paths:** whether a failure partway through `app_alloc()` frees exactly what was acquired.\n\nEach finding will come with a trigger, the consequence, an evidence level (source trace or hypothesis), a fix and a test."
+  ]
+}

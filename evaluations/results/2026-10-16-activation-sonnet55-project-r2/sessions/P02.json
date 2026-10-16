@@ -1,0 +1,104 @@
+{
+  "id": "P02",
+  "kind": "positive",
+  "prompt": "Should I write my GPIO blinker as a JavaScript script or a native FAP? It needs to toggle a pin every 10 ms.",
+  "started": "2026-10-16T18:39:07+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/capability-map.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1128971,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1956,
+      "cache_read_input_tokens": 64851,
+      "cache_creation_input_tokens": 21709
+    },
+    "text": "**Recommendation: write it as a native FAP.**\n\nMy main reasons are inferences from the pinned FRED references. I haven't compiled or run anything, and I haven't measured timing on a device.\n\n**Why a FAP**\n- A 10 ms toggle is a 50 Hz square wave, so 100 Hz of toggle events. That is slow for native code but demanding for an interpreter.\n- A FAP can use `furi_hal_gpio_*` directly, which are public GPIO calls. It can also keep the toggle on a timer or a dedicated thread, separate from the UI.\n- mJS is Flipper's restricted JavaScript subset, not Node. The pinned docs don't say what timing guarantees its GPIO module gives. I didn't open the pinned JS module docs, so I can't say whether a GPIO module exists, let alone what jitter to expect (claim C-JS-001, status `unresolved` for this use). I wouldn't rely on it for steady 10 ms timing.\n\n**Design notes if you go native**\n- Pick the timing source by how much jitter you can tolerate:\n  - A Furi timer is the simplest option. Its resolution is limited by the kernel tick, and I haven't checked the tick rate for this baseline. Also, timer callbacks must not block, and `furi_timer_free` must not be called from inside the callback (C-TMR-002).\n  - A worker thread that sleeps in a loop is more flexible, but each wakeup can add scheduling jitter.\n  - For tight, repeatable timing, a hardware timer or PWM is better. PWM is public as `furi_hal_pwm_start`, but it is limited to specific pins and channels (C-BUS-001).\n- Keep the pin toggle out of the GUI callbacks. Teardown order should be: stop the timer or thread, make sure the callback has finished, then restore the pin. `furi_timer_stop` does not wait for a running callback (C-TMR-001).\n- Acquire the pin through the supported API and release it on every exit path. Check which pin you pick isn't owned by something else.\n- Treat the pin as 3.3 V logic unless you've verified the exact pin. Per-pin tolerance isn't established (C-GPIO-001).\n\n**Open points**\n- Baseline: I assumed official firmware 1.5.1 (f7, API 88.2). If you run Momentum, Unleashed or another fork, the details need re-checking.\n- Jitter tolerance: if \"every 10 ms\" can drift by a few ms, a timer is fine. If you need sub-millisecond accuracy, use PWM or an external MCU.\n- Hardware effects: driving the pin on a real device needs your explicit go-ahead, and checking the waveform needs a scope or logic analyzer.\n\nIf you want, I can sketch the FAP structure next, with a worker-thread or timer version and the teardown order above. Tell me which firmware you're on and how much jitter you can accept."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P02/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P02/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P02/ws/.claude/skills/flipper-core/references/capability-map.md"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "C-JS-001|C-GPIO-001|C-TMR",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P02/ws/.claude/skills/flipper-core/references/sources.json",
+        "output_mode": "content",
+        "-A": 12
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "gpio|GPIO|timing|10 ms|jitter",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P02/ws/.claude/skills/flipper-core/references/hardware-communications.md",
+        "output_mode": "content",
+        "-C": 2
+      }
+    }
+  ],
+  "assistant_text": [
+    "**Recommendation: write it as a native FAP.**\n\nMy main reasons are inferences from the pinned FRED references. I haven't compiled or run anything, and I haven't measured timing on a device.\n\n**Why a FAP**\n- A 10 ms toggle is a 50 Hz square wave, so 100 Hz of toggle events. That is slow for native code but demanding for an interpreter.\n- A FAP can use `furi_hal_gpio_*` directly, which are public GPIO calls. It can also keep the toggle on a timer or a dedicated thread, separate from the UI.\n- mJS is Flipper's restricted JavaScript subset, not Node. The pinned docs don't say what timing guarantees its GPIO module gives. I didn't open the pinned JS module docs, so I can't say whether a GPIO module exists, let alone what jitter to expect (claim C-JS-001, status `unresolved` for this use). I wouldn't rely on it for steady 10 ms timing.\n\n**Design notes if you go native**\n- Pick the timing source by how much jitter you can tolerate:\n  - A Furi timer is the simplest option. Its resolution is limited by the kernel tick, and I haven't checked the tick rate for this baseline. Also, timer callbacks must not block, and `furi_timer_free` must not be called from inside the callback (C-TMR-002).\n  - A worker thread that sleeps in a loop is more flexible, but each wakeup can add scheduling jitter.\n  - For tight, repeatable timing, a hardware timer or PWM is better. PWM is public as `furi_hal_pwm_start`, but it is limited to specific pins and channels (C-BUS-001).\n- Keep the pin toggle out of the GUI callbacks. Teardown order should be: stop the timer or thread, make sure the callback has finished, then restore the pin. `furi_timer_stop` does not wait for a running callback (C-TMR-001).\n- Acquire the pin through the supported API and release it on every exit path. Check which pin you pick isn't owned by something else.\n- Treat the pin as 3.3 V logic unless you've verified the exact pin. Per-pin tolerance isn't established (C-GPIO-001).\n\n**Open points**\n- Baseline: I assumed official firmware 1.5.1 (f7, API 88.2). If you run Momentum, Unleashed or another fork, the details need re-checking.\n- Jitter tolerance: if \"every 10 ms\" can drift by a few ms, a timer is fine. If you need sub-millisecond accuracy, use PWM or an external MCU.\n- Hardware effects: driving the pin on a real device needs your explicit go-ahead, and checking the waveform needs a scope or logic analyzer.\n\nIf you want, I can sketch the FAP structure next, with a worker-thread or timer version and the teardown order above. Tell me which firmware you're on and how much jitter you can accept."
+  ]
+}

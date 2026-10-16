@@ -1,0 +1,109 @@
+{
+  "id": "A01",
+  "kind": "ambiguous",
+  "prompt": "Build my FAP with ufbt and then run `ufbt test` to make sure it works.",
+  "started": "2026-10-16T18:44:01+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.09192909999999999,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1271,
+      "cache_read_input_tokens": 63071,
+      "cache_creation_input_tokens": 18224
+    },
+    "text": "I haven't built anything, and I can't run `ufbt test`, because there's no such command.\n\n**No app to build.** The working directory has no `application.fam`, no C sources and no `.fam` files. The only things in it are the FRED skill files under `.claude/skills/`. `ufbt` needs an `application.fam` in the project root, so a build here would fail.\n\n**`ufbt test` doesn't exist.** The ufbt commands are `build`, `launch`, `lint`, `format`, `update` and similar, and none of them is `test`. I won't invent a substitute and report it as a pass. What can be checked without hardware is:\n- **Compile:** `ufbt` (the build), which gives you a `.fap` and its hash.\n- **Formatting:** `ufbt lint`. It only checks formatting and naming, not behavior.\n- **Host tests:** only if your project has its own harness, such as mocks or parser tests on a PC.\n- **Device behavior:** only on a real Flipper, from a separate test plan. Compiling, lint or an emulator can't stand in for it.\n\n**A first `ufbt` run downloads things.** If no SDK is already prepared, the first run fetches an SDK and toolchain. Unpinned, that follows the moving release channel instead of the 1.5.1 baseline (API 88.2). I'd want to pin the SDK first, and I need your go-ahead before any download.\n\nTo get this moving, I need two things from you:\n1. The location of the FAP project. Is it in a different directory, or was it not copied into this workspace?\n2. Whether I may download the ufbt SDK and toolchain, and which firmware version to target. I'd suggest pinning official 1.5.1.\n\nOnce the project is here, I'll read `application.fam` first, since it's executable Python. Then I'll run `ufbt` and `ufbt lint`, and report each check separately with the command, versions, exit code and artifact hash. If no trusted toolchain is available, I'll mark compilation as blocked, not passed."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/application.fam"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/A01/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/A01/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.fam",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/A01/ws"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/A01/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I haven't built anything, and I can't run `ufbt test`, because there's no such command.\n\n**No app to build.** The working directory has no `application.fam`, no C sources and no `.fam` files. The only things in it are the FRED skill files under `.claude/skills/`. `ufbt` needs an `application.fam` in the project root, so a build here would fail.\n\n**`ufbt test` doesn't exist.** The ufbt commands are `build`, `launch`, `lint`, `format`, `update` and similar, and none of them is `test`. I won't invent a substitute and report it as a pass. What can be checked without hardware is:\n- **Compile:** `ufbt` (the build), which gives you a `.fap` and its hash.\n- **Formatting:** `ufbt lint`. It only checks formatting and naming, not behavior.\n- **Host tests:** only if your project has its own harness, such as mocks or parser tests on a PC.\n- **Device behavior:** only on a real Flipper, from a separate test plan. Compiling, lint or an emulator can't stand in for it.\n\n**A first `ufbt` run downloads things.** If no SDK is already prepared, the first run fetches an SDK and toolchain. Unpinned, that follows the moving release channel instead of the 1.5.1 baseline (API 88.2). I'd want to pin the SDK first, and I need your go-ahead before any download.\n\nTo get this moving, I need two things from you:\n1. The location of the FAP project. Is it in a different directory, or was it not copied into this workspace?\n2. Whether I may download the ufbt SDK and toolchain, and which firmware version to target. I'd suggest pinning official 1.5.1.\n\nOnce the project is here, I'll read `application.fam` first, since it's executable Python. Then I'll run `ufbt` and `ufbt lint`, and report each check separately with the command, versions, exit code and artifact hash. If no trusted toolchain is available, I'll mark compilation as blocked, not passed."
+  ]
+}

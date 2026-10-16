@@ -1,0 +1,110 @@
+{
+  "id": "P04",
+  "kind": "positive",
+  "prompt": "Implement UART receive in my Flipper app; frames arrive in bursts and I need an overflow counter.",
+  "started": "2026-10-16T18:39:07+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-native"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/hardware-communications.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-native"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0987368,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1563,
+      "cache_read_input_tokens": 40348,
+      "cache_creation_input_tokens": 19765
+    },
+    "text": "I can't implement this yet, because there's no Flipper app in the workspace. The only files here are the `.claude/skills` references, with no `application.fam` and no `.c` or `.h` sources. If I wrote the receive code now, I'd be guessing at your app's structure and your frame format.\n\nI need these from you:\n\n1. **The app source.** Either add it to `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P04/ws`, or tell me to create a new FAP skeleton.\n2. **The frame format.** I need the start marker or sync byte, the length field (or fixed length), the checksum or CRC if any, and the maximum frame size.\n3. **The serial settings.** I need the baud rate and which port to use, either USART on pins 13/14 or LPUART. The port matters because the firmware may already own it for the CLI or logging, in which case the acquire call returns NULL.\n4. **The burst size.** I need roughly how many frames or bytes arrive in a burst and how fast. I'll use that to size the buffer so a burst doesn't overflow it.\n5. **The firmware and SDK target.** I'll assume official firmware 1.5.1 (API 88.2) unless you say otherwise.\n\n**Design I'll use, per the repo's UART rules:**\n- **RX callback (interrupt context):** It only does a zero-timeout write into a `FuriStreamBuffer`. If the write is short, it adds the unwritten byte count to an atomic overflow counter. It does no heap use, no logging and no parsing.\n- **Worker thread:** It receives from the stream with a timeout and runs a bounded framing state machine. That machine enforces a maximum frame length and resyncs on a bad length or CRC. It also has an inter-byte timeout. Parsed frames go to the UI through a message queue.\n- **Full UI queue:** Frames are dropped and counted, never blocked on. Back and exit events are never dropped.\n- **Counters:** Overflow, framing errors and resyncs are reported in the UI.\n- **Teardown:** Set the stop flag, then stop RX, deinit and release the serial handle. After that, join the worker and free the stream buffer last.\n- **Framing logic:** It will be a separate pure-C file with host tests for resync, oversized frames, split frames and overflow counting.\n\nCompiling and host tests won't prove behavior at line rate on a real device. Burst, disconnect and noise testing will stay marked pending until you authorize hardware testing.\n\nIf you'd rather I proceed on assumptions, say so and give me the frame format. Without it, I'll use a placeholder format of `0xAA | len | payload | CRC8`, with a maximum payload of 64 bytes."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.{c,h,fam}"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P04/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P04/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P04/ws/.claude/skills/flipper-core/references/hardware-communications.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't implement this yet, because there's no Flipper app in the workspace. The only files here are the `.claude/skills` references, with no `application.fam` and no `.c` or `.h` sources. If I wrote the receive code now, I'd be guessing at your app's structure and your frame format.\n\nI need these from you:\n\n1. **The app source.** Either add it to `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P04/ws`, or tell me to create a new FAP skeleton.\n2. **The frame format.** I need the start marker or sync byte, the length field (or fixed length), the checksum or CRC if any, and the maximum frame size.\n3. **The serial settings.** I need the baud rate and which port to use, either USART on pins 13/14 or LPUART. The port matters because the firmware may already own it for the CLI or logging, in which case the acquire call returns NULL.\n4. **The burst size.** I need roughly how many frames or bytes arrive in a burst and how fast. I'll use that to size the buffer so a burst doesn't overflow it.\n5. **The firmware and SDK target.** I'll assume official firmware 1.5.1 (API 88.2) unless you say otherwise.\n\n**Design I'll use, per the repo's UART rules:**\n- **RX callback (interrupt context):** It only does a zero-timeout write into a `FuriStreamBuffer`. If the write is short, it adds the unwritten byte count to an atomic overflow counter. It does no heap use, no logging and no parsing.\n- **Worker thread:** It receives from the stream with a timeout and runs a bounded framing state machine. That machine enforces a maximum frame length and resyncs on a bad length or CRC. It also has an inter-byte timeout. Parsed frames go to the UI through a message queue.\n- **Full UI queue:** Frames are dropped and counted, never blocked on. Back and exit events are never dropped.\n- **Counters:** Overflow, framing errors and resyncs are reported in the UI.\n- **Teardown:** Set the stop flag, then stop RX, deinit and release the serial handle. After that, join the worker and free the stream buffer last.\n- **Framing logic:** It will be a separate pure-C file with host tests for resync, oversized frames, split frames and overflow counting.\n\nCompiling and host tests won't prove behavior at line rate on a real device. Burst, disconnect and noise testing will stay marked pending until you authorize hardware testing.\n\nIf you'd rather I proceed on assumptions, say so and give me the frame format. Without it, I'll use a placeholder format of `0xAA | len | payload | CRC8`, with a maximum payload of 64 bytes."
+  ]
+}

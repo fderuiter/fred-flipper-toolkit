@@ -1,0 +1,118 @@
+{
+  "id": "P03",
+  "kind": "positive",
+  "prompt": "Add a settings screen with a VariableItemList to my FAP and persist the values to the SD card.",
+  "started": "2026-10-16T18:39:07+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-core"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-native"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/runtime-ui.md",
+    "flipper-core/references/storage-parsers.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-native"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1114796,
+    "num_turns": 9,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1538,
+      "cache_read_input_tokens": 67716,
+      "cache_creation_input_tokens": 22328
+    },
+    "text": "I can't make this change yet because there's no FAP in the working directory. The only files are the `.claude/skills/` references. There's no `application.fam`, no C sources and no icons, so there's no app for a settings screen to attach to.\n\nI didn't want to guess at your app's structure, entry point or existing views, or at which firmware and SDK you build against. Any of those would change the code.\n\nCould you tell me one of these:\n1. **The FAP's location.** Add it to the workspace or give me the path, and I'll integrate with its existing `application.fam`, view setup and naming.\n2. **To create a new FAP.** I'd scaffold a minimal app with a ViewDispatcher, a `VariableItemList` settings view and an `AppState` struct.\n\nFor the second option, I'd target official firmware 1.5.1 (API 88.2) as a provisional baseline, since the skill references use it. Tell me if you're on a different firmware or a fork such as Momentum or Unleashed. Their APIs differ, and I'd check them separately.\n\nThis is the design I'd use:\n- **Persistence:** settings go in a file under `APP_DATA_PATH(\"settings.conf\")` on the SD card. The file carries a format ID and a version. Every field is range-checked on load, with defaults per field if it's missing or invalid.\n- **Save behavior:** a save writes a temp file, checks the length of each write and the sync and close results, then renames it into place. A newer file version isn't silently overwritten. I won't claim the rename is safe against power loss, because that hasn't been established for this filesystem.\n- **Threading:** all storage calls run on the app thread. They never run inside draw, input or item-change callbacks, because storage calls block. Changing an item only updates in-memory state and sets a dirty flag. The file is saved when you leave the settings screen or exit the app.\n- **Missing or read-only SD card:** the app falls back to defaults and still runs and exits normally. A failed save shows an error message.\n- **Teardown:** I'd remove each view from the dispatcher before freeing it, free the dispatcher, then close the records.\n- **Testing:** the file parsing and validation code would be plain C, so I can test it on the host with malformed files. I can compile only if the SDK is available here. Neither check shows how the app behaves on a real Flipper, so that stays untested until you run it on a device.\n\nWhich option do you want, and which settings should it have (names, types and ranges)?"
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P03/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P03/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P03/ws/.claude/skills/flipper-core/references/runtime-ui.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P03/ws/.claude/skills/flipper-core/references/storage-parsers.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.{fam,c,h,png,md}",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2/P03/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't make this change yet because there's no FAP in the working directory. The only files are the `.claude/skills/` references. There's no `application.fam`, no C sources and no icons, so there's no app for a settings screen to attach to.\n\nI didn't want to guess at your app's structure, entry point or existing views, or at which firmware and SDK you build against. Any of those would change the code.\n\nCould you tell me one of these:\n1. **The FAP's location.** Add it to the workspace or give me the path, and I'll integrate with its existing `application.fam`, view setup and naming.\n2. **To create a new FAP.** I'd scaffold a minimal app with a ViewDispatcher, a `VariableItemList` settings view and an `AppState` struct.\n\nFor the second option, I'd target official firmware 1.5.1 (API 88.2) as a provisional baseline, since the skill references use it. Tell me if you're on a different firmware or a fork such as Momentum or Unleashed. Their APIs differ, and I'd check them separately.\n\nThis is the design I'd use:\n- **Persistence:** settings go in a file under `APP_DATA_PATH(\"settings.conf\")` on the SD card. The file carries a format ID and a version. Every field is range-checked on load, with defaults per field if it's missing or invalid.\n- **Save behavior:** a save writes a temp file, checks the length of each write and the sync and close results, then renames it into place. A newer file version isn't silently overwritten. I won't claim the rename is safe against power loss, because that hasn't been established for this filesystem.\n- **Threading:** all storage calls run on the app thread. They never run inside draw, input or item-change callbacks, because storage calls block. Changing an item only updates in-memory state and sets a dirty flag. The file is saved when you leave the settings screen or exit the app.\n- **Missing or read-only SD card:** the app falls back to defaults and still runs and exits normally. A failed save shows an error message.\n- **Teardown:** I'd remove each view from the dispatcher before freeing it, free the dispatcher, then close the records.\n- **Testing:** the file parsing and validation code would be plain C, so I can test it on the host with malformed files. I can compile only if the SDK is available here. Neither check shows how the app behaves on a real Flipper, so that stays untested until you run it on a device.\n\nWhich option do you want, and which settings should it have (names, types and ranges)?"
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "id": "P06",
+  "kind": "positive",
+  "prompt": "My FAP freezes when I press Back while the worker thread is reading the SD card. Why?",
+  "started": "2026-10-16T18:44:36+00:00",
+  "expected": [
+    "flipper-review"
+  ],
+  "acceptable": [
+    "flipper-native"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-review"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-review"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.22165120000000002,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 2360,
+      "cache_read_input_tokens": 39216,
+      "cache_creation_input_tokens": 20823
+    },
+    "text": "There's no FAP source in this workspace, only the skill reference files, so I couldn't trace your code. What follows is a list of likely causes, not a diagnosis. All of them come down to one thing: **Back starts a wait that never ends, because the worker is either not watching for a stop request or is itself waiting on whoever pressed Back.** Here they are, most likely first.\n\n## 1. Back joins the worker, and the worker needs something Back is holding (deadlock)\n\n```c\n// Back handler (input callback / dispatcher navigation callback / main loop)\nfuri_mutex_acquire(app->mutex, FuriWaitForever);   // or inside with_view_model(...)\napp->running = false;\nfuri_thread_join(app->worker);                     // waits for the worker...\n```\n```c\n// worker, between storage_file_read() chunks\nfuri_mutex_acquire(app->mutex, FuriWaitForever);   // ...which waits for this lock\napp->progress = n;\n```\nEach side waits on the other forever. A hidden variant: the worker updates the progress view with `with_view_model(..., true)` while Back is being handled inside a callback that already holds that model lock.\n\n**Fix:** set the stop request, then release every lock and leave the model block, and only then call `furi_thread_join`.\n\n## 2. The worker is blocked sending into a queue that nobody reads any more\n\nThe worker posts progress with `furi_message_queue_put(q, &msg, FuriWaitForever)`. Back makes the main loop exit and call `furi_thread_join`. The queue fills up, the worker blocks on `put`, and the join never returns.\n\n**Fix:** have the worker post with a timeout of 0, and either merge or drop progress messages when the queue is full. Never block on a queue whose reader might be joining you.\n\n## 3. Back runs `furi_thread_join` inside a GUI or dispatcher callback\n\nEven without a deadlock, a ViewPort input callback runs on the GUI thread. A dispatcher navigation callback runs on the dispatcher thread. If either one joins a worker that is partway through reading a large file, the screen and input stop responding until the read finishes. That looks exactly like a freeze.\n\n**Fix:** the callback should only post an exit event or set the stop request. Do the join in the app's main thread after the dispatcher or event loop has returned.\n\n## 4. The worker never checks for a stop request while reading\n\n```c\nwhile(storage_file_read(file, buf, sizeof(buf)) > 0) { parse(buf); }  // no cancel check\n```\nIf the stop check only happens after the whole file is processed, or the worker is stuck in `furi_thread_flags_wait(..., FuriWaitForever)`, the join waits for the full file or forever. Two related points:\n- A `volatile bool` checked once per chunk does stop the loop eventually, but it is not proper synchronization (you can't rely on the timing between threads). Use thread flags, `furi_thread_flags_set(furi_thread_get_id(worker), STOP)`, and check them between chunks.\n- Keep chunks small (a few hundred bytes to a few KB) so a stop request is noticed quickly. One `storage_file_read` call blocks inside the storage service and can't be interrupted.\n\n## Teardown order that avoids all four\n\n1. Back posts an exit event. It never joins inside the callback.\n2. The main thread sets the stop request (thread flag) without holding any lock.\n3. The worker checks for it between chunks, closes and frees its `File`, closes its storage record (`furi_record_close`) if it opened one, and returns. It never waits forever on a queue or mutex.\n4. The main thread calls `furi_thread_join(worker)` while holding no locks, then `furi_thread_free`.\n5. Drain or free the queues, detach the views, then free the app state.\n\n## To pin it down\n\nSend me the worker function, the Back/exit handler and the teardown code. I'll trace the actual interleaving. If you can get a debugger session (`ufbt debug`) or serial log from the frozen device, the thread backtraces will show which wait each thread is stuck in. That turns these guesses into a confirmed cause."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-review",
+        "args": "FAP freezes when pressing Back while the worker thread is reading the SD card"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P06/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P06/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "(?i)join|worker|thread|flag|storage|teardown|exit|back",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P06/ws/.claude/skills/flipper-core/references/runtime-ui.md",
+        "output_mode": "content"
+      }
+    }
+  ],
+  "assistant_text": [
+    "There's no FAP source in this workspace, only the skill reference files, so I couldn't trace your code. What follows is a list of likely causes, not a diagnosis. All of them come down to one thing: **Back starts a wait that never ends, because the worker is either not watching for a stop request or is itself waiting on whoever pressed Back.** Here they are, most likely first.\n\n## 1. Back joins the worker, and the worker needs something Back is holding (deadlock)\n\n```c\n// Back handler (input callback / dispatcher navigation callback / main loop)\nfuri_mutex_acquire(app->mutex, FuriWaitForever);   // or inside with_view_model(...)\napp->running = false;\nfuri_thread_join(app->worker);                     // waits for the worker...\n```\n```c\n// worker, between storage_file_read() chunks\nfuri_mutex_acquire(app->mutex, FuriWaitForever);   // ...which waits for this lock\napp->progress = n;\n```\nEach side waits on the other forever. A hidden variant: the worker updates the progress view with `with_view_model(..., true)` while Back is being handled inside a callback that already holds that model lock.\n\n**Fix:** set the stop request, then release every lock and leave the model block, and only then call `furi_thread_join`.\n\n## 2. The worker is blocked sending into a queue that nobody reads any more\n\nThe worker posts progress with `furi_message_queue_put(q, &msg, FuriWaitForever)`. Back makes the main loop exit and call `furi_thread_join`. The queue fills up, the worker blocks on `put`, and the join never returns.\n\n**Fix:** have the worker post with a timeout of 0, and either merge or drop progress messages when the queue is full. Never block on a queue whose reader might be joining you.\n\n## 3. Back runs `furi_thread_join` inside a GUI or dispatcher callback\n\nEven without a deadlock, a ViewPort input callback runs on the GUI thread. A dispatcher navigation callback runs on the dispatcher thread. If either one joins a worker that is partway through reading a large file, the screen and input stop responding until the read finishes. That looks exactly like a freeze.\n\n**Fix:** the callback should only post an exit event or set the stop request. Do the join in the app's main thread after the dispatcher or event loop has returned.\n\n## 4. The worker never checks for a stop request while reading\n\n```c\nwhile(storage_file_read(file, buf, sizeof(buf)) > 0) { parse(buf); }  // no cancel check\n```\nIf the stop check only happens after the whole file is processed, or the worker is stuck in `furi_thread_flags_wait(..., FuriWaitForever)`, the join waits for the full file or forever. Two related points:\n- A `volatile bool` checked once per chunk does stop the loop eventually, but it is not proper synchronization (you can't rely on the timing between threads). Use thread flags, `furi_thread_flags_set(furi_thread_get_id(worker), STOP)`, and check them between chunks.\n- Keep chunks small (a few hundred bytes to a few KB) so a stop request is noticed quickly. One `storage_file_read` call blocks inside the storage service and can't be interrupted.\n\n## Teardown order that avoids all four\n\n1. Back posts an exit event. It never joins inside the callback.\n2. The main thread sets the stop request (thread flag) without holding any lock.\n3. The worker checks for it between chunks, closes and frees its `File`, closes its storage record (`furi_record_close`) if it opened one, and returns. It never waits forever on a queue or mutex.\n4. The main thread calls `furi_thread_join(worker)` while holding no locks, then `furi_thread_free`.\n5. Drain or free the queues, detach the views, then free the app state.\n\n## To pin it down\n\nSend me the worker function, the Back/exit handler and the teardown code. I'll trace the actual interleaving. If you can get a debugger session (`ufbt debug`) or serial log from the frozen device, the thread backtraces will show which wait each thread is stuck in. That turns these guesses into a confirmed cause."
+  ]
+}

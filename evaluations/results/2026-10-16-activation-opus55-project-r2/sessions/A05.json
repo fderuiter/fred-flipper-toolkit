@@ -1,0 +1,110 @@
+{
+  "id": "A05",
+  "kind": "ambiguous",
+  "prompt": "I don't have an SDK installed or a Flipper with me. Can you confirm my app works?",
+  "started": "2026-10-16T18:45:14+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/build-debug-release.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.21772620000000004,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 10,
+      "output_tokens": 1567,
+      "cache_read_input_tokens": 86291,
+      "cache_creation_input_tokens": 21136
+    },
+    "text": "I can't confirm that yet, because there's no app in this workspace. The working directory only has the Flipper skill files under `.claude/skills/`. I found no `application.fam`, no C sources and no Furi API calls anywhere outside that folder.\n\nEven once I have the code, I can't fully confirm it \"works\" without a Flipper. Without hardware, the most I can honestly report is:\n\n| Check | Possible here? | What it would show |\n|---|---|---|\n| Read the manifest and build hooks | Yes | The required `App()` fields are present and the hooks look safe to run. |\n| Review the code for crash-prone patterns | Yes | Likely bugs in: memory ownership, shutdown order, callback context, unchecked return values, file-parsing bounds, records opened but never closed. These are suspected problems, not reproduced crashes. |\n| Host tests of pure logic (parsers, state machines) | Yes, if that logic can be pulled out | The logic is correct under the conditions the test simulates, not on the device. |\n| Compile against the official SDK | Only if you allow a download | That it compiles and links against that exact SDK. It says nothing about the UI, timing, shutdown or radio/GPIO behaviour. |\n| Behaviour on a real Flipper | No | I'd write a step-by-step device test plan for you to run later, and leave this as **not-run**. |\n\nAbout the compile step: you don't have the SDK, so building means letting `ufbt` download the SDK and toolchain. I'd pin it to firmware 1.5.1 with `ufbt update --branch=1.5.1` and keep it in its own folder inside the project (`UFBT_HOME=$PWD/.ufbt-1.5.1`) so nothing global changes. If you say no, I'll mark compilation as **blocked**, not passed.\n\nTo continue, I need two things from you:\n1. **The app source:** copy it into this directory, or tell me where it is or which repo to clone.\n2. **Yes or no on the pinned SDK download** for a real compile check.\n\nWhen I have those, I'll give you a report that lists each check separately with its status, the commands I ran and their results, and the device tests still to do. Nothing I didn't run will be shown as passed."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify",
+        "args": "User has no SDK installed and no Flipper hardware; wants confirmation the app in the working directory works."
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A05/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A05/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "App\\(|appid|furi_",
+        "glob": "!.claude/**"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A05/ws/.claude/skills/flipper-core/references/build-debug-release.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't confirm that yet, because there's no app in this workspace. The working directory only has the Flipper skill files under `.claude/skills/`. I found no `application.fam`, no C sources and no Furi API calls anywhere outside that folder.\n\nEven once I have the code, I can't fully confirm it \"works\" without a Flipper. Without hardware, the most I can honestly report is:\n\n| Check | Possible here? | What it would show |\n|---|---|---|\n| Read the manifest and build hooks | Yes | The required `App()` fields are present and the hooks look safe to run. |\n| Review the code for crash-prone patterns | Yes | Likely bugs in: memory ownership, shutdown order, callback context, unchecked return values, file-parsing bounds, records opened but never closed. These are suspected problems, not reproduced crashes. |\n| Host tests of pure logic (parsers, state machines) | Yes, if that logic can be pulled out | The logic is correct under the conditions the test simulates, not on the device. |\n| Compile against the official SDK | Only if you allow a download | That it compiles and links against that exact SDK. It says nothing about the UI, timing, shutdown or radio/GPIO behaviour. |\n| Behaviour on a real Flipper | No | I'd write a step-by-step device test plan for you to run later, and leave this as **not-run**. |\n\nAbout the compile step: you don't have the SDK, so building means letting `ufbt` download the SDK and toolchain. I'd pin it to firmware 1.5.1 with `ufbt update --branch=1.5.1` and keep it in its own folder inside the project (`UFBT_HOME=$PWD/.ufbt-1.5.1`) so nothing global changes. If you say no, I'll mark compilation as **blocked**, not passed.\n\nTo continue, I need two things from you:\n1. **The app source:** copy it into this directory, or tell me where it is or which repo to clone.\n2. **Yes or no on the pinned SDK download** for a real compile check.\n\nWhen I have those, I'll give you a report that lists each check separately with its status, the commands I ran and their results, and the device tests still to do. Nothing I didn't run will be shown as passed."
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "id": "A07",
+  "kind": "ambiguous",
+  "prompt": "Make my Flipper read every NFC card and emulate any of them; NFC is fully supported, right?",
+  "started": "2026-10-16T18:45:19+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/assumptions.md",
+    "flipper-core/references/capability-map.md",
+    "flipper-core/references/compatibility.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.47226979999999996,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 2019,
+      "cache_read_input_tokens": 44970,
+      "cache_creation_input_tokens": 32851
+    },
+    "text": "\"Fully supported\" is the wrong frame, and \"read every card / emulate any of them\" is not achievable on a Flipper \u2014 on any firmware. Here's the accurate picture against the researched baseline (official 1.5.1, f7, SDK API 88.2 [C-BASE-001][C-BASE-002]).\n\n## What \"NFC is supported\" actually means\n\nNFC on the Flipper is **technology- and role-specific, not universal access** [capability-map, Domains table]. The hardware does 13.56 MHz HF only. That already excludes a huge share of \"NFC cards\" people mean colloquially:\n\n- **125 kHz access fobs/cards** are LF RFID, a *different radio and antenna* \u2014 not NFC at all.\n- Reading/emulating is per-protocol and per-role, and anything behavioral (does this specific card actually read, does this reader actually accept the emulation) **requires device tests** \u2014 it can't be claimed from the API surface.\n\n## Why \"every card\" fails\n\nModern NFC cards are built specifically to defeat clone-and-replay:\n\n- **MIFARE Classic** \u2014 readable only if the sector keys are known or recoverable (dictionary/known weaknesses). A card with strong, unknown keys does not fully dump.\n- **MIFARE DESFire / Ultralight C / NTAG with auth, bank EMV, modern transit, secure access control** \u2014 use challenge-response with secrets that never leave the card. The Flipper can read the UID and public data, but **cannot extract the keys**, so it cannot produce a working clone. EMV/bank cards in particular are read-only for limited public data, not cloneable.\n- UID-only \"emulation\" fools only readers that check nothing but the UID \u2014 and many deployed systems check more.\n\nSo: reading *public* data from many cards \u2014 plausible. Fully cloning and emulating *arbitrary* cards \u2014 not possible, by cryptographic design, regardless of firmware fork.\n\n## Surface: you don't need to build anything\n\nThis maps to the **built-in NFC app**, not a FAP you write [capability-map, Execution surfaces]. The stock NFC app already does read / save / emulate within the above limits. If a fork (Momentum, Unleashed) advertises more, that's a **separate lineage** \u2014 its NFC extensions, dictionaries and API table must be inspected on their own; nothing here transfers automatically [C-FORK-001]. Forks mostly add bigger key dictionaries and more parsers; they do not break card cryptography either.\n\n## Realistic goal to aim at\n\n- Read UID + any unprotected/known-key data from HF (13.56 MHz) cards \u2014 **use the built-in NFC app**.\n- Emulate saved cards against readers that only check what the Flipper can reproduce \u2014 works for some, not for secured systems.\n- LF fobs \u2192 that's the separate **125 kHz RFID** app, not NFC.\n\nOne scope note: cloning/emulating access or payment credentials is only appropriate against cards and readers **you're authorized to test**. If you tell me the specific card type you're dealing with (print the Flipper's read screen, or name it), I'll tell you exactly how far it goes and whether a dump/clone is even theoretically possible.\n\n(Capability/feasibility assessment only \u2014 no card behavior is claimed without device testing.)"
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core",
+        "args": "NFC: read every card and emulate any of them \u2014 is NFC fully supported?"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A07/ws/.claude/skills/flipper-core/references/assumptions.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A07/ws/.claude/skills/flipper-core/references/compatibility.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A07/ws/.claude/skills/flipper-core/references/capability-map.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A07/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "\"Fully supported\" is the wrong frame, and \"read every card / emulate any of them\" is not achievable on a Flipper \u2014 on any firmware. Here's the accurate picture against the researched baseline (official 1.5.1, f7, SDK API 88.2 [C-BASE-001][C-BASE-002]).\n\n## What \"NFC is supported\" actually means\n\nNFC on the Flipper is **technology- and role-specific, not universal access** [capability-map, Domains table]. The hardware does 13.56 MHz HF only. That already excludes a huge share of \"NFC cards\" people mean colloquially:\n\n- **125 kHz access fobs/cards** are LF RFID, a *different radio and antenna* \u2014 not NFC at all.\n- Reading/emulating is per-protocol and per-role, and anything behavioral (does this specific card actually read, does this reader actually accept the emulation) **requires device tests** \u2014 it can't be claimed from the API surface.\n\n## Why \"every card\" fails\n\nModern NFC cards are built specifically to defeat clone-and-replay:\n\n- **MIFARE Classic** \u2014 readable only if the sector keys are known or recoverable (dictionary/known weaknesses). A card with strong, unknown keys does not fully dump.\n- **MIFARE DESFire / Ultralight C / NTAG with auth, bank EMV, modern transit, secure access control** \u2014 use challenge-response with secrets that never leave the card. The Flipper can read the UID and public data, but **cannot extract the keys**, so it cannot produce a working clone. EMV/bank cards in particular are read-only for limited public data, not cloneable.\n- UID-only \"emulation\" fools only readers that check nothing but the UID \u2014 and many deployed systems check more.\n\nSo: reading *public* data from many cards \u2014 plausible. Fully cloning and emulating *arbitrary* cards \u2014 not possible, by cryptographic design, regardless of firmware fork.\n\n## Surface: you don't need to build anything\n\nThis maps to the **built-in NFC app**, not a FAP you write [capability-map, Execution surfaces]. The stock NFC app already does read / save / emulate within the above limits. If a fork (Momentum, Unleashed) advertises more, that's a **separate lineage** \u2014 its NFC extensions, dictionaries and API table must be inspected on their own; nothing here transfers automatically [C-FORK-001]. Forks mostly add bigger key dictionaries and more parsers; they do not break card cryptography either.\n\n## Realistic goal to aim at\n\n- Read UID + any unprotected/known-key data from HF (13.56 MHz) cards \u2014 **use the built-in NFC app**.\n- Emulate saved cards against readers that only check what the Flipper can reproduce \u2014 works for some, not for secured systems.\n- LF fobs \u2192 that's the separate **125 kHz RFID** app, not NFC.\n\nOne scope note: cloning/emulating access or payment credentials is only appropriate against cards and readers **you're authorized to test**. If you tell me the specific card type you're dealing with (print the Flipper's read screen, or name it), I'll tell you exactly how far it goes and whether a dump/clone is even theoretically possible.\n\n(Capability/feasibility assessment only \u2014 no card behavior is claimed without device testing.)"
+  ]
+}

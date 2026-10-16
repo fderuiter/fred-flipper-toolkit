@@ -1,0 +1,109 @@
+{
+  "id": "P07",
+  "kind": "positive",
+  "prompt": "Pin my uFBT build to the 1.5.1 SDK and tell me exactly what the build does and doesn't prove.",
+  "started": "2026-10-16T18:43:29+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/build-debug-release.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1036345,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1829,
+      "cache_read_input_tokens": 40205,
+      "cache_creation_input_tokens": 20328
+    },
+    "text": "I haven't pinned anything yet. The workspace has no uFBT project. It contains only the `.claude/skills` files, with no `application.fam`, no sources, no CI config and no existing `.ufbt` directory. I also haven't run any commands, so nothing is built or verified.\n\n**Proposed pin (not executed)**\n\n```\nUFBT_HOME=$PWD/.ufbt-1.5.1 ufbt update --branch=1.5.1\nUFBT_HOME=$PWD/.ufbt-1.5.1 ufbt\n```\n\n- **Isolation:** `UFBT_HOME` keeps the SDK in a project-local directory, so your global uFBT state isn't touched.\n- **Effects:** the `update` step downloads the SDK and toolchain from the network and changes SDK state. A first run without the pin would pick uFBT's moving `release` channel, which is the main way builds drift.\n- **Tag versus hash:** `--branch=1.5.1` selects by release tag, which is a name rather than a hash. For a stronger pin, use `ufbt update --url=<verified-url>` after checking the archive's SHA-256. I don't have that URL or hash from a source I've inspected, so I won't make them up.\n- **Persisting the pin:** each shell, CI job and `vscode_dist` run needs the same `UFBT_HOME` and update step. Commit a script or Makefile that does this, because the pin lives in that state directory and not in the project.\n\n**What the build would prove**\n- **Compiles and links:** your app compiles and links against the official 1.5.1 SDK (firmware commit `9e810dc`, f7, API 88.2). I'd confirm the SDK identity from the downloaded archive and `api_symbols.csv`, not from the tag name.\n- **Imports resolve:** the loader's import check passes against that API table.\n- **Artifact:** a fresh `dist/*.fap`, provided I record its SHA-256 and confirm it isn't a stale cached file.\n\n**What it won't prove**\n- **Device behavior:** UI, input handling, teardown, timing, radio, GPIO and storage on real hardware all stay untested. Those need a separate device test plan.\n- **Lint:** `ufbt lint` is formatting and naming only. It isn't static analysis. There is no `ufbt test`.\n- **Other firmware:** Momentum, Unleashed and dev builds are separate lineages. A pass on 1.5.1 says nothing about them.\n- **Reproducibility:** a pinned input isn't a bit-for-bit reproducible build. That claim needs matching hashes from two clean builds.\n- **Catalog:** a clean build doesn't mean the app will be accepted.\n\n**What I need from you**\n1. Where is the project? Give me the path or add it to this workspace. I'll read `application.fam` and any build hooks before building, because the manifest is executable Python.\n2. Do you authorize the SDK and toolchain download into `.ufbt-1.5.1`? Say yes if you want me to run it. If you have an SDK archive or a trusted URL with a hash, say so and I'll use that instead.\n\nWithout a trusted toolchain, compilation is marked `blocked`, not `pass`."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/{application.fam,.github/workflows/*,*.yml,*.yaml,Makefile,README*,.vscode/*,ufbt*}"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P07/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P07/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P07/ws/.claude/skills/flipper-core/references/build-debug-release.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P07/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I haven't pinned anything yet. The workspace has no uFBT project. It contains only the `.claude/skills` files, with no `application.fam`, no sources, no CI config and no existing `.ufbt` directory. I also haven't run any commands, so nothing is built or verified.\n\n**Proposed pin (not executed)**\n\n```\nUFBT_HOME=$PWD/.ufbt-1.5.1 ufbt update --branch=1.5.1\nUFBT_HOME=$PWD/.ufbt-1.5.1 ufbt\n```\n\n- **Isolation:** `UFBT_HOME` keeps the SDK in a project-local directory, so your global uFBT state isn't touched.\n- **Effects:** the `update` step downloads the SDK and toolchain from the network and changes SDK state. A first run without the pin would pick uFBT's moving `release` channel, which is the main way builds drift.\n- **Tag versus hash:** `--branch=1.5.1` selects by release tag, which is a name rather than a hash. For a stronger pin, use `ufbt update --url=<verified-url>` after checking the archive's SHA-256. I don't have that URL or hash from a source I've inspected, so I won't make them up.\n- **Persisting the pin:** each shell, CI job and `vscode_dist` run needs the same `UFBT_HOME` and update step. Commit a script or Makefile that does this, because the pin lives in that state directory and not in the project.\n\n**What the build would prove**\n- **Compiles and links:** your app compiles and links against the official 1.5.1 SDK (firmware commit `9e810dc`, f7, API 88.2). I'd confirm the SDK identity from the downloaded archive and `api_symbols.csv`, not from the tag name.\n- **Imports resolve:** the loader's import check passes against that API table.\n- **Artifact:** a fresh `dist/*.fap`, provided I record its SHA-256 and confirm it isn't a stale cached file.\n\n**What it won't prove**\n- **Device behavior:** UI, input handling, teardown, timing, radio, GPIO and storage on real hardware all stay untested. Those need a separate device test plan.\n- **Lint:** `ufbt lint` is formatting and naming only. It isn't static analysis. There is no `ufbt test`.\n- **Other firmware:** Momentum, Unleashed and dev builds are separate lineages. A pass on 1.5.1 says nothing about them.\n- **Reproducibility:** a pinned input isn't a bit-for-bit reproducible build. That claim needs matching hashes from two clean builds.\n- **Catalog:** a clean build doesn't mean the app will be accepted.\n\n**What I need from you**\n1. Where is the project? Give me the path or add it to this workspace. I'll read `application.fam` and any build hooks before building, because the manifest is executable Python.\n2. Do you authorize the SDK and toolchain download into `.ufbt-1.5.1`? Say yes if you want me to run it. If you have an SDK archive or a trusted URL with a hash, say so and I'll use that instead.\n\nWithout a trusted toolchain, compilation is marked `blocked`, not `pass`."
+  ]
+}

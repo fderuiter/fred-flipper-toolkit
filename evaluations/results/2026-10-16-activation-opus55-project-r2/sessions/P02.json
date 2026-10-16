@@ -1,0 +1,105 @@
+{
+  "id": "P02",
+  "kind": "positive",
+  "prompt": "Should I write my GPIO blinker as a JavaScript script or a native FAP? It needs to toggle a pin every 10 ms.",
+  "started": "2026-10-16T18:44:36+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.2331386,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 2283,
+      "cache_read_input_tokens": 61953,
+      "cache_creation_input_tokens": 21882
+    },
+    "text": "**Write a native FAP. Better still, let the hardware PWM timer toggle the pin so no code runs every 10 ms.** I haven't tested any of the options below on a device.\n\n**Toggling every 10 ms gives a 50 Hz square wave at 50% duty.** That's a standard PWM output. The official SDK exports `furi_hal_pwm_start` / `furi_hal_pwm_stop` to external apps (claim C-BUS-001, checked against `targets/f7/api_symbols.csv` at firmware 1.5.1). Once started, the timer peripheral generates the edges itself, so the scheduler and the UI can't add jitter. Two limits:\n- PWM only works on a few pins (PA7 and PA4 on the f7 target). I'm going from memory on the pin list, so check it in `furi_hal_pwm.h` for your SDK version before wiring.\n- Your app has to call `furi_hal_pwm_stop` on every exit path so the pin isn't left running.\n\n**Why not JavaScript:** Flipper's JS runs on a cut-down interpreter (mJS-derived), not Node (C-JS-001). A loop of \"write pin, `delay(10)`\" adds interpreter overhead and scheduler jitter on every edge. That's fine for an LED you watch by eye. It's not fine if something downstream counts or times the edges. I haven't measured that jitter; it's an inference from how the runtime works.\n\n**Which to pick:**\n\n| Your situation | Use |\n|---|---|\n| Steady 50 Hz square wave on a PWM-capable pin | FAP with `furi_hal_pwm_start` (or the GPIO signal-generator app, if your firmware has it, which needs no code) |\n| Irregular pattern, or a pin without PWM | FAP with a software timer. Edges will be about 1 ms accurate, not exact |\n| Only a visible LED blink where timing doesn't matter | JS works and is quicker to iterate on |\n| Edges need microsecond accuracy | Hardware PWM only, or an external microcontroller |\n\nBefore you wire it up: Flipper GPIO is 3.3 V. Use a current-limiting resistor for an LED, and don't drive a load directly from the pin (C-GPIO-001).\n\nWhich pin are you using, and does anything time the edges, or is it just a visible blink? With that I can sketch the FAP."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core",
+        "args": "User asks: Should I write my GPIO blinker as a JavaScript script or a native FAP? It needs to toggle a pin every 10 ms."
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P02/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P02/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "(?i)js|javascript|timer|gpio|delay",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P02/ws/.claude/skills/flipper-core/references/capability-map.md",
+        "output_mode": "content"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "C-JS-001|C-BUS-001|C-GPIO-001|C-TMR",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P02/ws/.claude/skills/flipper-core/references/sources.json",
+        "output_mode": "content",
+        "-A": 12
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "(?i)pwm|js|javascript|timing|jitter",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P02/ws/.claude/skills/flipper-core/references/hardware-communications.md",
+        "output_mode": "content"
+      }
+    }
+  ],
+  "assistant_text": [
+    "**Write a native FAP. Better still, let the hardware PWM timer toggle the pin so no code runs every 10 ms.** I haven't tested any of the options below on a device.\n\n**Toggling every 10 ms gives a 50 Hz square wave at 50% duty.** That's a standard PWM output. The official SDK exports `furi_hal_pwm_start` / `furi_hal_pwm_stop` to external apps (claim C-BUS-001, checked against `targets/f7/api_symbols.csv` at firmware 1.5.1). Once started, the timer peripheral generates the edges itself, so the scheduler and the UI can't add jitter. Two limits:\n- PWM only works on a few pins (PA7 and PA4 on the f7 target). I'm going from memory on the pin list, so check it in `furi_hal_pwm.h` for your SDK version before wiring.\n- Your app has to call `furi_hal_pwm_stop` on every exit path so the pin isn't left running.\n\n**Why not JavaScript:** Flipper's JS runs on a cut-down interpreter (mJS-derived), not Node (C-JS-001). A loop of \"write pin, `delay(10)`\" adds interpreter overhead and scheduler jitter on every edge. That's fine for an LED you watch by eye. It's not fine if something downstream counts or times the edges. I haven't measured that jitter; it's an inference from how the runtime works.\n\n**Which to pick:**\n\n| Your situation | Use |\n|---|---|\n| Steady 50 Hz square wave on a PWM-capable pin | FAP with `furi_hal_pwm_start` (or the GPIO signal-generator app, if your firmware has it, which needs no code) |\n| Irregular pattern, or a pin without PWM | FAP with a software timer. Edges will be about 1 ms accurate, not exact |\n| Only a visible LED blink where timing doesn't matter | JS works and is quicker to iterate on |\n| Edges need microsecond accuracy | Hardware PWM only, or an external microcontroller |\n\nBefore you wire it up: Flipper GPIO is 3.3 V. Use a current-limiting resistor for an LED, and don't drive a load directly from the pin (C-GPIO-001).\n\nWhich pin are you using, and does anything time the edges, or is it just a visible blink? With that I can sketch the FAP."
+  ]
+}

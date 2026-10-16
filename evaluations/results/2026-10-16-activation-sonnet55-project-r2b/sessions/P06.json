@@ -1,0 +1,114 @@
+{
+  "id": "P06",
+  "kind": "positive",
+  "prompt": "My FAP freezes when I press Back while the worker thread is reading the SD card. Why?",
+  "started": "2026-10-16T18:43:29+00:00",
+  "expected": [
+    "flipper-review"
+  ],
+  "acceptable": [
+    "flipper-native"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-review"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-review"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1012922,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1712,
+      "cache_read_input_tokens": 63562,
+      "cache_creation_input_tokens": 19450
+    },
+    "text": "I can't see your source. The workspace has no app code, only the skill files. So this is a ranked list of likely causes from the Furi teardown rules, not a diagnosis of your code. Nothing here has been run or traced.\n\n**Most likely: the Back handler joins the worker, but the worker can't see the stop request.**\n- Back runs in the GUI or dispatcher thread. If that handler calls `furi_thread_join()` on a worker that is in the middle of a long SD read, the UI blocks until the read finishes. The screen stops redrawing and ignores input, which looks like a freeze.\n- The worker is often stuck because its loop only checks a stop flag between files. It can also be blocked on something with no timeout, such as `furi_message_queue_get(..., FuriWaitForever)` or a `furi_mutex_acquire(..., FuriWaitForever)`.\n- A plain `volatile bool` flag doesn't help if the worker is sitting in a wait. It never gets to re-read the flag.\n\n**Second: a lock deadlock.**\n- Back takes a mutex that the worker also needs, then joins the worker. The worker waits for the mutex and the UI waits for the worker, so neither can proceed.\n- This is common when the worker holds an app or model mutex across `storage_file_read`, and the draw callback or Back handler takes the same mutex.\n\n**Third: the worker can't finish because of what the Back handler already did.**\n- If Back frees shared state or closes the `Storage` record or file before the join, the worker may block or fault on freed memory. A fault would be a crash rather than a freeze, but a half-torn-down state can also hang.\n- The Back/exit event may also have been dropped. If it goes through the same queue the worker is filling, a full queue loses it.\n\n**Less likely but possible:** the SD read itself is slow, for example a large file, a bad card, or `storage_file_read` called in tiny chunks. Then the freeze would end after some seconds.\n\n**Fix (the pattern, not your code):**\n1. In Back, set a stop flag and wake the worker. Use a thread flag or event, or a reserved queue message that can't be dropped. Don't join there.\n2. In the worker, read in bounded chunks, check the flag between chunks, and use timeouts on every wait. Exit the loop and release the file on stop.\n3. Join only after the UI has been detached, and never while holding a lock the worker needs. Doing the join in the main thread's cleanup path, after `view_dispatcher_run` returns, is usually enough.\n4. Free shared state and close records only after the join returns.\n\n**To confirm, send me one of these:**\n- The Back callback and the worker function, or the repo path if it's elsewhere.\n- Whether the freeze ever ends, and after about how long.\n- Any log or crash output, and your firmware and SDK version.\n\nWith the code I can trace the exact interleaving and give you ranked findings."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-review"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.[ch]"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P06/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P06/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P06/ws"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "join|worker|Back|exit",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r2b/P06/ws/.claude/skills/flipper-core/references/runtime-ui.md",
+        "output_mode": "content",
+        "-i": true,
+        "head_limit": 40
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't see your source. The workspace has no app code, only the skill files. So this is a ranked list of likely causes from the Furi teardown rules, not a diagnosis of your code. Nothing here has been run or traced.\n\n**Most likely: the Back handler joins the worker, but the worker can't see the stop request.**\n- Back runs in the GUI or dispatcher thread. If that handler calls `furi_thread_join()` on a worker that is in the middle of a long SD read, the UI blocks until the read finishes. The screen stops redrawing and ignores input, which looks like a freeze.\n- The worker is often stuck because its loop only checks a stop flag between files. It can also be blocked on something with no timeout, such as `furi_message_queue_get(..., FuriWaitForever)` or a `furi_mutex_acquire(..., FuriWaitForever)`.\n- A plain `volatile bool` flag doesn't help if the worker is sitting in a wait. It never gets to re-read the flag.\n\n**Second: a lock deadlock.**\n- Back takes a mutex that the worker also needs, then joins the worker. The worker waits for the mutex and the UI waits for the worker, so neither can proceed.\n- This is common when the worker holds an app or model mutex across `storage_file_read`, and the draw callback or Back handler takes the same mutex.\n\n**Third: the worker can't finish because of what the Back handler already did.**\n- If Back frees shared state or closes the `Storage` record or file before the join, the worker may block or fault on freed memory. A fault would be a crash rather than a freeze, but a half-torn-down state can also hang.\n- The Back/exit event may also have been dropped. If it goes through the same queue the worker is filling, a full queue loses it.\n\n**Less likely but possible:** the SD read itself is slow, for example a large file, a bad card, or `storage_file_read` called in tiny chunks. Then the freeze would end after some seconds.\n\n**Fix (the pattern, not your code):**\n1. In Back, set a stop flag and wake the worker. Use a thread flag or event, or a reserved queue message that can't be dropped. Don't join there.\n2. In the worker, read in bounded chunks, check the flag between chunks, and use timeouts on every wait. Exit the loop and release the file on stop.\n3. Join only after the UI has been detached, and never while holding a lock the worker needs. Doing the join in the main thread's cleanup path, after `view_dispatcher_run` returns, is usually enough.\n4. Free shared state and close records only after the join returns.\n\n**To confirm, send me one of these:**\n- The Back callback and the worker function, or the repo path if it's elsewhere.\n- Whether the freeze ever ends, and after about how long.\n- Any log or crash output, and your firmware and SDK version.\n\nWith the code I can trace the exact interleaving and give you ranked findings."
+  ]
+}

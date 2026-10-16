@@ -1,0 +1,82 @@
+{
+  "id": "P05",
+  "kind": "positive",
+  "prompt": "Review this Flipper app's app_free() for use-after-free and leaks.",
+  "started": "2026-10-16T18:44:36+00:00",
+  "expected": [
+    "flipper-review"
+  ],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-native"
+  ],
+  "loaded_fred": [
+    "flipper-review"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-review"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": false,
+      "evidence-policy.md": false
+    },
+    "pass": false
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.13993640000000002,
+    "num_turns": 4,
+    "usage": {
+      "input_tokens": 4,
+      "output_tokens": 836,
+      "cache_read_input_tokens": 20362,
+      "cache_creation_input_tokens": 14891
+    },
+    "text": "I couldn't find any app code to review. The working directory (`/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P05/ws`) holds only the `.claude/skills/` reference files. There are no `.c`/`.h` files, no `application.fam` and no `app_free()` anywhere in it.\n\nTo do the review, I need one of these:\n- the source pasted here, at least `app_free()`, `app_alloc()` and the main entry function; or\n- the source files placed in the working directory; or\n- a path to them, if they live somewhere else on this machine.\n\nTo check `app_free()` properly I also need to see whatever it tears down:\n- **Allocation code:** `app_alloc()`, so I can match each allocation to a free and find anything that's never freed.\n- **Background code:** any timers, worker threads, UART/serial callbacks or ViewPort/View input and draw callbacks. A use-after-free usually means one of these is still running while `app_free()` releases memory it uses.\n- **Opened services:** every `furi_record_open` call, to check each one has a matching `furi_record_close`.\n- **Exit path:** how the app leaves its event loop, since that decides what is still running when `app_free()` starts.\n\nCrash output from the device or the firmware/SDK version would also help, but isn't required.\n\nOnce I have the code, you'll get a list of problems ranked by severity. Each will show the call sequence that triggers it, what happens as a result, how confident I am, and a specific fix with a test that would confirm it. I'll only read the code unless you ask me to apply fixes."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-review"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I couldn't find any app code to review. The working directory (`/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/P05/ws`) holds only the `.claude/skills/` reference files. There are no `.c`/`.h` files, no `application.fam` and no `app_free()` anywhere in it.\n\nTo do the review, I need one of these:\n- the source pasted here, at least `app_free()`, `app_alloc()` and the main entry function; or\n- the source files placed in the working directory; or\n- a path to them, if they live somewhere else on this machine.\n\nTo check `app_free()` properly I also need to see whatever it tears down:\n- **Allocation code:** `app_alloc()`, so I can match each allocation to a free and find anything that's never freed.\n- **Background code:** any timers, worker threads, UART/serial callbacks or ViewPort/View input and draw callbacks. A use-after-free usually means one of these is still running while `app_free()` releases memory it uses.\n- **Opened services:** every `furi_record_open` call, to check each one has a matching `furi_record_close`.\n- **Exit path:** how the app leaves its event loop, since that decides what is still running when `app_free()` starts.\n\nCrash output from the device or the firmware/SDK version would also help, but isn't required.\n\nOnce I have the code, you'll get a list of problems ranked by severity. Each will show the call sequence that triggers it, what happens as a result, how confident I am, and a specific fix with a test that would confirm it. I'll only read the code unless you ask me to apply fixes."
+  ]
+}

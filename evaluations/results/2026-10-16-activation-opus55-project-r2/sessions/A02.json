@@ -1,0 +1,117 @@
+{
+  "id": "A02",
+  "kind": "ambiguous",
+  "prompt": "Use RECORD_PASSTHROUGH to share my app state with the GUI service.",
+  "started": "2026-10-16T18:45:12+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-core",
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/runtime-ui.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": false,
+  "reasons": [
+    "missing expected ['flipper-native']"
+  ],
+  "init": {
+    "model": "claude-opus-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.2427246,
+    "num_turns": 9,
+    "usage": {
+      "input_tokens": 10,
+      "output_tokens": 1864,
+      "cache_read_input_tokens": 81623,
+      "cache_creation_input_tokens": 23635
+    },
+    "text": "I didn't use `RECORD_PASSTHROUGH`. I can't find it in official Flipper firmware, so code that relied on it wouldn't work.\n\n**Why not**\n- The bundled source notes for official firmware 1.5.1 (f7, API 88.2) list no `RECORD_PASSTHROUGH` in the exported symbol table (`targets/f7/api_symbols.csv`) or in the record header (`furi/core/record.h`). That's claim C-REC-002 in `.claude/skills/flipper-core/references/sources.json`. It also wouldn't help if it did exist. Records hand you a borrowed reference to a service. They aren't a way to pass your data to that service.\n- A wrong record name doesn't fail cleanly: `furi_record_open` waits until a record with that name appears. With a name that never exists, your app hangs at startup (C-REC-001).\n- If it comes from a fork like Momentum or Unleashed, or another codebase, show me where it's defined and I'll check it against that firmware.\n\n**How apps normally show their state in the GUI**\nThe GUI service doesn't take your app's state. It draws what's attached to it and calls back into your view to read the state you own:\n\n1. Open the GUI with `furi_record_open(RECORD_GUI)` and close it when you're done. Never free it.\n2. Attach a view:\n   - **One custom screen:** a `ViewPort`. Its draw callback runs on the GUI thread and reads a copy of your state taken under a mutex.\n   - **Several screens:** a `ViewDispatcher` with views that each hold a locked model, updated with `with_view_model`.\n3. Change state in your app or worker thread, then ask for a redraw with `view_port_update` or a model commit. Keep draw and input callbacks short. Input callbacks should post events to your app's queue, not do the work themselves.\n4. On exit, detach the view from the GUI before freeing it, and close the GUI record last.\n\n(`RECORD_GUI` comes from the official `gui.h` header. It isn't one of the entries in the bundled source notes.)\n\nThere's no app code in this workspace, so I haven't changed anything. If you share your app, or tell me what state you need on screen and whether it's one screen or several, I'll set up the ViewPort or ViewDispatcher for it."
+  },
+  "tool_events": [
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core",
+        "args": "User asks: \"Use RECORD_PASSTHROUGH to share my app state with the GUI service.\" Check whether RECORD_PASSTHROUGH exists on official firmware and what the correct approach is."
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "RECORD_|PASSTHROUGH|furi_record",
+        "path": ".claude/skills",
+        "output_mode": "content",
+        "-i": true
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A02/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A02/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "C-REC-00[12]|C-GUI-00[12]",
+        "path": ".claude/skills/flipper-core/references/sources.json",
+        "output_mode": "content",
+        "-A": 20
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-opus55-project-r2/A02/ws/.claude/skills/flipper-core/references/runtime-ui.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "The workspace has only skills, no app code. Checking whether this record exists is what flipper-core is for.",
+    "I didn't use `RECORD_PASSTHROUGH`. I can't find it in official Flipper firmware, so code that relied on it wouldn't work.\n\n**Why not**\n- The bundled source notes for official firmware 1.5.1 (f7, API 88.2) list no `RECORD_PASSTHROUGH` in the exported symbol table (`targets/f7/api_symbols.csv`) or in the record header (`furi/core/record.h`). That's claim C-REC-002 in `.claude/skills/flipper-core/references/sources.json`. It also wouldn't help if it did exist. Records hand you a borrowed reference to a service. They aren't a way to pass your data to that service.\n- A wrong record name doesn't fail cleanly: `furi_record_open` waits until a record with that name appears. With a name that never exists, your app hangs at startup (C-REC-001).\n- If it comes from a fork like Momentum or Unleashed, or another codebase, show me where it's defined and I'll check it against that firmware.\n\n**How apps normally show their state in the GUI**\nThe GUI service doesn't take your app's state. It draws what's attached to it and calls back into your view to read the state you own:\n\n1. Open the GUI with `furi_record_open(RECORD_GUI)` and close it when you're done. Never free it.\n2. Attach a view:\n   - **One custom screen:** a `ViewPort`. Its draw callback runs on the GUI thread and reads a copy of your state taken under a mutex.\n   - **Several screens:** a `ViewDispatcher` with views that each hold a locked model, updated with `with_view_model`.\n3. Change state in your app or worker thread, then ask for a redraw with `view_port_update` or a model commit. Keep draw and input callbacks short. Input callbacks should post events to your app's queue, not do the work themselves.\n4. On exit, detach the view from the GUI before freeing it, and close the GUI record last.\n\n(`RECORD_GUI` comes from the official `gui.h` header. It isn't one of the entries in the bundled source notes.)\n\nThere's no app code in this workspace, so I haven't changed anything. If you share your app, or tell me what state you need on screen and whether it's one screen or several, I'll set up the ViewPort or ViewDispatcher for it."
+  ]
+}

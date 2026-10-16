@@ -1,0 +1,57 @@
+{
+  "id": "N02",
+  "kind": "negative",
+  "prompt": "How do I reverse a linked list in C?",
+  "started": "2026-10-16T18:37:30+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0558882,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 841,
+      "cache_read_input_tokens": 4742,
+      "cache_creation_input_tokens": 11750
+    },
+    "text": "Use three pointers: walk the list once, and flip each node's `next` to point at the node before it.\n\n```c\n#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n    int data;\n    struct Node *next;\n} Node;\n\nNode *reverse(Node *head) {\n    Node *prev = NULL;\n    Node *curr = head;\n\n    while (curr != NULL) {\n        Node *next = curr->next;  // save the rest of the list\n        curr->next = prev;        // flip the link\n        prev = curr;              // advance prev\n        curr = next;              // advance curr\n    }\n    return prev;                  // prev is the new head\n}\n```\n\n**Usage**\n\n```c\nNode *push(Node *head, int value) {\n    Node *n = malloc(sizeof *n);\n    n->data = value;\n    n->next = head;\n    return n;\n}\n\nint main(void) {\n    Node *head = NULL;\n    for (int i = 5; i >= 1; i--) head = push(head, i);  // 1 2 3 4 5\n\n    head = reverse(head);                               // 5 4 3 2 1\n\n    for (Node *p = head; p; p = p->next) printf(\"%d \", p->data);\n    printf(\"\\n\");\n\n    while (head) { Node *t = head->next; free(head); head = t; }\n    return 0;\n}\n```\n\n**How it works**\n\nFor `1 -> 2 -> 3`:\n\n| step | prev | curr | result |\n|------|------|------|--------|\n| start | NULL | 1 | |\n| 1 | 1 | 2 | `NULL <- 1` |\n| 2 | 2 | 3 | `NULL <- 1 <- 2` |\n| 3 | 3 | NULL | `NULL <- 1 <- 2 <- 3` |\n\nWhen `curr` hits `NULL`, `prev` points to the old tail, which is now the head.\n\n- **Complexity:** O(n) time, O(1) extra space.\n- **Edge cases:** An empty list (`head == NULL`) and a single node both work with no special handling.\n- **Reassign the result:** `head = reverse(head);` is required, because the old head becomes the tail.\n\n**Recursive version** (O(n) stack depth, so it can overflow on very long lists):\n\n```c\nNode *reverse_rec(Node *head) {\n    if (head == NULL || head->next == NULL) return head;\n    Node *new_head = reverse_rec(head->next);\n    head->next->next = head;\n    head->next = NULL;\n    return new_head;\n}\n```\n\nI'd use the iterative version in practice."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "Use three pointers: walk the list once, and flip each node's `next` to point at the node before it.\n\n```c\n#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct Node {\n    int data;\n    struct Node *next;\n} Node;\n\nNode *reverse(Node *head) {\n    Node *prev = NULL;\n    Node *curr = head;\n\n    while (curr != NULL) {\n        Node *next = curr->next;  // save the rest of the list\n        curr->next = prev;        // flip the link\n        prev = curr;              // advance prev\n        curr = next;              // advance curr\n    }\n    return prev;                  // prev is the new head\n}\n```\n\n**Usage**\n\n```c\nNode *push(Node *head, int value) {\n    Node *n = malloc(sizeof *n);\n    n->data = value;\n    n->next = head;\n    return n;\n}\n\nint main(void) {\n    Node *head = NULL;\n    for (int i = 5; i >= 1; i--) head = push(head, i);  // 1 2 3 4 5\n\n    head = reverse(head);                               // 5 4 3 2 1\n\n    for (Node *p = head; p; p = p->next) printf(\"%d \", p->data);\n    printf(\"\\n\");\n\n    while (head) { Node *t = head->next; free(head); head = t; }\n    return 0;\n}\n```\n\n**How it works**\n\nFor `1 -> 2 -> 3`:\n\n| step | prev | curr | result |\n|------|------|------|--------|\n| start | NULL | 1 | |\n| 1 | 1 | 2 | `NULL <- 1` |\n| 2 | 2 | 3 | `NULL <- 1 <- 2` |\n| 3 | 3 | NULL | `NULL <- 1 <- 2 <- 3` |\n\nWhen `curr` hits `NULL`, `prev` points to the old tail, which is now the head.\n\n- **Complexity:** O(n) time, O(1) extra space.\n- **Edge cases:** An empty list (`head == NULL`) and a single node both work with no special handling.\n- **Reassign the result:** `head = reverse(head);` is required, because the old head becomes the tail.\n\n**Recursive version** (O(n) stack depth, so it can overflow on very long lists):\n\n```c\nNode *reverse_rec(Node *head) {\n    if (head == NULL || head->next == NULL) return head;\n    Node *new_head = reverse_rec(head->next);\n    head->next->next = head;\n    head->next = NULL;\n    return new_head;\n}\n```\n\nI'd use the iterative version in practice."
+  ]
+}

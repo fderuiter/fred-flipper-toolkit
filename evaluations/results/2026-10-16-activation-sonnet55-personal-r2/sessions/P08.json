@@ -1,0 +1,113 @@
+{
+  "id": "P08",
+  "kind": "positive",
+  "prompt": "Firmware moved to a new API version; compare these two api_symbols.csv files and plan my app's migration.",
+  "started": "2026-10-16T18:42:34+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [
+    "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P08"
+  ],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 113,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0743346,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1273,
+      "cache_read_input_tokens": 40246,
+      "cache_creation_input_tokens": 14392
+    },
+    "text": "I can't produce a migration plan yet. Two things blocked me.\n\n**1. I can't find the CSV files.** There's no `api_symbols.csv` or any other `*api*` file in the working directory (`/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P08/ws`). I need the old and new files. Either put them in that directory or paste their contents here. Please also tell me:\n- which firmware versions the two files come from (for example 1.4.x to 1.5.x, or a fork such as Momentum or Unleashed);\n- where your app's source is, so I can match changed symbols to call sites.\n\n**2. I couldn't read the flipper-verify skill's shared reference files.** The skill requires reading `engineering-rules.md` and `evidence-policy.md` in `flipper-core/references/` before it does a migration comparison. Both reads were denied, because they sit outside the allowed working directory and nobody can approve prompts in this session. The skill says not to continue from memory when they're unreadable. So I haven't applied its evidence rules, and I haven't guessed at any API changes.\n\n**What I'll do once I have the files** (after you copy the references into the workspace or grant access):\n1. Diff the two tables. For each symbol I'll classify it as removed, added, or changed (signature, type or version). The `scripts/compare_api.py` helper is only supplementary evidence, so I'll do the diff directly too.\n2. Search your app for every call site that uses a removed or changed symbol.\n3. Write a migration plan ordered by impact: breaking changes first, then deprecations, then optional new APIs.\n4. Build against the new SDK. If no trusted toolchain is already set up, I'll mark the build as blocked, not passed. I won't download an SDK or toolchain without telling you the exact source, version pin and effects first.\n5. Write a separate device test plan. A compile or host result won't count as a device pass."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/api_symbols*.csv"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P08/config/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P08/config/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*api*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P08/ws"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.csv",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P08"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't produce a migration plan yet. Two things blocked me.\n\n**1. I can't find the CSV files.** There's no `api_symbols.csv` or any other `*api*` file in the working directory (`/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-personal-r2/P08/ws`). I need the old and new files. Either put them in that directory or paste their contents here. Please also tell me:\n- which firmware versions the two files come from (for example 1.4.x to 1.5.x, or a fork such as Momentum or Unleashed);\n- where your app's source is, so I can match changed symbols to call sites.\n\n**2. I couldn't read the flipper-verify skill's shared reference files.** The skill requires reading `engineering-rules.md` and `evidence-policy.md` in `flipper-core/references/` before it does a migration comparison. Both reads were denied, because they sit outside the allowed working directory and nobody can approve prompts in this session. The skill says not to continue from memory when they're unreadable. So I haven't applied its evidence rules, and I haven't guessed at any API changes.\n\n**What I'll do once I have the files** (after you copy the references into the workspace or grant access):\n1. Diff the two tables. For each symbol I'll classify it as removed, added, or changed (signature, type or version). The `scripts/compare_api.py` helper is only supplementary evidence, so I'll do the diff directly too.\n2. Search your app for every call site that uses a removed or changed symbol.\n3. Write a migration plan ordered by impact: breaking changes first, then deprecations, then optional new APIs.\n4. Build against the new SDK. If no trusted toolchain is already set up, I'll mark the build as blocked, not passed. I won't download an SDK or toolchain without telling you the exact source, version pin and effects first.\n5. Write a separate device test plan. A compile or host result won't count as a device pass."
+  ]
+}

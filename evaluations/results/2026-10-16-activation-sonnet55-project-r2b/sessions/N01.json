@@ -1,0 +1,58 @@
+{
+  "id": "N01",
+  "kind": "negative",
+  "prompt": "Proofread this blog paragraph: 'I took my Flipper Zero to DEF CON and it was a hit.'",
+  "started": "2026-10-16T18:43:48+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0478091,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 235,
+      "cache_read_input_tokens": 5311,
+      "cache_creation_input_tokens": 11231
+    },
+    "text": "The sentence is already correct. I'd change one thing, and it's optional.\n\n**Original:** \"I took my Flipper Zero to DEF CON and it was a hit.\"\n\n- **Grammar and punctuation:** No errors.\n- **Capitalization:** \"Flipper Zero\" and \"DEF CON\" are both written correctly. DEF CON is conventionally all caps.\n- **Optional style tweak:** \"it\" could refer to either the Flipper Zero or DEF CON. If you mean the device, you could write \"and it was a hit\" as \"and it was a big hit with other attendees\" or \"and it was a hit with the crowd.\" The original is fine for casual blog writing.\n\nIf you paste the full paragraph, I can check it in context."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "The sentence is already correct. I'd change one thing, and it's optional.\n\n**Original:** \"I took my Flipper Zero to DEF CON and it was a hit.\"\n\n- **Grammar and punctuation:** No errors.\n- **Capitalization:** \"Flipper Zero\" and \"DEF CON\" are both written correctly. DEF CON is conventionally all caps.\n- **Optional style tweak:** \"it\" could refer to either the Flipper Zero or DEF CON. If you mean the device, you could write \"and it was a hit\" as \"and it was a big hit with other attendees\" or \"and it was a hit with the crowd.\" The original is fine for casual blog writing.\n\nIf you paste the full paragraph, I can check it in context."
+  ]
+}
