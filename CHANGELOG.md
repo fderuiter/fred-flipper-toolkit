@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- `flipper-verify` (#21): an SDK or firmware migration now requires a source / binary-import / behavior impact table (evidence and action per row, citing C-FAP-004) and a rebuild plan (target SDK identity, `ufbt` command, import check, pending device cases). Skill description unchanged, so activation was not re-run. The migration-family score is not yet re-measured (#12).
+
 ## v0.1.0-preview — 2026-10-16
 
 Release notes: [docs/releases/v0.1.0-preview.md](docs/releases/v0.1.0-preview.md). Handoff for future work: [docs/handoff/next-agent-prompt.md](docs/handoff/next-agent-prompt.md).
