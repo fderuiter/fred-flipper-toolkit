@@ -1,6 +1,6 @@
 # Implementation roadmap
 
-Status (2026-10-16): v0.1 preview implemented — #2–#7 and #10 are complete with recorded evidence; #8 (model comparison) and #9 (hardware) remain. Issue comments record commits and exact check results.
+Status (2026-10-16): v0.1 preview implemented — #2–#7 and #10 are complete with recorded evidence; #8 (model comparison) and #9 (hardware) remain, plus follow-ups #12–#20. Issue comments record commits and exact check results.
 
 Tracker: [#1](https://github.com/fderuiter/fred-flipper-toolkit/issues/1). The [implementation prompt](implementation-prompt.md) gives concrete files, sequence, sources and release gates. The [full report](research/2026-10-16-research-design.md) explains the decisions.
 
@@ -16,6 +16,20 @@ Tracker: [#1](https://github.com/fderuiter/fred-flipper-toolkit/issues/1). The [
 | M7 / stable native support | [#9: Qualify native UI, settings recovery, and UART behavior on real hardware](https://github.com/fderuiter/fred-flipper-toolkit/issues/9) | P1 | #7 | Authorized real-device observations |
 | v0.1 release governance | [#10: Operationalize maintenance, contribution, and evidence-based release policy](https://github.com/fderuiter/fred-flipper-toolkit/issues/10) | P1 | #2, #3, #4 | Implementation/content checks and evidence linked to issue |
 | Research backlog / expansion-gated | [#11: Resolve evidence gaps before optional JS, fork, simulator, or device-adapter expansion](https://github.com/fderuiter/fred-flipper-toolkit/issues/11) | P2 | #2 | Source-backed expansion decisions; no inferred support |
+
+## Follow-up work (opened 2026-10-16)
+
+| Issue | Priority | Depends on | Completion evidence |
+|---|---|---|---|
+| [#12: Build held-out benchmark fixtures and run held-out validation](https://github.com/fderuiter/fred-flipper-toolkit/issues/12) | P1 | #8 | Held-out fixtures/oracles, reference builds, paired held-out run |
+| [#13: Reduce skill context overhead to the 1.5x token budget](https://github.com/fderuiter/fred-flipper-toolkit/issues/13) | P1 | — | Token cost table; ratio ≤ 1.5× or documented budget revision |
+| [#14: Pilot harness: let both arms compile and run host tests inside an isolated sandbox](https://github.com/fderuiter/fred-flipper-toolkit/issues/14) | P2 | — | Sandbox proof and paired smoke run |
+| [#15: Test the setup wizard on Windows and macOS](https://github.com/fderuiter/fred-flipper-toolkit/issues/15) | P1 | — | Per-OS results; tests pass |
+| [#16: Resolve remaining GPIO electrical unknowns](https://github.com/fderuiter/fred-flipper-toolkit/issues/16) | P2 | — | AN4899, schematic and ESD sources or recorded unavailability |
+| [#17: Investigate .fap build reproducibility](https://github.com/fderuiter/fred-flipper-toolkit/issues/17) | P3 | — | Section-level root cause; recipe or documented limit |
+| [#18: Qualify FRED in other agent clients](https://github.com/fderuiter/fred-flipper-toolkit/issues/18) | P3 | demand | Per-client activation results |
+| [#19: First maintenance review (due 2026-11-16)](https://github.com/fderuiter/fred-flipper-toolkit/issues/19) | P2 | — | Review checklist with check results |
+| [#20: Cut the v0.1.0-preview release](https://github.com/fderuiter/fred-flipper-toolkit/issues/20) | P1 | #8 decision | Tag, release notes stating exact evidence |
 
 ## Sequence and qualification boundaries
 
