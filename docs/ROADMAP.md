@@ -26,7 +26,7 @@ Tracker: [#1](https://github.com/fderuiter/fred-flipper-toolkit/issues/1). The [
 | [#14: Pilot harness: let both arms compile and run host tests inside an isolated sandbox](https://github.com/fderuiter/fred-flipper-toolkit/issues/14) | P2 | — | Sandbox proof and paired smoke run. Proof done offline ([record](../evaluations/results/2026-10-16-sandbox-proof/README.md)); smoke run needs approved model spend |
 | [#15: Test the setup wizard on Windows and macOS](https://github.com/fderuiter/fred-flipper-toolkit/issues/15) | P1 | — | Per-OS results; tests pass |
 | [#16: Resolve remaining GPIO electrical unknowns](https://github.com/fderuiter/fred-flipper-toolkit/issues/16) | P2 | — | AN4899, schematic and ESD sources or recorded unavailability |
-| [#17: Investigate .fap build reproducibility](https://github.com/fderuiter/fred-flipper-toolkit/issues/17) | P3 | — | Section-level root cause; recipe or documented limit |
+| [#17: Investigate .fap build reproducibility](https://github.com/fderuiter/fred-flipper-toolkit/issues/17) | P3 | — | Section-level root cause; recipe or documented limit. Causes found by source inspection and host replays ([record](../evaluations/results/2026-10-16-build-reproducibility/README.md)); recipe untested against the SDK |
 | [#18: Qualify FRED in other agent clients](https://github.com/fderuiter/fred-flipper-toolkit/issues/18) | P3 | demand | Per-client activation results |
 | [#19: First maintenance review (due 2026-11-16)](https://github.com/fderuiter/fred-flipper-toolkit/issues/19) | P2 | — | Review checklist with check results |
 | [#21: Pilot gap — SDK-migration family 74.3 < 80](https://github.com/fderuiter/fred-flipper-toolkit/issues/21) | P1 | #12 | Migration family ≥ 80 on a held-out paired rerun |

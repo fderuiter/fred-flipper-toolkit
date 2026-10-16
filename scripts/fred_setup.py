@@ -29,7 +29,6 @@ import platform
 import shutil
 import subprocess
 import sys
-import tempfile
 import urllib.request
 from pathlib import Path
 
@@ -591,10 +590,14 @@ def build_app(app: Path, home: Path, ui: UI, scratch: bool = False) -> int:
         ui.say(f"    | {line}")
     if not scratch and not ui.confirm("Build this app with the pinned SDK?", default=True):
         return 0
-    work = Path(tempfile.mkdtemp(prefix="fred-build-")) / app.name if scratch else app
+    # A fixed scratch path and hash seed keep .fap hashes comparable between runs (issue #17):
+    # the .fap's .gnu_debuglink CRC covers the debug ELF, which records absolute build paths,
+    # and fbt orders multi-source objects through a Python set of the manifest's patterns.
+    work = home / "build" / app.name if scratch else app
     if scratch:
+        shutil.rmtree(work, ignore_errors=True)
         shutil.copytree(app, work)
-    env = dict(os.environ, UFBT_HOME=str(home / "ufbt-home"))
+    env = dict(os.environ, UFBT_HOME=str(home / "ufbt-home"), PYTHONHASHSEED="0")
     p = subprocess.run([str(exe)], cwd=work, env=env, capture_output=True, text=True)
     log = [ln for ln in (p.stdout + p.stderr).strip().splitlines() if "###" not in ln and "%" not in ln[-8:]]
     for line in log[-12:]:

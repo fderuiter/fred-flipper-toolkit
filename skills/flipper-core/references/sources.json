@@ -1171,6 +1171,51 @@
       ]
     },
     {
+      "id": "C-BUILD-006",
+      "claim": "fbt's GatherSources() deduplicates an app's sources patterns with list(set(...)) before globbing them, and the external-app build compiles and links the result in that order; with more than one pattern, object order follows the Python hash seed of the SCons process, which uFBT 0.2.6 neither sets nor clears.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/scripts/fbt_tools/sconsrecursiveglob.py",
+          "locator": "GatherSources: sources_list = list(set(Flatten(sources_list)))",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/scripts/fbt_tools/fbt_extapps.py",
+          "locator": "AppBuilder._build_app: GatherSources([app.sources, \"!lib\"]) then Program()",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Multi-source FAP hashes vary between clean builds unless PYTHONHASHSEED is fixed; sorting the sources list has no effect.",
+      "consumers": [
+        "flipper-core/references/build-debug-release.md"
+      ],
+      "notes": "Replayed with Python 3.13 and matched to the 2026-10-16 SDK qualification hashes; not yet confirmed by an SDK build with a fixed seed. Record in evaluations/results/2026-10-16-build-reproducibility."
+    },
+    {
+      "id": "C-BUILD-007",
+      "claim": "fbt makes the .fap from the debug ELF with objcopy --strip-debug --strip-unneeded --add-gnu-debuglink, so the .fap keeps a .gnu_debuglink section holding the debug ELF's name and a CRC-32 of that whole file, whose DWARF records absolute source and SDK paths.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/scripts/fbt_tools/fbt_extapps.py",
+          "locator": "generate_embed_app_metadata_actions: objcopy --add-gnu-debuglink=${SOURCE}",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "The same app built from a different folder or UFBT_HOME gives a different .fap hash; compare hashes only between builds with identical absolute paths.",
+      "consumers": [
+        "flipper-core/references/build-debug-release.md"
+      ],
+      "notes": "Mechanism reproduced with host gcc 13.3/binutils 2.42 (only .gnu_debuglink differed); not yet observed with toolchain 39. Record in evaluations/results/2026-10-16-build-reproducibility."
+    },
+    {
       "id": "C-FAP-004",
       "claim": "The official 1.5.1 loader rejects a FAP only for a hardware-target mismatch or a different API major (ApiTooOld/ApiTooNew); the API-minor comparisons are commented out, so minor differences surface only as unresolved imports during ELF symbol resolution.",
       "sources": [
