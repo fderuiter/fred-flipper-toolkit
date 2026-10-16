@@ -31,6 +31,7 @@ There is no `ufbt test` [C-BUILD-001]. Do not describe lint as static analysis.
 - Pin the official toolchain too (1.5.1 uses Flipper toolchain 39, gcc 12.3.1) [C-BUILD-005]. A distro `arm-none-eabi` toolchain changed the generated SDK API from 88.2 to 89.0 in a firmware-tree build [C-BUILD-004].
 - Record: bootstrap version, SDK URL + SHA-256 + API, firmware commit, compiler/binutils versions, build flags/mode, host OS, app commit, dependency pins and `dist/*.fap` SHA-256.
 - Repeatable inputs are not bit-for-bit reproducibility; claim the latter only after comparing hashes from two clean builds. Observed: single-source FAPs were identical across clean builds, multi-source FAPs varied with object order.
+- Two upstream causes. fbt orders a manifest's `sources` patterns through a Python set, so multi-source object and link order follows the hash seed; sorting `sources` does not help [C-BUILD-006]. The `.fap`'s `.gnu_debuglink` holds a CRC of the debug ELF, whose DWARF records absolute paths, so a different app folder or `UFBT_HOME` changes the hash [C-BUILD-007]. To compare hashes, keep toolchain, SDK, uFBT, app folder and `UFBT_HOME` paths fixed, set `PYTHONHASHSEED` (e.g. `0`) for `ufbt`, and build clean. This recipe is untested against the SDK.
 
 When you hand a user build instructions, pin them: `UFBT_HOME=<project dir>/.ufbt ufbt update --branch=<tag>` (or `--url`/`--local --hw-target=f7` with a verified SDK), then `ufbt`, and say that `ufbt launch` deploys to a device.
 
