@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "toolkit_version": "0.1.0-preview",
+  "description": "FRED's own compatibility record. Researched baseline facts are kept separate from executed evidence. Schema: docs/architecture.md#compatibilityjson.",
+  "baseline": {
+    "firmware": {
+      "lineage": "official",
+      "tag": "1.5.1",
+      "commit": "9e810dc399e027e48ce07751df72168abbb19065",
+      "source": "https://github.com/flipperdevices/flipperzero-firmware/releases/tag/1.5.1",
+      "status": "source-confirmed",
+      "checked_on": "2026-10-16",
+      "claim": "C-BASE-001"
+    },
+    "target": {
+      "hardware": "f7",
+      "board_revision": "unknown",
+      "status": "source-confirmed",
+      "checked_on": "2026-10-16",
+      "consequence": "Board revision only matters for electrical/pin guidance; such guidance stays unresolved (C-GPIO-001)."
+    },
+    "api": {
+      "version": "88.2",
+      "source": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/api_symbols.csv",
+      "table_sha256": "5c9505984a19be218c19400d43ab9c7056996d003e69809945d9db03e95c04bb",
+      "status": "source-confirmed",
+      "checked_on": "2026-10-16",
+      "claim": "C-BASE-002",
+      "notes": "Version row re-read during implementation; table parsed by scripts/compare_api.py with no malformed or duplicate rows (3537 Function, 311 Variable, 319 Header rows)."
+    },
+    "sdk_artifact": {
+      "url": "https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip",
+      "index_url": "https://update.flipperzero.one/firmware/directory.json",
+      "published_sha256": "dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe",
+      "bytes_verified": false,
+      "observed_sha256": null,
+      "status": "documented",
+      "checked_on": "2026-10-16",
+      "claim": "C-BASE-003",
+      "consequence": "SDK identity is index metadata only. During implementation the index host was not reachable from the build session (egress proxy refused update.flipperzero.one), so bytes remain unverified (issue #7)."
+    },
+    "ufbt_bootstrap": {
+      "version": "0.2.6",
+      "commit": "093ab78058f19b11eab82020989aa4e123521490",
+      "status": "documented",
+      "checked_on": "2026-10-16",
+      "claim": "C-BASE-004",
+      "notes": "Bootstrap alone does not pin the build: the SDK carries much of the build machinery, and first run defaults to the moving release channel."
+    },
+    "toolchain": {
+      "compiler": "unknown",
+      "binutils": "unknown",
+      "status": "unresolved",
+      "checked_on": "2026-10-16",
+      "consequence": "No compiled-support claim is possible until a trusted toolchain is installed under isolated UFBT_HOME and its versions recorded (issue #7)."
+    },
+    "catalog": {
+      "commit": "5309fa2b142cb3bcc78098ddb1d1e3c7908fce47",
+      "status": "source-confirmed",
+      "checked_on": "2026-10-16",
+      "claim": "C-CAT-001"
+    }
+  },
+  "observed_non_baseline": [
+    {
+      "lineage": "official dev",
+      "commit": "3fb1d51727733d2007abc5ec636a89328857803e",
+      "api": "88.4",
+      "notes": "42 added exports, no removals or signature changes relative to 1.5.1 (C-BASE-005). Informational only."
+    }
+  ],
+  "evidence": {
+    "documentation_reviewed": {
+      "status": "pass",
+      "reason": "Official docs and selected third-party docs reviewed within the scope stated in the research record.",
+      "evidence": "docs/research/2026-10-16-research-design.md"
+    },
+    "source_inspected": {
+      "status": "pass",
+      "reason": "Pinned firmware, uFBT and catalog sources inspected; every registry source URL re-resolved at its pin on 2026-10-16.",
+      "evidence": "skills/flipper-core/references/sources.json"
+    },
+    "static_checks": {
+      "status": "blocked",
+      "reason": "ufbt lint for benchmark fixtures needs the SDK/toolchain, which is not installed and could not be fetched in this session."
+    },
+    "compiled": {
+      "status": "blocked",
+      "reason": "No prepared trusted toolchain; SDK download host unreachable from the session; installation not authorized (issue #7)."
+    },
+    "host_tests": {
+      "status": "not-run",
+      "reason": "Benchmark fixtures define inputs and corpora; reference host tests for fixture logic are part of SDK qualification (issue #7). FRED's own helper tests are recorded separately in docs/evaluation.md."
+    },
+    "device_behavior": {
+      "status": "not-run",
+      "reason": "No hardware access or authorization; requires issue #9."
+    }
+  },
+  "surfaces": [
+    {
+      "id": "external-native-fap",
+      "support": "researched",
+      "notes": "Implementation guidance traced to pinned source; not compiled or device-tested."
+    },
+    {
+      "id": "built-in-app",
+      "support": "feasibility-only",
+      "notes": "Routing guidance only."
+    },
+    {
+      "id": "firmware-service-or-modification",
+      "support": "feasibility-only",
+      "notes": "Routing guidance only; no firmware changes are made by FRED."
+    },
+    {
+      "id": "javascript",
+      "support": "feasibility-only",
+      "notes": "mJS-derived runtime; fork language/module details unverified (C-JS-001, issue #11)."
+    },
+    {
+      "id": "host-companion",
+      "support": "feasibility-only",
+      "notes": "Architecture guidance only."
+    },
+    {
+      "id": "expansion-microcontroller",
+      "support": "feasibility-only",
+      "notes": "Architecture guidance only; board/electrical facts must be verified per design."
+    },
+    {
+      "id": "fap-ble-central-gatt-client",
+      "support": "unsupported",
+      "notes": "Peripheral GAP role and no exported client workflow at the baseline (C-BLE-001, C-BLE-002)."
+    }
+  ],
+  "other_lineages": [
+    {
+      "lineage": "momentum",
+      "support": "unsupported",
+      "notes": "Not inspected for API compatibility; separate lineage (C-FORK-001)."
+    },
+    {
+      "lineage": "unleashed",
+      "support": "unsupported",
+      "notes": "Not inspected for API compatibility; separate lineage (C-FORK-001)."
+    },
+    {
+      "lineage": "xtreme",
+      "support": "unsupported",
+      "notes": "Archived; historical reference only (C-FORK-001)."
+    }
+  ]
+}

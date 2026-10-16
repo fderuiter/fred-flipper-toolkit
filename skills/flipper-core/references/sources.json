@@ -1,0 +1,1108 @@
+{
+  "schema_version": 1,
+  "checked_on": "2026-10-16",
+  "description": "FRED claim registry. Schema: docs/architecture.md (repository). Status and review_state semantics: references/evidence-policy.md.",
+  "pins": {
+    "fw": {
+      "repo": "flipperdevices/flipperzero-firmware",
+      "ref": "1.5.1",
+      "commit": "9e810dc399e027e48ce07751df72168abbb19065"
+    },
+    "fw_dev": {
+      "repo": "flipperdevices/flipperzero-firmware",
+      "ref": "dev (observed, not baseline)",
+      "commit": "3fb1d51727733d2007abc5ec636a89328857803e"
+    },
+    "ufbt": {
+      "repo": "flipperdevices/flipperzero-ufbt",
+      "ref": "v0.2.6",
+      "commit": "093ab78058f19b11eab82020989aa4e123521490"
+    },
+    "catalog": {
+      "repo": "flipperdevices/flipper-application-catalog",
+      "ref": "main (observed)",
+      "commit": "5309fa2b142cb3bcc78098ddb1d1e3c7908fce47"
+    },
+    "momentum": {
+      "repo": "Next-Flip/Momentum-Firmware",
+      "ref": "dev (observed)",
+      "commit": "d3f89dfe2ef6b01839201598e9be1590cba80322"
+    },
+    "unleashed": {
+      "repo": "DarkFlippers/unleashed-firmware",
+      "ref": "dev (observed)",
+      "commit": "f62964cb8216c566cb3940992d0fea6bbe91d840"
+    },
+    "xtreme": {
+      "repo": "Flipper-XFW/Xtreme-Firmware",
+      "ref": "dev (archived)",
+      "commit": "54619d013a120897eeade491decf4d1e95217c06"
+    },
+    "emu": {
+      "repo": "ZDStudios/Flipper-Zero-Emulator",
+      "ref": "main (observed)",
+      "commit": "23edb1bf355698cc0d9c37f297c2102ecd1b114f"
+    }
+  },
+  "claims": [
+    {
+      "id": "C-BASE-001",
+      "claim": "Official firmware release 1.5.1 corresponds to commit 9e810dc399e027e48ce07751df72168abbb19065.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/releases/tag/1.5.1",
+          "locator": "GitHub release 1.5.1 tag metadata",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/tree/9e810dc399e027e48ce07751df72168abbb19065/",
+          "locator": "tree at release commit",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Record the exact commit, never 'latest'.",
+      "consumers": [
+        "flipper-core/references/compatibility.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/upstream-examples.md"
+      ],
+      "research_ids": [
+        "S01"
+      ]
+    },
+    {
+      "id": "C-BASE-002",
+      "claim": "targets/f7/api_symbols.csv at the baseline declares API version 88.2 and lists exported (+) and unexported (-) symbols with full signatures.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/api_symbols.csv",
+          "locator": "row 'Version,+,88.2'; Function/Variable/Header rows",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Export membership and signatures are compatibility inputs; re-read this row at every baseline review.",
+      "consumers": [
+        "flipper-core/references/capability-map.md",
+        "flipper-core/references/compatibility.md",
+        "flipper-core/references/engineering-rules.md"
+      ],
+      "research_ids": [
+        "S03"
+      ]
+    },
+    {
+      "id": "C-BASE-003",
+      "claim": "The official update index publishes the f7 SDK for 1.5.1 at https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip with SHA-256 dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe; downloaded bytes have not been verified.",
+      "sources": [
+        {
+          "url": "https://update.flipperzero.one/firmware/directory.json",
+          "locator": "release channel, version 1.5.1, target f7, type sdk_zip",
+          "live": true
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "documented",
+      "review_state": "current",
+      "consequence": "Verify archive bytes against the digest before use; until then the SDK identity is index metadata only.",
+      "consumers": [
+        "flipper-core/references/build-debug-release.md",
+        "flipper-core/references/compatibility.md"
+      ],
+      "research_ids": [
+        "S29"
+      ]
+    },
+    {
+      "id": "C-BASE-004",
+      "claim": "uFBT 0.2.6 builds from the app directory into dist, downloads SDK and toolchain on first run from the release channel by default, selects SDKs with update --branch/--url/--local, and stores state in UFBT_HOME (default ~/.ufbt).",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-ufbt/blob/093ab78058f19b11eab82020989aa4e123521490/README.md",
+          "locator": "Usage; Managing the SDK; UFBT_HOME",
+          "pin": "ufbt"
+        }
+      ],
+      "applies_to": "uFBT 0.2.6",
+      "checked_on": "2026-10-16",
+      "status": "documented",
+      "review_state": "current",
+      "consequence": "Pin SDK and bootstrap separately and isolate UFBT_HOME; first run is a download with external effects.",
+      "consumers": [
+        "flipper-core/references/build-debug-release.md",
+        "flipper-core/references/compatibility.md",
+        "flipper-core/references/upstream-examples.md"
+      ],
+      "research_ids": [
+        "S04"
+      ]
+    },
+    {
+      "id": "C-BASE-005",
+      "claim": "Official dev at 3fb1d51 declares API 88.4 and exports 42 symbols absent from 1.5.1, with no removed exports or signature changes (compare_api.py over both pinned tables).",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/3fb1d51727733d2007abc5ec636a89328857803e/targets/f7/api_symbols.csv",
+          "locator": "Version row and Function rows",
+          "pin": "fw_dev"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/api_symbols.csv",
+          "locator": "baseline table",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official dev 3fb1d51 vs 1.5.1",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "A FAP built against dev can import symbols missing on 1.5.1; dev is not the baseline.",
+      "consumers": [
+        "flipper-core/references/build-debug-release.md",
+        "flipper-core/references/compatibility.md"
+      ]
+    },
+    {
+      "id": "C-HW-001",
+      "claim": "Flipper Zero uses a monochrome 128x64 LCD and an STM32WB55 with 256 KB SRAM shared between firmware, radio stack and applications.",
+      "sources": [
+        {
+          "url": "https://docs.flipper.net/zero/development/hardware/tech-specs",
+          "locator": "Display; MCU",
+          "live": true
+        }
+      ],
+      "applies_to": "Flipper Zero hardware (live docs)",
+      "checked_on": "2026-10-16",
+      "status": "documented",
+      "review_state": "current",
+      "consequence": "No fixed application heap allowance; design for LCD constraints.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/runtime-ui.md"
+      ],
+      "research_ids": [
+        "S09"
+      ]
+    },
+    {
+      "id": "C-MEM-001",
+      "claim": "malloc is exported (Function,+,malloc) and implemented as pvPortMalloc on the firmware heap.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/furi/core/memmgr.c",
+          "locator": "malloc()",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/api_symbols.csv",
+          "locator": "row Function,+,malloc",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Do not flag malloc as forbidden.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/runtime-ui.md"
+      ],
+      "research_ids": [
+        "S10",
+        "S03"
+      ]
+    },
+    {
+      "id": "C-MEM-002",
+      "claim": "pvPortMalloc crashes with 'memmgt in ISR' in IRQ mode and fails furi_check with 'out of memory' or 'malloc(0)' instead of returning NULL.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/furi/core/memmgr_heap.c",
+          "locator": "pvPortMalloc(): FURI_IS_IRQ_MODE check and final furi_check",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Bound sizes before allocating; NULL checks do not make OOM recoverable; never allocate in IRQ.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/build-debug-release.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/runtime-ui.md"
+      ],
+      "research_ids": [
+        "S10"
+      ]
+    },
+    {
+      "id": "C-MEM-003",
+      "claim": "api_symbols.csv at the baseline has no furi_alloc row; no universal furi_alloc requirement is established.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/api_symbols.csv",
+          "locator": "absence of furi_alloc rows",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Do not invent or require furi_alloc. Absence of a row does not by itself prove absence of a macro.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/engineering-rules.md"
+      ],
+      "research_ids": [
+        "S03"
+      ]
+    },
+    {
+      "id": "C-FAP-001",
+      "claim": "FAP code, data and constant sections are loaded into RAM by the ELF loader and their imports are resolved against the firmware API table.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/lib/flipper_application/elf/elf_file.c",
+          "locator": "section loading and symbol resolution",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/documentation/AppsOnSDCard.md",
+          "locator": "loading and API versioning",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Budget code, constants and assets as RAM; missing imports fail at load time.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/capability-map.md",
+        "flipper-core/references/compatibility.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/runtime-ui.md",
+        "flipper-core/references/upstream-examples.md"
+      ],
+      "research_ids": [
+        "S12"
+      ]
+    },
+    {
+      "id": "C-FAP-002",
+      "claim": "Generic App() requires appid and apptype; application.fam is Python syntax evaluated by the build; catalog submission adds separate requirements.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/scripts/fbt/appmanifest.py",
+          "locator": "FlipperApplication fields appid/apptype; APP_ID_REGEX",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/documentation/AppManifests.md",
+          "locator": "manifest fields",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Read manifests and hooks before building; helpers must never eval manifests.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/build-debug-release.md",
+        "flipper-core/references/engineering-rules.md"
+      ],
+      "research_ids": [
+        "S13"
+      ]
+    },
+    {
+      "id": "C-FAP-003",
+      "claim": "A public FAP capability requires a header, an implementation, an exported row or declared library, a resource owner and a successful build; a header alone does not establish availability.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/api_symbols.csv",
+          "locator": "export status column",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/documentation/AppsOnSDCard.md",
+          "locator": "API and fap_libs",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "inferred",
+      "review_state": "current",
+      "consequence": "Trace header to export to build before advising an API.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/capability-map.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/upstream-examples.md"
+      ],
+      "research_ids": [
+        "S03",
+        "S12",
+        "S13"
+      ]
+    },
+    {
+      "id": "C-PRINT-001",
+      "claim": "The baseline exports __wrap_printf, __wrap_snprintf and __wrap_vsnprintf while the raw printf row is not exported; the print library wraps calls at link time.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/api_symbols.csv",
+          "locator": "rows __wrap_printf (+), printf (-)",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/lib/print/SConscript",
+          "locator": "wrapped symbols",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Raw symbol status alone is misleading; prefer FURI_LOG and bounded snprintf; verify output route.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/runtime-ui.md"
+      ],
+      "research_ids": [
+        "S27"
+      ]
+    },
+    {
+      "id": "C-REC-001",
+      "claim": "furi_record_open increments a holder count and waits until the record exists; furi_record_close decrements it; destroy is refused while holders remain.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/furi/core/record.c",
+          "locator": "furi_record_open/close/destroy",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Balance borrows, never free services, verify names; a misspelled name blocks forever; a missing close is an imbalance, not a guaranteed panic.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/runtime-ui.md"
+      ],
+      "research_ids": [
+        "S11"
+      ]
+    },
+    {
+      "id": "C-REC-002",
+      "claim": "No RECORD_PASSTHROUGH definition was established in the inspected public surface.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/api_symbols.csv",
+          "locator": "no matching row",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/furi/core/record.h",
+          "locator": "record API header",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "unresolved",
+      "review_state": "current",
+      "consequence": "Treat as invented until a defining header is found at the pin.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/engineering-rules.md"
+      ],
+      "research_ids": [
+        "S11"
+      ]
+    },
+    {
+      "id": "C-CTX-001",
+      "claim": "furi_message_queue_put/get in IRQ or masked context require a non-NULL message and zero timeout, otherwise furi_check fails.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/furi/core/message_queue.c",
+          "locator": "furi_message_queue_put(), furi_message_queue_get()",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "IRQ producers use zero-timeout operations and an explicit full-queue policy.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/hardware-communications.md",
+        "flipper-core/references/runtime-ui.md",
+        "flipper-core/references/upstream-examples.md"
+      ],
+      "research_ids": [
+        "S15"
+      ]
+    },
+    {
+      "id": "C-TMR-001",
+      "claim": "furi_timer_stop calls xTimerStop and returns; it does not wait for an in-flight callback, although timer.h describes it as synchronous until the timer queue is processed.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/furi/core/timer.c",
+          "locator": "furi_timer_stop()",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/furi/core/timer.h",
+          "locator": "furi_timer_stop warning",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Stopping is not a callback barrier; keep callback context alive until furi_timer_free returns.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/runtime-ui.md"
+      ],
+      "research_ids": [
+        "S16"
+      ]
+    },
+    {
+      "id": "C-TMR-002",
+      "claim": "furi_timer_free deletes the timer and then calls furi_timer_flush, which pends a function on the timer daemon and waits for it.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/furi/core/timer.c",
+          "locator": "furi_timer_free(), furi_timer_flush()",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Calling free/flush from a timer callback would wait on the daemon from the daemon (inferred deadlock); free from app thread.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/runtime-ui.md"
+      ],
+      "research_ids": [
+        "S16"
+      ]
+    },
+    {
+      "id": "C-TMR-003",
+      "claim": "furi_timer_alloc, start, stop and free furi_check that they are not called from IRQ or masked context.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/furi/core/timer.c",
+          "locator": "furi_check(!furi_kernel_is_irq_or_masked())",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Signal from IRQ to a thread; manage timers from threads.",
+      "consumers": [
+        "flipper-core/references/runtime-ui.md"
+      ],
+      "research_ids": [
+        "S16"
+      ]
+    },
+    {
+      "id": "C-GUI-001",
+      "claim": "ViewPort draw and input callbacks are documented as called from the GUI thread; ViewDispatcher event callbacks run in the thread running the dispatcher.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/applications/services/gui/view_port.h",
+          "locator": "ViewPortDrawCallback/InputCallback warnings",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/applications/services/gui/view_dispatcher.h",
+          "locator": "run and callback docs",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "documented",
+      "review_state": "current",
+      "consequence": "Keep GUI callbacks short; handle events in the app thread.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/runtime-ui.md"
+      ],
+      "research_ids": [
+        "S17"
+      ]
+    },
+    {
+      "id": "C-GUI-002",
+      "claim": "view_port_alloc, view_dispatcher_alloc and scene_manager_alloc are all exported; SceneManager is optional.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/api_symbols.csv",
+          "locator": "rows view_port_alloc, view_dispatcher_alloc, scene_manager_alloc",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/applications/examples/example_view_dispatcher/example_view_dispatcher.c",
+          "locator": "dispatcher without scenes",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Choose the smallest UI architecture.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/runtime-ui.md",
+        "flipper-core/references/upstream-examples.md"
+      ],
+      "research_ids": [
+        "S17"
+      ]
+    },
+    {
+      "id": "C-STO-001",
+      "claim": "Storage API calls post a message to the storage service and wait for completion (S_API_EPILOGUE); read/write return byte counts.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/applications/services/storage/storage_external_api.c",
+          "locator": "S_API_EPILOGUE; storage_file_read/write",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Storage blocks the caller; keep it out of GUI/timer/IRQ callbacks and check counts.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/storage-parsers.md",
+        "flipper-core/references/upstream-examples.md"
+      ],
+      "research_ids": [
+        "S18"
+      ]
+    },
+    {
+      "id": "C-STO-002",
+      "claim": "Power-loss atomicity of storage rename/sync on the SD filesystem is not established.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/applications/services/storage/storage_external_api.c",
+          "locator": "storage_common_rename, storage_file_sync",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "unresolved",
+      "review_state": "current",
+      "consequence": "Use temp file plus recovery; never promise atomic settings writes.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/storage-parsers.md"
+      ],
+      "research_ids": [
+        "S18"
+      ]
+    },
+    {
+      "id": "C-FMT-001",
+      "claim": "Native file formats are distinct schemas; Infrared .ir uses 'Filetype: IR signals file', 'Version: 1', parsed (protocol, 4-byte address/command) and raw (frequency, duty_cycle, up to 1024 timings) signals.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/documentation/file_formats/InfraredFileFormats.md",
+          "locator": "Infrared Remote File Format",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "documented",
+      "review_state": "current",
+      "consequence": "Validate body fields, not just the header; bounded subset parsers state their subset.",
+      "consumers": [
+        "flipper-core/references/storage-parsers.md",
+        "flipper-core/references/upstream-examples.md"
+      ],
+      "research_ids": [
+        "S24"
+      ]
+    },
+    {
+      "id": "C-BLE-001",
+      "claim": "gap_init configures the BLE GAP with GAP_PERIPHERAL_ROLE at the baseline.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/ble_glue/gap.c",
+          "locator": "gap_init(): aci_gap_init(GAP_PERIPHERAL_ROLE, ...)",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "The stock FAP surface is a BLE peripheral.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/capability-map.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/hardware-communications.md"
+      ],
+      "research_ids": [
+        "S19"
+      ]
+    },
+    {
+      "id": "C-BLE-002",
+      "claim": "No general BLE central/GATT-client workflow is exported: no aci_gap_create_connection, aci_gatt_disc_*, aci_gatt_read_char_* or aci_gatt_write_char_* rows; exported ble_gatt_* functions are server-side.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/api_symbols.csv",
+          "locator": "absence of central/client rows; ble_gatt_* rows",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/applications/services/bt/bt_service/bt.h",
+          "locator": "Bt profile API",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "inferred",
+      "review_state": "current",
+      "consequence": "Appliance controllers needing central role go to a host or verified companion MCU.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/capability-map.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/hardware-communications.md",
+        "flipper-core/references/upstream-examples.md"
+      ],
+      "research_ids": [
+        "S19",
+        "S03"
+      ]
+    },
+    {
+      "id": "C-UART-001",
+      "claim": "furi_hal_serial_control_acquire returns NULL if the interface is in use; serial async and DMA RX callbacks run in interrupt context.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/furi_hal/furi_hal_serial_control.h",
+          "locator": "furi_hal_serial_control_acquire doc",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/furi_hal/furi_hal_serial.h",
+          "locator": "async/DMA RX callback warnings",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "documented",
+      "review_state": "current",
+      "consequence": "Check acquisition; keep RX callbacks IRQ-safe and bounded.",
+      "consumers": [
+        "flipper-core/references/capability-map.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/hardware-communications.md"
+      ],
+      "research_ids": [
+        "S20"
+      ]
+    },
+    {
+      "id": "C-BUS-001",
+      "claim": "I2C, SPI, ADC and PWM have exported acquire/use/release or start/stop APIs (for example furi_hal_i2c_acquire, furi_hal_spi_acquire, furi_hal_adc_acquire, furi_hal_pwm_start).",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/api_symbols.csv",
+          "locator": "furi_hal_i2c_*, furi_hal_spi_*, furi_hal_adc_*, furi_hal_pwm_* rows",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/furi_hal_include/furi_hal_i2c.h",
+          "locator": "I2C API",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Use acquire/release with timeouts; pins, units and DMA contracts need per-path inspection.",
+      "consumers": [
+        "flipper-core/references/capability-map.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/hardware-communications.md",
+        "flipper-core/references/upstream-examples.md"
+      ],
+      "research_ids": [
+        "S21"
+      ]
+    },
+    {
+      "id": "C-GPIO-001",
+      "claim": "Exact per-pin voltage tolerance for external circuits is not established; official docs emphasize 3.3 V while one table mentions 5 V-tolerant inputs.",
+      "sources": [
+        {
+          "url": "https://docs.flipper.net/zero/gpio-and-modules",
+          "locator": "GPIO voltage and power",
+          "live": true
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/furi_hal/furi_hal_resources.c",
+          "locator": "pin definitions",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "unresolved",
+      "review_state": "current",
+      "consequence": "Default to 3.3 V logic; verify against board and STM32WB55 datasheets before wiring.",
+      "consumers": [
+        "flipper-core/references/capability-map.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/hardware-communications.md",
+        "flipper-core/references/upstream-examples.md"
+      ],
+      "research_ids": [
+        "S22"
+      ]
+    },
+    {
+      "id": "C-USB-001",
+      "claim": "Flipper Zero operates as a USB device with selectable interfaces (CDC, HID); it is not a general USB host.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/targets/f7/api_symbols.csv",
+          "locator": "furi_hal_usb_set_config/get_config rows",
+          "pin": "fw"
+        },
+        {
+          "url": "https://docs.flipper.net/zero/development/hardware/tech-specs",
+          "locator": "USB",
+          "live": true
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "inferred",
+      "review_state": "current",
+      "consequence": "Do not design for USB host peripherals; restore replaced configuration.",
+      "consumers": [
+        "flipper-core/references/capability-map.md",
+        "flipper-core/references/hardware-communications.md"
+      ]
+    },
+    {
+      "id": "C-JS-001",
+      "claim": "Flipper JavaScript runs on a modified mJS with firmware modules; upstream mJS is a restricted ES6 subset; it is not Node or a browser. Exact fork language features are not yet verified.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/documentation/js/js_about.md",
+          "locator": "JS overview",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/cesanta/mjs#restrictions",
+          "locator": "Restrictions",
+          "live": true
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "documented",
+      "review_state": "current",
+      "consequence": "JS guidance is feasibility-level; verify modules on the pinned fork.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/capability-map.md",
+        "flipper-core/references/engineering-rules.md"
+      ],
+      "research_ids": [
+        "S23"
+      ]
+    },
+    {
+      "id": "C-TEST-001",
+      "claim": "Official firmware unit tests run on-device using a dedicated firmware app set.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/documentation/UnitTests.md",
+          "locator": "Running tests",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "documented",
+      "review_state": "current",
+      "consequence": "Host tests complement but do not replace device tests.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/build-debug-release.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/evidence-policy.md",
+        "flipper-core/references/storage-parsers.md"
+      ],
+      "research_ids": [
+        "S25"
+      ]
+    },
+    {
+      "id": "C-DBG-001",
+      "claim": "SWD/GDB FAP debugging requires a supported probe and firmware, ELF and SDK that match.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/documentation/app_dev/app_dev_debugging_faps.md",
+          "locator": "debugging FAPs",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "documented",
+      "review_state": "current",
+      "consequence": "Collect matching identities before debugging.",
+      "consumers": [
+        "flipper-core/references/build-debug-release.md"
+      ],
+      "research_ids": [
+        "S26"
+      ]
+    },
+    {
+      "id": "C-EMU-001",
+      "claim": "No comprehensive official Flipper emulator was established; the community emulator describes experimental, partial FAP support.",
+      "sources": [
+        {
+          "url": "https://github.com/ZDStudios/Flipper-Zero-Emulator/tree/23edb1bf355698cc0d9c37f297c2102ecd1b114f",
+          "locator": "README FAP runner section",
+          "pin": "emu"
+        }
+      ],
+      "applies_to": "ZDStudios emulator at 23edb1b",
+      "checked_on": "2026-10-16",
+      "status": "documented",
+      "review_state": "current",
+      "consequence": "Emulator results are not hardware evidence.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/build-debug-release.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/evidence-policy.md"
+      ]
+    },
+    {
+      "id": "C-BUILD-001",
+      "claim": "ufbt lint runs lint.py check and ufbt format runs lint.py format (clang-format and naming); there is no ufbt test target.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/scripts/ufbt/SConstruct",
+          "locator": "PhonyTarget lint/format",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/scripts/lint.py",
+          "locator": "check/format",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-ufbt/blob/093ab78058f19b11eab82020989aa4e123521490/README.md",
+          "locator": "target list",
+          "pin": "ufbt"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Report lint as formatting evidence; never invent ufbt test.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/build-debug-release.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/evidence-policy.md"
+      ],
+      "research_ids": [
+        "S14"
+      ]
+    },
+    {
+      "id": "C-BUILD-003",
+      "claim": "In a prepared firmware tree, ./fbt build APPSRC=applications_user/<path> builds without uploading, ./fbt fap_<appid> builds an external app, and FIRMWARE_APP_SET=unit_tests updater_package builds the on-device test firmware.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/documentation/fbt.md",
+          "locator": "targets and APPSRC",
+          "pin": "fw"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/documentation/UnitTests.md",
+          "locator": "unit test build",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "documented",
+      "review_state": "current",
+      "consequence": "Firmware builds can fetch toolchains on first run; unit_tests package is not a host test.",
+      "consumers": [
+        "flipper-core/references/build-debug-release.md"
+      ],
+      "research_ids": [
+        "S12",
+        "S25"
+      ]
+    },
+    {
+      "id": "C-CAT-001",
+      "claim": "The pinned catalog bundler runs ufbt update, clones source and submodules, and normally lints and builds; requirements include dataclass-wizard, Pillow, PyYAML, Markdown, uFBT and requests.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipper-application-catalog/blob/5309fa2b142cb3bcc78098ddb1d1e3c7908fce47/tools/bundle.py",
+          "locator": "setup/fetch/lint/build",
+          "pin": "catalog"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipper-application-catalog/blob/5309fa2b142cb3bcc78098ddb1d1e3c7908fce47/documentation/Contributing.md",
+          "locator": "submission guide",
+          "pin": "catalog"
+        }
+      ],
+      "applies_to": "application catalog 5309fa2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Bundling has download/build effects and needs scoped authority.",
+      "consumers": [
+        "flipper-core/references/build-debug-release.md",
+        "flipper-core/references/compatibility.md"
+      ],
+      "research_ids": [
+        "S05",
+        "S30"
+      ]
+    },
+    {
+      "id": "C-CAT-002",
+      "claim": "Catalog AGENTS.md asks for 512x256 qFlipper-palette screenshots while the bundler accepts 4x or 8x scale factors.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipper-application-catalog/blob/5309fa2b142cb3bcc78098ddb1d1e3c7908fce47/AGENTS.md",
+          "locator": "screenshots",
+          "pin": "catalog"
+        },
+        {
+          "url": "https://github.com/flipperdevices/flipper-application-catalog/blob/5309fa2b142cb3bcc78098ddb1d1e3c7908fce47/tools/bundle.py",
+          "locator": "image validation",
+          "pin": "catalog"
+        }
+      ],
+      "applies_to": "application catalog 5309fa2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Follow the stricter documented workflow; validator acceptance is not policy compliance.",
+      "consumers": [
+        "flipper-core/references/build-debug-release.md"
+      ],
+      "research_ids": [
+        "S05",
+        "S30"
+      ]
+    },
+    {
+      "id": "C-FORK-001",
+      "claim": "Momentum and Unleashed showed recent activity on 2026-10-16 and Xtreme is archived; each is a separate firmware lineage with its own API surface.",
+      "sources": [
+        {
+          "url": "https://github.com/Next-Flip/Momentum-Firmware/tree/d3f89dfe2ef6b01839201598e9be1590cba80322",
+          "locator": "dev head",
+          "pin": "momentum"
+        },
+        {
+          "url": "https://github.com/DarkFlippers/unleashed-firmware/tree/f62964cb8216c566cb3940992d0fea6bbe91d840",
+          "locator": "dev head",
+          "pin": "unleashed"
+        },
+        {
+          "url": "https://github.com/Flipper-XFW/Xtreme-Firmware/tree/54619d013a120897eeade491decf4d1e95217c06",
+          "locator": "archived dev head",
+          "pin": "xtreme"
+        }
+      ],
+      "applies_to": "community firmware lineages, observed heads",
+      "checked_on": "2026-10-16",
+      "status": "documented",
+      "review_state": "current",
+      "consequence": "No fork support claimed; rebuild and verify imports per lineage.",
+      "consumers": [
+        "flipper-core/references/assumptions.md",
+        "flipper-core/references/build-debug-release.md",
+        "flipper-core/references/compatibility.md",
+        "flipper-core/references/engineering-rules.md",
+        "flipper-core/references/upstream-examples.md"
+      ],
+      "research_ids": [
+        "S28"
+      ]
+    }
+  ]
+}
