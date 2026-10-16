@@ -187,8 +187,7 @@
       "consequence": "No fixed application heap allowance; design for LCD constraints.",
       "consumers": [
         "flipper-core/references/assumptions.md",
-        "flipper-core/references/engineering-rules.md",
-        "flipper-core/references/runtime-ui.md"
+        "flipper-core/references/engineering-rules.md"
       ],
       "research_ids": [
         "S09"
@@ -242,8 +241,7 @@
       "consumers": [
         "flipper-core/references/assumptions.md",
         "flipper-core/references/build-debug-release.md",
-        "flipper-core/references/engineering-rules.md",
-        "flipper-core/references/runtime-ui.md"
+        "flipper-core/references/engineering-rules.md"
       ],
       "research_ids": [
         "S10"
@@ -297,7 +295,6 @@
         "flipper-core/references/capability-map.md",
         "flipper-core/references/compatibility.md",
         "flipper-core/references/engineering-rules.md",
-        "flipper-core/references/runtime-ui.md",
         "flipper-core/references/upstream-examples.md"
       ],
       "research_ids": [
@@ -387,8 +384,7 @@
       "consequence": "Raw symbol status alone is misleading; prefer FURI_LOG and bounded snprintf; verify output route.",
       "consumers": [
         "flipper-core/references/assumptions.md",
-        "flipper-core/references/engineering-rules.md",
-        "flipper-core/references/runtime-ui.md"
+        "flipper-core/references/engineering-rules.md"
       ],
       "research_ids": [
         "S27"
@@ -494,8 +490,7 @@
       "consequence": "Stopping is not a callback barrier; keep callback context alive until furi_timer_free returns.",
       "consumers": [
         "flipper-core/references/assumptions.md",
-        "flipper-core/references/engineering-rules.md",
-        "flipper-core/references/runtime-ui.md"
+        "flipper-core/references/engineering-rules.md"
       ],
       "research_ids": [
         "S16"
@@ -518,8 +513,7 @@
       "consequence": "Calling free/flush from a timer callback would wait on the daemon from the daemon (inferred deadlock); free from app thread.",
       "consumers": [
         "flipper-core/references/assumptions.md",
-        "flipper-core/references/engineering-rules.md",
-        "flipper-core/references/runtime-ui.md"
+        "flipper-core/references/engineering-rules.md"
       ],
       "research_ids": [
         "S16"
@@ -599,7 +593,6 @@
       "consumers": [
         "flipper-core/references/assumptions.md",
         "flipper-core/references/engineering-rules.md",
-        "flipper-core/references/runtime-ui.md",
         "flipper-core/references/upstream-examples.md"
       ],
       "research_ids": [

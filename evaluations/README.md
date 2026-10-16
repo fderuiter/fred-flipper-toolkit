@@ -10,7 +10,7 @@ Benchmark definitions for the controlled comparison (issue #8). Live activation 
 | `activation.json` | Reviewer-side | 24 activation cases |
 | `rubric.json` | Reviewer-side | Predeclared scoring, critical failures, gates |
 | `reference/` | Reviewer-side | Reference solutions and host tests used for SDK qualification; never copied into agent workspaces |
-| `harness/` | Reviewer-side | `run_activation.py` (live activation), `build_fixtures.sh` (uFBT builds) |
+| `harness/` | Reviewer-side | `run_activation.py` (live activation), `run_pilot.py` (paired pilot), `measure_reference_load.py` (offline per-file token cost from pilot records), `build_fixtures.sh` (uFBT builds) |
 | `results/` | Reviewer-side | Retained run records |
 
 Isolation rule: an evaluated agent's workspace contains only one `fixtures/<task>/` copy plus normal project facts; the treatment arm additionally gets the installed `skills/` payload. This repository, the research report, issue bodies, task definitions and oracles are never readable by the evaluated agent. A separate folder inside a readable checkout is not isolation.
