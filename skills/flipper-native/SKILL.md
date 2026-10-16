@@ -48,7 +48,8 @@ Also needed: a FAP workspace (or an explicit request to create one), the target 
 5. Separate bounded pure logic (parsers, framing, state machines) from Furi I/O so it can be host-tested.
 6. Implement the smallest complete slice: init with partial-failure cleanup, run loop with cancel, teardown in dependency order.
 7. Review your own diff for context violations, full queues, short I/O, overflow and use-after-free.
-8. Run host tests for extracted logic when the environment allows (otherwise give the exact command), run other authorized checks (see flipper-verify) and report evidence. Give pinned build instructions (SDK tag or verified URL, isolated `UFBT_HOME`).
+8. **Teardown self-check (mandatory, before completion).** Write a table, one row per producer (timer, IRQ/RX callback, worker thread, GUI/input/draw callback): what it touches (ViewPort, view model, buffers, queues, mutex, HAL handle) and the teardown line that stops it (and joins or frees it). Confirm in the code that each row's stop/join line runs before anything it touches is freed, removed or released; for example, a worker calling `view_port_update` is joined before `view_port_free`. Fix any row that fails before finishing.
+9. Run host tests for extracted logic when the environment allows (otherwise give the exact command), run other authorized checks (see flipper-verify) and report evidence. Give pinned build instructions (SDK tag or verified URL, isolated `UFBT_HOME`).
 
 Decision points: if the request needs an unexported capability, stop and explain rather than reaching into internals. If the task drifts into firmware or host work, say so instead of silently converting it.
 
@@ -63,7 +64,7 @@ Decision points: if the request needs an unexported capability, stop and explain
 ## Outputs and completion
 
 - The requested code/manifest/asset changes (or a concrete plan if only planning was asked).
-- Ownership and teardown notes for nontrivial resources.
+- Ownership notes for nontrivial resources and the teardown self-check table (step 8).
 - Host tests for separable logic and failure cases where practical.
 - Evidence report: what was inspected, built or tested, and what is pending.
 
@@ -86,6 +87,7 @@ Official native FAPs at the researched baseline. Does not modify firmware, take 
 - Dropped Back/cancel event on a full queue.
 - "Check malloc for NULL" presented as OOM handling.
 - Freeing a timer context or buffer while a callback can still run.
+- Freeing the ViewPort or view model before the worker that updates it is joined.
 - Logging or allocating in IRQ callbacks.
 
 ## Handoffs
