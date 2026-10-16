@@ -1,0 +1,95 @@
+{
+  "id": "A07",
+  "kind": "ambiguous",
+  "prompt": "Make my Flipper read every NFC card and emulate any of them; NFC is fully supported, right?",
+  "started": "2026-10-16T20:15:45+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/assumptions.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1071706,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1641,
+      "cache_read_input_tokens": 68235,
+      "cache_creation_input_tokens": 20936
+    },
+    "text": "No, NFC isn't fully supported. It depends on the card technology and on whether you want to read it or emulate it. I couldn't check this against the pinned 1.5.1 sources, so the specifics below are from general knowledge and not verified. The FRED references only say NFC support is \"technology- and role-specific, not universal access\", and that device tests are required.\n\n**What works, roughly**\n- **ISO 14443-A cards:** UID-only cards, NTAG and Ultralight read and emulate well.\n- **Mifare Classic:** The Flipper can read a card only if it recovers the sector keys. That means a key dictionary and possibly the nested attacks. A fully read card can be emulated.\n- **ISO 15693 (NFC-V):** Basic read support, with emulation for some card types.\n\n**What doesn't**\n- **Secured cards:** DESFire, many access-control cards and most FeliCa variants can't be fully read or cloned. Emulating one usually gets you only the UID, and a reader that checks cryptographic authentication will reject that.\n- **Payment cards (EMV):** You can read some public data, but you can't emulate them.\n- **125 kHz cards:** Low-frequency RFID is a separate subsystem from NFC and has its own read and emulate support. HID Prox and EM4100 are examples.\n- **iCLASS and similar 13.56 MHz proprietary cards:** These are generally not supported.\n\n**Practical result:** Treat \"every card\" as \"every card in the supported technologies whose keys you can get\". To check a specific card, scan it with the Flipper's NFC app. It reports the card type and how much it could read.\n\nOnly read or emulate cards you own or are authorized to test. Emulating access cards you don't own is likely unauthorized access.\n\nIf you tell me which cards you have, I can say what's feasible for each. If you're building a FAP, I can map the exact NFC APIs for your firmware version. I haven't run anything on a device or spent any model sessions."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A07/ws/.claude/skills/flipper-core/references/assumptions.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A07/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A07/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "NFC|nfc",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A07/ws/.claude/skills/flipper-core",
+        "output_mode": "content",
+        "-C": 2
+      }
+    }
+  ],
+  "assistant_text": [
+    "No, NFC isn't fully supported. It depends on the card technology and on whether you want to read it or emulate it. I couldn't check this against the pinned 1.5.1 sources, so the specifics below are from general knowledge and not verified. The FRED references only say NFC support is \"technology- and role-specific, not universal access\", and that device tests are required.\n\n**What works, roughly**\n- **ISO 14443-A cards:** UID-only cards, NTAG and Ultralight read and emulate well.\n- **Mifare Classic:** The Flipper can read a card only if it recovers the sector keys. That means a key dictionary and possibly the nested attacks. A fully read card can be emulated.\n- **ISO 15693 (NFC-V):** Basic read support, with emulation for some card types.\n\n**What doesn't**\n- **Secured cards:** DESFire, many access-control cards and most FeliCa variants can't be fully read or cloned. Emulating one usually gets you only the UID, and a reader that checks cryptographic authentication will reject that.\n- **Payment cards (EMV):** You can read some public data, but you can't emulate them.\n- **125 kHz cards:** Low-frequency RFID is a separate subsystem from NFC and has its own read and emulate support. HID Prox and EM4100 are examples.\n- **iCLASS and similar 13.56 MHz proprietary cards:** These are generally not supported.\n\n**Practical result:** Treat \"every card\" as \"every card in the supported technologies whose keys you can get\". To check a specific card, scan it with the Flipper's NFC app. It reports the card type and how much it could read.\n\nOnly read or emulate cards you own or are authorized to test. Emulating access cards you don't own is likely unauthorized access.\n\nIf you tell me which cards you have, I can say what's feasible for each. If you're building a FAP, I can map the exact NFC APIs for your firmware version. I haven't run anything on a device or spent any model sessions."
+  ]
+}

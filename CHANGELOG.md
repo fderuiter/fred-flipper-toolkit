@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Activation recheck after #24, #25 and #27 (#13): 23/24 with 0/8 negative false activations (claude-sonnet-5-5, project scope). A06 missed direct entry once and loaded no skill in three repeats ([#32](https://github.com/fderuiter/fred-flipper-toolkit/issues/32)).
 - Rubric version 2 (#13, [ADR 0003](docs/adr/0003-token-budget-revision.md)): the comparative token budget is ≤ 2.0× median when the same run shows ≥ 50% fewer critical/major errors and no mean regression, otherwise ≤ 1.5×. `run_pilot.py report` adds `token_budget` and `token_ratio_within_budget`. Scoring is unchanged.
 - `flipper-native` workflow gains a mandatory teardown self-check (step 8): one row per producer, what it touches, and the stop/join line that must run before those are freed; `flipper-review` outputs include the same table (#22). Not yet evaluated in a paired run.
 - Build reproducibility (#17): root causes found by source inspection and host replays, recorded in `evaluations/results/2026-10-16-build-reproducibility/`. fbt orders multi-source objects through a Python set, so link order follows the hash seed (`C-BUILD-006`). The `.fap`'s `.gnu_debuglink` CRC covers a debug ELF that records absolute paths (`C-BUILD-007`). `build_fixtures.sh` and `fred_setup.py build` now set `PYTHONHASHSEED=0`, and the wizard's sample build uses a fixed folder. Not yet confirmed by an SDK build, so multi-source reproducibility is still not claimed.

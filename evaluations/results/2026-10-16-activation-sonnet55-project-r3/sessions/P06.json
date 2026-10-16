@@ -1,0 +1,114 @@
+{
+  "id": "P06",
+  "kind": "positive",
+  "prompt": "My FAP freezes when I press Back while the worker thread is reading the SD card. Why?",
+  "started": "2026-10-16T20:15:10+00:00",
+  "expected": [
+    "flipper-review"
+  ],
+  "acceptable": [
+    "flipper-native"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-review"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-review"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.103381,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1852,
+      "cache_read_input_tokens": 67467,
+      "cache_creation_input_tokens": 19492
+    },
+    "text": "I can't tell you the exact cause yet. The workspace has no FAP source, only the skill files, so everything below is a **hypothesis** from the usual Flipper patterns. I haven't traced it in your code or reproduced it.\n\n## Most likely causes\n\n**1. Back handler joins the worker.** This is the most common cause.\n- Back arrives in the GUI input callback or the ViewDispatcher `previous_callback`. Both run in the dispatcher or GUI thread.\n- If that handler calls `furi_thread_join(worker)`, the dispatcher thread blocks until the worker finishes.\n- The worker is inside a blocking `storage_file_read`, `storage_dir_read` or similar call. A slow card, a large file or a retry loop can keep it there for a long time.\n- The UI looks frozen because the dispatcher thread, which also draws and handles input, is the one waiting.\n\n**2. The worker can't be woken.**\n- The worker loops on a `volatile bool running`, or on a blocking wait with `FuriWaitForever`.\n- Back sets the flag, but nothing wakes the worker, so it never sees the flag.\n- If a read is in flight, the flag is only checked after that read returns.\n\n**3. Lock held across the join or the I/O.**\n- Back takes a mutex or view-model lock and then joins.\n- The worker needs that same lock to publish progress or finish, so each waits on the other.\n- A variant is `with_view_model` held across a storage call, which stalls the draw callback too.\n\n**4. Cancel and exit are one path.**\n- Back may be both \"cancel the read\" and \"leave the app\", and the worker's cleanup (`storage_file_close`, `furi_record_close(RECORD_STORAGE)`) runs before the worker has stopped.\n- The cleanup then blocks on the storage service while the worker still holds the file.\n\n## Fix pattern (this doesn't deadlock shutdown)\n\n1. In the Back handler, only set a stop flag and send a message or event to the worker. Don't join and don't do slow work there.\n2. Make the worker's read loop chunked, so each iteration reads a bounded size and then checks the stop flag. It wakes through a `FuriMessageQueue` or `FuriEventFlag`, not a bare `volatile`.\n3. Have the worker close its own file handles and post a \"done\" custom event to the dispatcher when it stops.\n4. Join the worker in the app thread, after `view_dispatcher_run` returns and without holding any mutex the worker needs. Then free the state.\n5. Don't drop the Back event when a queue is full.\n\nA single `storage_file_read` can't be interrupted. The worst-case Back latency is one chunk read, so choose a small chunk size.\n\n## Quickest way to confirm\nTell me which of these you see:\n- Does the freeze end when the read finishes (cause 1 or 2), or does it never recover (cause 3 or 4)?\n- If you have a crash or log capture, the thread each side is blocked in would settle it.\n- Are your stop flag and wakeup a `volatile` plus a polling loop, or a queue or event flag?\n\nIf you paste the Back/input callback, the worker function and the teardown code, I'll do a full review. That would include the teardown table and a severity-ranked list of findings, each with its evidence level."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-review"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.[ch]"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P06/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P06/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P06/ws"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "join|Back|thread|deadlock|mutex",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P06/ws/.claude/skills/flipper-core/references/runtime-ui.md",
+        "output_mode": "content",
+        "-i": true,
+        "head_limit": 40
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't tell you the exact cause yet. The workspace has no FAP source, only the skill files, so everything below is a **hypothesis** from the usual Flipper patterns. I haven't traced it in your code or reproduced it.\n\n## Most likely causes\n\n**1. Back handler joins the worker.** This is the most common cause.\n- Back arrives in the GUI input callback or the ViewDispatcher `previous_callback`. Both run in the dispatcher or GUI thread.\n- If that handler calls `furi_thread_join(worker)`, the dispatcher thread blocks until the worker finishes.\n- The worker is inside a blocking `storage_file_read`, `storage_dir_read` or similar call. A slow card, a large file or a retry loop can keep it there for a long time.\n- The UI looks frozen because the dispatcher thread, which also draws and handles input, is the one waiting.\n\n**2. The worker can't be woken.**\n- The worker loops on a `volatile bool running`, or on a blocking wait with `FuriWaitForever`.\n- Back sets the flag, but nothing wakes the worker, so it never sees the flag.\n- If a read is in flight, the flag is only checked after that read returns.\n\n**3. Lock held across the join or the I/O.**\n- Back takes a mutex or view-model lock and then joins.\n- The worker needs that same lock to publish progress or finish, so each waits on the other.\n- A variant is `with_view_model` held across a storage call, which stalls the draw callback too.\n\n**4. Cancel and exit are one path.**\n- Back may be both \"cancel the read\" and \"leave the app\", and the worker's cleanup (`storage_file_close`, `furi_record_close(RECORD_STORAGE)`) runs before the worker has stopped.\n- The cleanup then blocks on the storage service while the worker still holds the file.\n\n## Fix pattern (this doesn't deadlock shutdown)\n\n1. In the Back handler, only set a stop flag and send a message or event to the worker. Don't join and don't do slow work there.\n2. Make the worker's read loop chunked, so each iteration reads a bounded size and then checks the stop flag. It wakes through a `FuriMessageQueue` or `FuriEventFlag`, not a bare `volatile`.\n3. Have the worker close its own file handles and post a \"done\" custom event to the dispatcher when it stops.\n4. Join the worker in the app thread, after `view_dispatcher_run` returns and without holding any mutex the worker needs. Then free the state.\n5. Don't drop the Back event when a queue is full.\n\nA single `storage_file_read` can't be interrupted. The worst-case Back latency is one chunk read, so choose a small chunk size.\n\n## Quickest way to confirm\nTell me which of these you see:\n- Does the freeze end when the read finishes (cause 1 or 2), or does it never recover (cause 3 or 4)?\n- If you have a crash or log capture, the thread each side is blocked in would settle it.\n- Are your stop flag and wakeup a `volatile` plus a polling loop, or a queue or event flag?\n\nIf you paste the Back/input callback, the worker function and the teardown code, I'll do a full review. That would include the teardown table and a severity-ranked list of findings, each with its evidence level."
+  ]
+}
