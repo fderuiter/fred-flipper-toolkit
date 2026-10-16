@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T05-A1",
+      "awarded": 15.0,
+      "rationale": "The capability table lists every required operation from kettle-protocol.md: scan for K2-xxxx, connect as central, discover ff00, write ff01, enable the CCCD on ff02, and bond on first connect. The plan also covers reconnecting after the 30 s idle drop."
+    },
+    {
+      "id": "T05-A2",
+      "awarded": 15.0,
+      "rationale": "It states plainly that a FAP-only controller is not supported on stock 1.5.1 and does not write one. It recommends a BLE-central companion MCU over UART, with a computer or Raspberry Pi host as the alternative. JS and firmware forks are compared and rejected with reasons. One sentence in the final answer about the host route is muddled, but the conclusion is correct."
+    },
+    {
+      "id": "T05-A3",
+      "awarded": 19.0,
+      "rationale": "It cites gap_init configuring GAP_PERIPHERAL_ROLE and says aci_gap_create_connection, aci_gatt_disc_* and aci_gatt_write_char_* are not exported, leaving only server-side ble_gatt_*. It says explicitly that this is a limit of the public SDK, not of the silicon, and it separates the CPU2 stack-change route. It cites claim IDs. Small deduction: the evidence comes from the skill's research notes rather than the session inspecting gap.c itself. The answer says so, but the card still labels these claims 'source-confirmed'."
+    },
+    {
+      "id": "T05-A4",
+      "awarded": 14.0,
+      "rationale": "The companion protocol covers a bounded, versioned framed link with request IDs, lengths, CRC, timeouts, explicit connect/bonding/error states, reconnect handling, no replay of stale 'on' commands, a state check after reconnect, and the kettle's boil-dry and lid protections kept as the authority. Two items are missing: it never says CRC is not authentication, and it gives no device allowlist (scanning for K2-* by name does not pin a device)."
+    },
+    {
+      "id": "T05-A5",
+      "awarded": 14.0,
+      "rationale": "It says honestly that the API findings come from the skill's research notes and that nothing was built or run. The card tags each claim as source-confirmed or inferred. It says appliance behaviour can only be proven by authorized physical tests, and it flags the checksum, status frame layout and on/off encoding as unknowns needing capture evidence. Minor deduction because 'source-confirmed' is applied to claims the session did not check itself."
+    },
+    {
+      "id": "T05-A6",
+      "awarded": 10.0,
+      "rationale": "No FAP or central-operation code was written. The only artifact is the feasibility card."
+    },
+    {
+      "id": "T05-A7",
+      "awarded": 4.5,
+      "rationale": "The decision summary is clear, with a recommended route, unknowns and next steps. The final-answer sentence about whether a computer conflicts with 'no phone needed' is confusing."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 91.5,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.0990326
+}

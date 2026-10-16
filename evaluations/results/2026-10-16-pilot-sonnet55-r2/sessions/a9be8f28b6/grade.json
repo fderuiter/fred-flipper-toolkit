@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T05-A1",
+      "awarded": 15.0,
+      "rationale": "DECISION.md lists every required operation from kettle-protocol.md: scan for K2-xxxx (central/observer role), connect, discover service ff00 (GATT client), write ff01, enable ff02 notifications via the CCCD, bond on first connection, and reconnect with keep-alive because of the 30 s idle drop. Each operation is tied to the BLE role it needs."
+    },
+    {
+      "id": "T05-A2",
+      "awarded": 15.0,
+      "rationale": "It concludes clearly that a FAP-only controller is unsupported on official 1.5.1 and does not write one. It recommends a BLE-central companion MCU (ESP32/nRF52) over UART, with a laptop or Raspberry Pi as the alternative. It rejects fork and custom firmware as not stock."
+    },
+    {
+      "id": "T05-A3",
+      "awarded": 17.0,
+      "rationale": "It cites the peripheral-only configuration (gap_init uses GAP_PERIPHERAL_ROLE) and names the aci_gap_create_connection, aci_gatt_disc_*, aci_gatt_read_char_* and aci_gatt_write_char_* calls as not exported. It notes the public ble_gatt_* API only builds GATT servers, and says explicitly that this is a limit of the public SDK, not the radio hardware. Deductions: it never names gap.c or the api_symbols export table directly; the evidence comes second-hand from the skill reference notes, which the session admits. The claim that the JS BLE module covers 'the peripheral/GATT-server side' is loosely worded, though it is flagged as unverified."
+    },
+    {
+      "id": "T05-A4",
+      "awarded": 19.0,
+      "rationale": "The companion protocol covers a versioned UART frame with request ID, length and CRC, says explicitly that CRC is not authentication, and includes timeouts, a K2-xxxx target allowlist, keep-alive and reconnect, no replay of stale commands after reconnect, connection state in the UI, 40\u2013100 \u00b0C clamping on both sides, and keeping the kettle's boil-dry and lid protection with no bypass. It also checks 3.3 V UART compatibility. Small deduction: an allowlist matched on the name pattern is weak; it should be pinned to the bonded address or identity."
+    },
+    {
+      "id": "T05-A5",
+      "awarded": 14.0,
+      "rationale": "The final answer says the firmware claims come from the skill's reference notes and that it did not check the firmware source itself. It also says nothing was built or run, nothing was sent to the kettle, and behaviour is untested until tried on hardware. It marks the JS verdict as feasibility-level and unverified. Minor deduction: DECISION.md states the gap_init detail as fact, backed only by claim IDs and without the inspected-versus-inferred caveat inside the document."
+    },
+    {
+      "id": "T05-A6",
+      "awarded": 10.0,
+      "rationale": "It wrote no FAP code and no stubbed central operations; the only output is a decision document."
+    },
+    {
+      "id": "T05-A7",
+      "awarded": 5.0,
+      "rationale": "The result line at the top is clear, followed by a table comparing surfaces, a recommended plan, and open questions (which companion board or host to use, the checksum algorithm). The user gets a usable decision handoff."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 95.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1002366
+}

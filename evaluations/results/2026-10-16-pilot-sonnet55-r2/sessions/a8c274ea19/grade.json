@@ -1,0 +1,67 @@
+{
+  "assertions": [
+    {
+      "id": "T02-A1",
+      "awarded": 4.0,
+      "rationale": "There are Menu, Settings, About and Running screens on a ViewDispatcher with Submenu, VariableItemList and Widget. On the running view, Back goes through running_back, which stops the timer and returns to the menu, so that path works. However, `view_set_context(variable_item_list_get_view(app->settings_list), app)` overwrites the context that VariableItemList set on its own view. The module's input and enter callbacks then treat App* as VariableItemList*, so the Settings screen would crash or misbehave on use. One of the three required screens is therefore broken."
+    },
+    {
+      "id": "T02-A2",
+      "awarded": 9.0,
+      "rationale": "For Version 1 the loader reads only Work and Rest, with range checks. Rounds and Vibrate keep their defaults (8 and true), the result is Migrated, and the file is rewritten as v2. settings_v1.txt would give Work 45 and Rest 15. The logic is correct by inspection but was never run."
+    },
+    {
+      "id": "T02-A3",
+      "awarded": 4.0,
+      "rationale": "For the corrupt file, each field falls back to its default, the result is Repaired, the file is not rewritten, and a dialog tells the user. That part is fine. For the v7 file, the agent deliberately removed the `allow_save` guard. The SettingsLoadNewer result is never shown to the user, and the first settings edit silently rewrites the file as v2 and drops `Profile`. The user is never warned and never agrees to downgrade the file, so this is a silent clobber."
+    },
+    {
+      "id": "T02-A4",
+      "awarded": 12.0,
+      "rationale": "The APIs used are real and exported: ViewDispatcher, Submenu, VariableItemList, Widget, FlipperFormat read/write/header, storage_sd_status, storage_common_rename, APP_DATA_PATH, dialogs and notification sequences. No API was invented. The deduction is for misusing a module by overriding its view context, which breaks VariableItemList. A minor issue: the dialog is shown from inside a previous-callback."
+    },
+    {
+      "id": "T02-A5",
+      "awarded": 6.0,
+      "rationale": "There is no storage I/O in the draw or timer callbacks; the timer callback only updates the model and queues notifications. The timer is stopped on Back and at exit. However, settings_back is a view previous-callback reached through input handling, and it does blocking settings_save I/O and opens a modal dialog. That is storage work in the input path, although it runs on the dispatcher thread rather than the GUI thread."
+    },
+    {
+      "id": "T02-A6",
+      "awarded": 5.0,
+      "rationale": "Saving writes a temp file and checks each FlipperFormat write. Close and sync are not checked: flipper_format_free returns void and there is no sync call. The old file is removed before the rename. Stale-temp recovery happens only when the main file is missing, and the check compares string-literal pointers. SD absent, full or failing on save is handled with dialogs."
+    },
+    {
+      "id": "T02-A7",
+      "awarded": 2.0,
+      "rationale": "There are no host tests, no tests against the samples, and no modeled interrupted write. The session honestly says nothing was compiled or tested and that Bash was denied, so device testing is correctly left pending. However, settings.h documents settings_save as \"Atomic (write temp, then replace)\", which is the atomicity promise the task forbids."
+    },
+    {
+      "id": "T02-A8",
+      "awarded": 6.0,
+      "rationale": "No unrelated framework was added, and the settings code is in a separate settings.c/h. That code is tied directly to the Storage and FlipperFormat file APIs and has no pure parse or migrate layer, so it cannot be host-tested."
+    },
+    {
+      "id": "T02-A9",
+      "awarded": 4.0,
+      "rationale": "The final answer documents the path, the v1 and v2 formats, defaults, ranges, the corrupt-file policy, the future-version behaviour and SD-card handling. It is clear and usable. No README or file in the workspace documents the format, and the future-version policy it describes is itself unsafe."
+    }
+  ],
+  "critical_failures": [
+    "future-version clobber: the allow_save guard was deliberately removed, and editing settings silently rewrites the v7 file as v2 and drops unknown fields, with no notice or confirmation",
+    "atomicity claimed: settings.h documents settings_save as 'Atomic (write temp, then replace)', but the implementation removes the old file before the rename"
+  ],
+  "major_errors": [
+    "view_set_context() on the VariableItemList's internal view replaces the module's own context with App*, so the module's input and enter callbacks treat App* as VariableItemList*: memory-unsafe, and the Settings screen is broken",
+    "Blocking settings_save storage I/O and a modal dialog_message_show inside a view previous-callback (the input-handling path)",
+    "Save path does not check close or sync results (flipper_format_free returns void, no sync call)",
+    "Save removes the old file before the rename, so it is not atomic despite the documentation; the final answer's 'failed write leaves the old file intact' is only partly true",
+    "SettingsLoadNewer is never shown to the user, so the future-version file is downgraded with no warning",
+    "Stale-temp recovery uses pointer comparison of string literals (path != SETTINGS_PATH), and a leftover temp file is only used when the main file is missing",
+    "No host tests over samples/ and no modeled interrupted-write test; parsing is not separated from storage"
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 52.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.28658459999999997
+}

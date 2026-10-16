@@ -1,0 +1,62 @@
+{
+  "task": "05-ble-feasibility",
+  "rep": 1,
+  "arm": "treatment",
+  "id": "7fefff1da4",
+  "rc": 0,
+  "skills_invoked": [
+    "flipper-core"
+  ],
+  "private_paths": [],
+  "outside_workspace_paths": [],
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.12817259999999997,
+    "num_turns": 7,
+    "duration_ms": 31379,
+    "tokens": {
+      "input_tokens": 10,
+      "output_tokens": 2927,
+      "cache_read_input_tokens": 92146,
+      "cache_creation_input_tokens": 22417
+    },
+    "final": "I didn't write the FAP. A FAP-only kettle remote isn't possible on official firmware 1.5.1, so any code I wrote would call functions that don't exist.\n\n**Why it fails.** The K2 is a BLE peripheral, so the Flipper has to act as the BLE central. That means scanning, connecting, discovering service `ff00`, writing `ff01`, enabling notifications on `ff02`, and bonding. On 1.5.1 the Flipper's Bluetooth stack is set up as a peripheral only. The central and GATT-client calls a FAP would need aren't exported to apps. I took this from the skill's reference files (claims C-BLE-001/002). I didn't re-check the firmware's symbol table myself.\n\n**What would work.**\n- **Companion BLE chip (recommended):** an ESP32-class board on the GPIO header does the Bluetooth work. The Flipper app handles the on/off and temperature (40\u2013100 \u00b0C) screen and talks to the board over UART. This keeps \"no phone\".\n- **Computer or phone:** this works too, but you ruled out the phone.\n- **Custom firmware:** possible in principle, but heavy, and you would no longer be on stock firmware.\n\n**What I need from you.** Which companion board you're willing to add, and the checksum rule for the command frames, which `kettle-protocol.md` doesn't give. Once you pick a board, I can write the Flipper UI and the UART protocol.\n\n**Not verified.** Nothing has been compiled, run on a device, or tested against a kettle. Your reverse-engineered protocol is also untested.\n\nI wrote the full card, the options I rejected and a draft plan to `/tmp/fred-eval/pilot2/7fefff1da4/ws/docs/compatibility-card.md`."
+  },
+  "tool_events": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/7fefff1da4/ws/PROJECT.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot2/7fefff1da4/ws; ls -la; cat kettle-protocol.md"
+      }
+    },
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot2/7fefff1da4/ws/.claude/skills/flipper-core; ls -R . | head -50; cat references/engineering-rules.md references/evidence-policy.md references/capability-map.md assets/compatibility-card.md"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/7fefff1da4/ws/docs/compatibility-card.md",
+        "content": "# Kettle remote: compatibility card and decision\n\n## Result\n\nA FAP-only controller for the AcmeBrew K2 is not supported on official firmware 1.5.1. I did not write FAP code, because it would depend on APIs that aren't exported.\n\n## Compatibility card\n\n| Field | Value | Source / status | Consequence if unknown |\n|---|---|---|---|\n| User outcome | Switch the kettle on and set its temperature over BL\u2026"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I didn't write the FAP. A FAP-only kettle remote isn't possible on official firmware 1.5.1, so any code I wrote would call functions that don't exist.\n\n**Why it fails.** The K2 is a BLE peripheral, so the Flipper has to act as the BLE central. That means scanning, connecting, discovering service `ff00`, writing `ff01`, enabling notifications on `ff02`, and bonding. On 1.5.1 the Flipper's Bluetooth stack is set up as a peripheral only. The central and GATT-client calls a FAP would need aren't exported to apps. I took this from the skill's reference files (claims C-BLE-001/002). I didn't re-check the firmware's symbol table myself.\n\n**What would work.**\n- **Companion BLE chip (recommended):** an ESP32-class board on the GPIO header does the Bluetooth work. The Flipper app handles the on/off and temperature (40\u2013100 \u00b0C) screen and talks to the board over UART. This keeps \"no phone\".\n- **Computer or phone:** this works too, but you ruled out the phone.\n- **Custom firmware:** possible in principle, but heavy, and you would no longer be on stock firmware.\n\n**What I need from you.** Which companion board you're willing to add, and the checksum rule for the command frames, which `kettle-protocol.md` doesn't give. Once you pick a board, I can write the Flipper UI and the UART protocol.\n\n**Not verified.** Nothing has been compiled, run on a device, or tested against a kettle. Your reverse-engineered protocol is also untested.\n\nI wrote the full card, the options I rejected and a draft plan to `/tmp/fred-eval/pilot2/7fefff1da4/ws/docs/compatibility-card.md`."
+  ]
+}

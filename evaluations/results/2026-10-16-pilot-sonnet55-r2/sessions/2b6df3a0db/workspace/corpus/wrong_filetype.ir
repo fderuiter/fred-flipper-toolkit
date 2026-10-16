@@ -1,0 +1,8 @@
+Filetype: SubGhz RAW File
+Version: 1
+#
+name: Power
+type: raw
+frequency: 38000
+duty_cycle: 0.33
+data: 500 500

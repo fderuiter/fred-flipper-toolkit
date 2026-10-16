@@ -1,0 +1,4 @@
+Filetype: Interval Timer Settings
+Version: 1
+Work: 45
+Rest: 15

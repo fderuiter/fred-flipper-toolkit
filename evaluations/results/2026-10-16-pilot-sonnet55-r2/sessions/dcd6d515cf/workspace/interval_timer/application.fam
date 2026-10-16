@@ -1,0 +1,10 @@
+App(
+    appid="interval_timer",
+    name="Interval Timer",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="interval_timer_app",
+    requires=["gui", "storage", "notification"],
+    stack_size=4 * 1024,
+    sources=["interval_timer.c", "it_settings.c", "it_store.c"],
+    fap_category="Tools",
+)

@@ -1,0 +1,54 @@
+{
+  "task": "07-sdk-migration",
+  "rep": 2,
+  "arm": "baseline",
+  "id": "e79522193f",
+  "rc": 0,
+  "skills_invoked": [],
+  "private_paths": [],
+  "outside_workspace_paths": [],
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.09599390000000001,
+    "num_turns": 5,
+    "duration_ms": 23238,
+    "tokens": {
+      "input_tokens": 10,
+      "output_tokens": 2534,
+      "cache_read_input_tokens": 86259,
+      "cache_creation_input_tokens": 15502
+    },
+    "final": "I updated `meter.c` for the 89.0 SDK, but I haven't compiled it. I had no SDK or toolchain here, and my first attempt to edit the file through a Python script was blocked, so I rewrote it with the file-write tool instead.\n\n**What would have broken, and what I changed**\n\n1. **`furi_hal_adc_configure` has a new signature.** The old call `furi_hal_adc_configure(meter.adc)` no longer matches, because the function now also takes a `FuriHalAdcScale`. I changed the call to pass `FuriHalAdcScale2048mV`. That value is my guess: `api_new.csv` gives the type name but not its values. Check `furi_hal_adc.h` for the right scale before you build.\n2. **`meter_legacy_format` is removed.** It is marked `-` in the new table, so the call would fail to link. I deleted the local prototype and replaced the call with `snprintf(text, sizeof(text), \"%.2f\", (double)meter.volts)`. This keeps the output to two decimals, but the old function's exact format isn't documented here, so the text may differ slightly.\n3. **`cfw_meter_set_backlight_boost(2)` is not in either SDK table.** It comes from `meter_extra.h`, which a previous contributor copied from a community firmware fork. It won't exist on official firmware and would fail to link, so I removed the call and the `#include \"meter_extra.h\"`. The backlight boost is gone. If you still want it, it needs a different implementation or a build against that fork. I left `meter_extra.h` in the folder, unused, so you can delete it.\n4. **The SDK version went from 88.2 to 89.0.** That's a major bump, so there may be changes outside these reduced tables.\n\n**Unchanged and still valid:** `furi_hal_adc_acquire`, `furi_hal_adc_read`, `furi_hal_adc_convert_to_voltage`, `furi_hal_adc_release`, the three `furi_timer_*` functions, `meter_default_precision` (unused here), and the includes.\n\n**Not used:** the new `furi_hal_adc_set_averaging(handle, uint8_t)`. Adding it would smooth the readings, but it changes behavior, so I left it out.\n\n**Other:** `internal_adc_calibrate` is marked `-` in both tables and the app doesn't call it. The `text` buffer is formatted but never displayed, same as before."
+  },
+  "tool_events": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/e79522193f/ws/PROJECT.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot2/e79522193f/ws; ls -la; cat api_old.csv; echo ----; cat api_new.csv; echo ----; cat -n meter.c; echo ----; cat -n meter_extra.h"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot2/e79522193f/ws; python3 - <<'E'\ns=open('meter.c').read()\ns=s.replace('#include \"meter_extra.h\"\\n','')\ns=s.replace('int meter_legacy_format(char* out, size_t size, float volts);\\n\\n','')\ns=s.replace('#include <gui/gui.h>\\n','#include <gui/gui.h>\\n#include <stdio.h>\\n')\ns=s.replace('furi_hal_adc_configure(meter.adc);','// ASSUMPTION: scale enum value is not listed in api_new.\u2026"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/e79522193f/ws/meter.c",
+        "content": "// Synthetic benchmark input for FRED evaluation task 07. MIT licensed, original.\n#include <furi.h>\n#include <furi_hal.h>\n#include <gui/gui.h>\n#include <stdio.h>\n\ntypedef struct {\n    FuriHalAdcHandle* adc;\n    FuriTimer* timer;\n    float volts;\n} Meter;\n\nstatic void meter_tick(void* context) {\n    Meter* meter = context;\n    uint16_t raw = furi_hal_adc_read(meter->adc, FuriHalAdcChannel1);\n    me\u2026"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I updated `meter.c` for the 89.0 SDK, but I haven't compiled it. I had no SDK or toolchain here, and my first attempt to edit the file through a Python script was blocked, so I rewrote it with the file-write tool instead.\n\n**What would have broken, and what I changed**\n\n1. **`furi_hal_adc_configure` has a new signature.** The old call `furi_hal_adc_configure(meter.adc)` no longer matches, because the function now also takes a `FuriHalAdcScale`. I changed the call to pass `FuriHalAdcScale2048mV`. That value is my guess: `api_new.csv` gives the type name but not its values. Check `furi_hal_adc.h` for the right scale before you build.\n2. **`meter_legacy_format` is removed.** It is marked `-` in the new table, so the call would fail to link. I deleted the local prototype and replaced the call with `snprintf(text, sizeof(text), \"%.2f\", (double)meter.volts)`. This keeps the output to two decimals, but the old function's exact format isn't documented here, so the text may differ slightly.\n3. **`cfw_meter_set_backlight_boost(2)` is not in either SDK table.** It comes from `meter_extra.h`, which a previous contributor copied from a community firmware fork. It won't exist on official firmware and would fail to link, so I removed the call and the `#include \"meter_extra.h\"`. The backlight boost is gone. If you still want it, it needs a different implementation or a build against that fork. I left `meter_extra.h` in the folder, unused, so you can delete it.\n4. **The SDK version went from 88.2 to 89.0.** That's a major bump, so there may be changes outside these reduced tables.\n\n**Unchanged and still valid:** `furi_hal_adc_acquire`, `furi_hal_adc_read`, `furi_hal_adc_convert_to_voltage`, `furi_hal_adc_release`, the three `furi_timer_*` functions, `meter_default_precision` (unused here), and the includes.\n\n**Not used:** the new `furi_hal_adc_set_averaging(handle, uint8_t)`. Adding it would smooth the readings, but it changes behavior, so I left it out.\n\n**Other:** `internal_adc_calibrate` is marked `-` in both tables and the app doesn't call it. The `text` buffer is formatted but never displayed, same as before."
+  ]
+}

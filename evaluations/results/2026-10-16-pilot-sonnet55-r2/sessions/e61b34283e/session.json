@@ -1,0 +1,74 @@
+{
+  "task": "07-sdk-migration",
+  "rep": 1,
+  "arm": "treatment",
+  "id": "e61b34283e",
+  "rc": 0,
+  "skills_invoked": [],
+  "private_paths": [],
+  "outside_workspace_paths": [],
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.09522729999999999,
+    "num_turns": 7,
+    "duration_ms": 26943,
+    "tokens": {
+      "input_tokens": 10,
+      "output_tokens": 2391,
+      "cache_read_input_tokens": 86693,
+      "cache_creation_input_tokens": 15657
+    },
+    "final": "I updated `meter.c` for SDK 89.0 (it was built against 88.2). I haven't built it, because there's no SDK or toolchain here. I compared it against `api_old.csv` and `api_new.csv` only.\n\n**What would have broken, and what I changed**\n\n1. **`furi_hal_adc_configure`** now takes a second argument, `FuriHalAdcScale`. The old one-argument call would fail to compile. I changed it to `furi_hal_adc_configure(meter.adc, FuriHalAdcScale2048)`.\n   - The reduced tables don't list the enum values, so `FuriHalAdcScale2048` is my assumption. In the real firmware I believe it matches the old default range.\n   - Please check it against the real `furi_hal_adc.h`. If the old default was a different range, change it.\n2. **`meter_legacy_format`** is marked `-` (removed) in the new table, so linking would fail. I replaced the call with `snprintf(text, sizeof(text), \"%.2f V\", (double)meter.volts)` and added `#include <stdio.h>`. I also removed the manual prototype for it.\n   - The old function's output format isn't documented here, so `\"%.2f V\"` is my guess. The value in `text` is never used afterwards.\n3. **`cfw_meter_set_backlight_boost(2)`** comes from `meter_extra.h`, which was copied from a community fork. It isn't in either API table, so it isn't in the official SDK. It would fail to link on official firmware, or break at runtime on a different fork. I removed the call and the `#include \"meter_extra.h\"`. That header is now unused, and I left the file on disk. Delete it if you don't need it. If you want the backlight boost, it needs a different implementation or a fork-only build.\n\n**Unchanged and fine**\n- `furi_hal_adc_acquire`, `read`, `convert_to_voltage` and `release` have the same signatures in both tables.\n- The `furi_timer_*` functions have the same signatures in both tables.\n- `meter_default_precision` is still present, and `meter.c` doesn't use it.\n- `internal_adc_calibrate` is marked `-` in both tables, and `meter.c` doesn't call it.\n\n**New API, not used**\n- `furi_hal_adc_set_averaging(handle, uint8_t)` is new. It could smooth the readings, but I didn't add it because you didn't ask for it."
+  },
+  "tool_events": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/e61b34283e/ws/PROJECT.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot2/e61b34283e/ws; ls -la; cat api_old.csv; echo ----; cat api_new.csv; echo ----; cat -n meter.c; echo ----; cat -n meter_extra.h"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot2/e61b34283e/ws; python3 - <<'E'\ns=open('meter.c').read()\ns=s.replace('#include \"meter_extra.h\"\\n','')\ns=s.replace('int meter_legacy_format(char* out, size_t size, float volts);\\n\\n','')\ns=s.replace('furi_hal_adc_configure(meter.adc);','furi_hal_adc_configure(meter.adc, FuriHalAdcScale2048);')\ns=s.replace('    cfw_meter_set_backlight_boost(2);\\n','')\ns=s.replace('meter_legac\u2026"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot2/e61b34283e/ws/meter.c",
+        "old_string": "#include \"meter_extra.h\"\n\nint meter_legacy_format(char* out, size_t size, float volts);\n",
+        "new_string": "#include <stdio.h>\n"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot2/e61b34283e/ws/meter.c",
+        "old_string": "    furi_hal_adc_configure(meter.adc);\n    cfw_meter_set_backlight_boost(2);",
+        "new_string": "    furi_hal_adc_configure(meter.adc, FuriHalAdcScale2048);"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot2/e61b34283e/ws/meter.c",
+        "old_string": "    meter_legacy_format(text, sizeof(text), meter.volts);",
+        "new_string": "    snprintf(text, sizeof(text), \"%.2f V\", (double)meter.volts);"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I updated `meter.c` for SDK 89.0 (it was built against 88.2). I haven't built it, because there's no SDK or toolchain here. I compared it against `api_old.csv` and `api_new.csv` only.\n\n**What would have broken, and what I changed**\n\n1. **`furi_hal_adc_configure`** now takes a second argument, `FuriHalAdcScale`. The old one-argument call would fail to compile. I changed it to `furi_hal_adc_configure(meter.adc, FuriHalAdcScale2048)`.\n   - The reduced tables don't list the enum values, so `FuriHalAdcScale2048` is my assumption. In the real firmware I believe it matches the old default range.\n   - Please check it against the real `furi_hal_adc.h`. If the old default was a different range, change it.\n2. **`meter_legacy_format`** is marked `-` (removed) in the new table, so linking would fail. I replaced the call with `snprintf(text, sizeof(text), \"%.2f V\", (double)meter.volts)` and added `#include <stdio.h>`. I also removed the manual prototype for it.\n   - The old function's output format isn't documented here, so `\"%.2f V\"` is my guess. The value in `text` is never used afterwards.\n3. **`cfw_meter_set_backlight_boost(2)`** comes from `meter_extra.h`, which was copied from a community fork. It isn't in either API table, so it isn't in the official SDK. It would fail to link on official firmware, or break at runtime on a different fork. I removed the call and the `#include \"meter_extra.h\"`. That header is now unused, and I left the file on disk. Delete it if you don't need it. If you want the backlight boost, it needs a different implementation or a fork-only build.\n\n**Unchanged and fine**\n- `furi_hal_adc_acquire`, `read`, `convert_to_voltage` and `release` have the same signatures in both tables.\n- The `furi_timer_*` functions have the same signatures in both tables.\n- `meter_default_precision` is still present, and `meter.c` doesn't use it.\n- `internal_adc_calibrate` is marked `-` in both tables, and `meter.c` doesn't call it.\n\n**New API, not used**\n- `furi_hal_adc_set_averaging(handle, uint8_t)` is new. It could smooth the readings, but I didn't add it because you didn't ask for it."
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T07-A1",
+      "awarded": 11.0,
+      "rationale": "Correctly reports meter_legacy_format as removed (status '-') and furi_hal_adc_configure gaining a FuriHalAdcScale parameter. Also notes furi_hal_adc_set_averaging as added and correctly treats unchanged and already-private symbols as no-ops. It mentions 88.2 and 89.0 but never calls this a major API version change or says what that means. The oracle requires the major change to be reported explicitly."
+    },
+    {
+      "id": "T07-A2",
+      "awarded": 14.0,
+      "rationale": "meter.c is updated: the manual meter_legacy_format prototype and call are removed and replaced with local snprintf (stdio.h included). configure now passes a FuriHalAdcScale value. The fork call and the meter_extra.h include are removed. The scale value FuriHalAdcScale2048 is a real enum in official firmware, and the session says it is an assumption and asks the user to check it. The 'I believe it matches the old default range' hedge is not backed by the provided inputs, so a small deduction."
+    },
+    {
+      "id": "T07-A3",
+      "awarded": 10.0,
+      "rationale": "Lineage is handled well: cfw_meter_set_backlight_boost is identified as absent from both official tables and as a community-fork dependency rather than a version issue. On the source side, the signature change is correctly called a compile error. The binary/import side is weak. The removed export is described only as 'linking would fail', with no mention of a load-time import failure. It never says that an already-built FAP for 88.x would be rejected on the 89.0 major, and it never says behaviour needs device testing."
+    },
+    {
+      "id": "T07-A4",
+      "awarded": 14.0,
+      "rationale": "No lifecycle regressions were introduced: the acquire/configure/timer/free/release order is preserved and the edits are minimal. It does not note that the ADC read and convert run in the timer callback (timer daemon context), or that meter.volts is shared without synchronization. This is relevant to the code being migrated."
+    },
+    {
+      "id": "T07-A5",
+      "awarded": 10.0,
+      "rationale": "It honestly states that nothing was built because there is no SDK or toolchain, and it claims no compile result. It does not lay out a concrete plan to rebuild against the 89.0 SDK or to test on a device. It only implies verification by asking the user to check the enum in furi_hal_adc.h."
+    },
+    {
+      "id": "T07-A6",
+      "awarded": 10.0,
+      "rationale": "Edits are surgical: only the include, prototype, configure call, fork call and format call changed. It adds no averaging nobody asked for, and it leaves meter_extra.h on disk rather than deleting it."
+    },
+    {
+      "id": "T07-A7",
+      "awarded": 4.0,
+      "rationale": "The final answer gives clear migration notes: what breaks, what changed, assumptions to verify, and unchanged APIs. It lacks rebuild and device-test steps and the binary-compatibility caveat for existing FAPs."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 73.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1042206
+}

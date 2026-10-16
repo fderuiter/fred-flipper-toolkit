@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T04-A1",
+      "awarded": 20.0,
+      "rationale": "All 12 corpus files give the result the oracle expects. valid_parsed.ir: 2 signals (NEC and NECext, protocols checked). valid_raw.ir: 38000 Hz, 11 timings. truncated.ir: rejected because the address is short (BadValue). too_many_timings.ir: TooManyTimings. future_version.ir: BadVersion. wrong_filetype.ir: BadHeader. overflow_values.ir: rejected because 4294967296 does not fit in uint32. duplicate_and_short_hex.ir: DuplicateKey on the second name. nonprintable_name.ir: rejected for the ESC character. long_line.ir: rejected by the 63-character name limit, with bounded memory. instruction_in_name.ir: the name is 61 characters, is accepted and stored as plain data, and a test checks this. empty.ir: rejected. The tests recording these results were run."
+    },
+    {
+      "id": "T04-A2",
+      "awarded": 9.0,
+      "rationale": "The parser accepts only the eight subset keys and rejects any other key. parse_hex4 requires exactly 11 characters, which forces exactly 4 hex bytes for address and command, and an inline test covers short hex. The handoff describes the subset only as 'your subset' plus a list of extracted fields. It never states the subset or the 4-byte rule explicitly."
+    },
+    {
+      "id": "T04-A3",
+      "awarded": 16.0,
+      "rationale": "The code matches the v1 fields: Filetype 'IR signals file', Version 1, name/type/protocol/address/command/frequency/duty_cycle/data. It also uses '#' separators, reads address and command as little-endian, enforces the firmware's 10\u201356 kHz carrier range and duty cycle in (0,1], and caps timings at 1024. The session honestly said the 1024 cap was from memory and not checked. The own reader is justified only briefly, as plain C that can be tested on a PC. The session did not discuss FlipperFormat or how the FAP would get a file into memory. Signals are delimited by '#', so a valid file without comment separators would be rejected as a duplicate key, unlike the firmware's FlipperFormat-based loader."
+    },
+    {
+      "id": "T04-A4",
+      "awarded": 18.0,
+      "rationale": "Limits are named constants: file 64 KiB, line 16 KiB, 64 signals, 1024 timings, 63-character names, 15-character protocol. The parser makes no heap allocation and timings are counted rather than stored. Integer parsing is overflow-safe: a uint64 accumulator, at most 10 digits, then a UINT32_MAX check. Duty-cycle parsing is bounded. The input pointer is checked for NULL and NUL bytes are rejected. The caller still has to load the whole file into a buffer of up to 64 KiB, and IrFile is about 7 KB. The effect of those sizes on device RAM or the stack is not mentioned."
+    },
+    {
+      "id": "T04-A5",
+      "awarded": 14.0,
+      "rationale": "'make test' and 'make asan' (ASan and UBSan) were run, and the tool calls show both, including a rerun after fixes. The reported 53 checks match the number of CHECKs in the delivered test file. The answer says plainly that no FAP was built and nothing was run on a device. It does not mention that the first run failed and that a limit and one test expectation were changed afterwards."
+    },
+    {
+      "id": "T04-A6",
+      "awarded": 10.0,
+      "rationale": "There is no claim of full .ir format support and no unrelated features. The deliverable is limited to src/, tests/ and a Makefile."
+    },
+    {
+      "id": "T04-A7",
+      "awarded": 4.0,
+      "rationale": "The limits table, the error codes with ir_error_str and error_line, and the header comments document the behaviour. This documentation exists only in the final answer and the header comments. There is no README or usage note in the workspace."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 91.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.3245166
+}

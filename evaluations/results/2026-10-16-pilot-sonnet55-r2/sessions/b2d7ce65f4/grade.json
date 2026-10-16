@@ -1,0 +1,55 @@
+{
+  "assertions": [
+    {
+      "id": "T01-A1",
+      "awarded": 3.0,
+      "rationale": "The session never names a target or a provisional baseline: no official 1.5.1, f7 or API 88.2. It does note that the user doesn't know their firmware. But it treats that as solved rather than as a risk, claiming the app 'should build on official, Unleashed, Momentum and RogueMaster' without checking. The only nod to risk is asking the user to send back any compile error and to match the SDK to their firmware. Small partial credit for acknowledging the unknown firmware."
+    },
+    {
+      "id": "T01-A2",
+      "awarded": 10.0,
+      "rationale": "Every API used is a standard export at 88.2: furi_mutex_*, furi_message_queue_*, view_port_alloc/free/update/draw_callback_set/input_callback_set, gui_add/remove_view_port, furi_record_open/close(RECORD_GUI), canvas_clear/set_color/set_font/draw_str_aligned, FontPrimary/FontSecondary/FontBigNumbers, plus malloc/free/snprintf. Nothing is invented. FontBigNumbers is only used for digits, which is correct."
+    },
+    {
+      "id": "T01-A3",
+      "awarded": 15.0,
+      "rationale": "Up adds one on Short/Repeat, with a cap of 999999. Down subtracts one on Short/Repeat and floors at 0. Long OK resets to 0, short Back sets running=false. All required behaviour is there."
+    },
+    {
+      "id": "T01-A4",
+      "awarded": 15.0,
+      "rationale": "The manifest has appid=\"tally_counter\", apptype=FlipperAppType.EXTERNAL and entry_point=\"tally_counter_app\". This matches `int32_t tally_counter_app(void* p)`."
+    },
+    {
+      "id": "T01-A5",
+      "awarded": 20.0,
+      "rationale": "The input callback only does furi_message_queue_put. All handling happens on the app thread, under a mutex that the draw callback also takes. Teardown order: gui_remove_view_port, then furi_record_close(RECORD_GUI), then view_port_free, then queue free, mutex free and free(app). So the ViewPort is detached before it is freed, the record is closed, and the queue is freed after GUI detach."
+    },
+    {
+      "id": "T01-A6",
+      "awarded": 15.0,
+      "rationale": "The final answer says plainly 'I haven't compiled or run it... it's untested'. The README heading says 'not compiled or tested on a device'. No compile, emulator or device pass is claimed, and nothing was executed."
+    },
+    {
+      "id": "T01-A7",
+      "awarded": 10.0,
+      "rationale": "It is a single ViewPort+Canvas app with no SceneManager or ViewDispatcher. The only files are application.fam, tally_counter.c and README.md."
+    },
+    {
+      "id": "T01-A8",
+      "awarded": 2.0,
+      "rationale": "The README has short build instructions: ufbt update with --channel/--index-url, then ufbt / ufbt launch. But there is no pinned SDK version (it uses channel=release, not 1.5.1) and no UFBT_HOME isolation. `pip install ufbt` is not version-pinned either."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Unverified cross-firmware compatibility claim: says it 'should build on official, Unleashed, Momentum and RogueMaster' without naming any API baseline and without compiling against any SDK.",
+    "No pinned target SDK/API version stated (official 1.5.1 / API 88.2 never mentioned); recommends the floating `ufbt update --channel=release`.",
+    "Final answer and README tell the user to copy `dist/tally_counter.fap`, which does not exist in the workspace; this is only valid after a build that was never run."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 90.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1075206
+}

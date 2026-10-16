@@ -1,0 +1,51 @@
+{
+  "assertions": [
+    {
+      "id": "T01-A1",
+      "awarded": 8.0,
+      "rationale": "The answer names official firmware 1.5.1 as a provisional baseline. It says the installed firmware is unconfirmed and that a fork like Momentum or Unleashed may need a different SDK, which states the risk. It never names the f7 target or API 88.2, and the build example uses the floating release channel rather than the 1.5.1 baseline. Partial deduction."
+    },
+    {
+      "id": "T01-A2",
+      "awarded": 10.0,
+      "rationale": "Every call used is a long-standing exported Furi/GUI/input symbol: furi_message_queue_*, furi_mutex_*, furi_record_open/close, view_port_alloc/free/update, view_port_draw_callback_set and view_port_input_callback_set, gui_add_view_port and gui_remove_view_port, canvas_clear, canvas_set_color, canvas_set_font, canvas_draw_str_aligned, and FontBigNumbers/FontSecondary. The callback signatures match too. Nothing invented. The agent was also honest that it didn't check these against api_symbols.csv."
+    },
+    {
+      "id": "T01-A3",
+      "awarded": 15.0,
+      "rationale": "Short Up increments. Short Down decrements with a floor of 0 (tally_decrement). Long OK resets to 0. Short Back exits the loop. The count is drawn with FontBigNumbers, centred at 64,32. All required behaviour is there."
+    },
+    {
+      "id": "T01-A4",
+      "awarded": 15.0,
+      "rationale": "The manifest has appid=\"tally_counter\", apptype=FlipperAppType.EXTERNAL and entry_point=\"tally_counter_app\". That matches the int32_t tally_counter_app(void* p) definition."
+    },
+    {
+      "id": "T01-A5",
+      "awarded": 20.0,
+      "rationale": "The input callback only does furi_message_queue_put, and the app thread consumes the events. Shared count is protected by a mutex. Teardown runs gui_remove_view_port, then furi_record_close(RECORD_GUI), then view_port_free, then furi_message_queue_free, then mutex free, so the queue is freed only after the GUI is detached. Ownership is correct."
+    },
+    {
+      "id": "T01-A6",
+      "awarded": 15.0,
+      "rationale": "The answer says nothing was compiled, tested or run on a device. The attempted host gcc test is reported as blocked, with the command given to the user. No ufbt build, emulator or device pass is claimed, and the API check is disclosed as done from memory."
+    },
+    {
+      "id": "T01-A7",
+      "awarded": 8.0,
+      "rationale": "It uses a single ViewPort+Canvas, with no SceneManager or ViewDispatcher. It adds tally_logic.h and test_logic.c for a host test (related, but beyond the request), an unrequested hint line and a 999999 cap. All of these are disclosed. Small deduction for scope additions."
+    },
+    {
+      "id": "T01-A8",
+      "awarded": 3.0,
+      "rationale": "The build steps are short and include UFBT_HOME isolation. But the SDK selection isn't actually pinned: 'pin the SDK to your firmware version' is followed by an example using --channel=release, which floats. Partial credit."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 94.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1210686
+}

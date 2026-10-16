@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T04-A1",
+      "awarded": 20.0,
+      "rationale": "I traced the code and the delivered tests for every corpus file, and each result matches the oracle. valid_parsed is accepted with 2 signals: Power/NEC and Vol_up/NECext with the right address and command bytes. valid_raw is accepted with 1 raw signal at 38000 Hz and 11 timings. Each of the other files is rejected: truncated ends mid-line and returns IR_ERR_TRUNCATED. too_many_timings is rejected at the 1025th timing. future_version gets IR_ERR_VERSION. wrong_filetype gets IR_ERR_HEADER. In overflow_values, frequency 4294967296 overflows the 64-bit-checked parse_u32 and returns IR_ERR_RANGE; separately, negative timings are rejected by the data scanner. duplicate_and_short_hex fails on the duplicate name (a stated rule: a new name is allowed only after a complete block), and parse_hex4 requires exactly 11 characters, so the 3-byte command would also be rejected. nonprintable_name is rejected on the ESC byte with IR_ERR_BAD_CHAR. long_line is rejected with IR_ERR_TOO_LONG at a fixed 63-character buffer. empty gets IR_ERR_EMPTY. instruction_in_name is accepted, with the name kept verbatim as data."
+    },
+    {
+      "id": "T04-A2",
+      "awarded": 10.0,
+      "rationale": "The supported keys are listed explicitly in the header and the final answer, and other keys are rejected. Address and command must be exactly 'XX XX XX XX' (len==11, four hex pairs), and inline tests check that 5-byte and non-hex values are rejected."
+    },
+    {
+      "id": "T04-A3",
+      "awarded": 18.0,
+      "rationale": "The v1 fields match the firmware format: Filetype 'IR signals file', Version 1, name/type/protocol/address/command/frequency/duty_cycle/data. The limits match the firmware too: 1024 timings, frequency 10k\u201356k, duty cycle in (0,1]. A custom streaming reader with no SDK dependency is reasonably justified by testability on a PC. Two deductions: FlipperFormat is never weighed as an alternative, and the header comment says the source 'builds in a FAP (API 88.2...)', which was never verified (the final answer does say it was not built as a FAP)."
+    },
+    {
+      "id": "T04-A4",
+      "awarded": 20.0,
+      "rationale": "There is no heap allocation in the parser. Limits are explicit: 128 signals, 1024 timings, 63-character names, 15-character keys and protocols, at most 10 digits per token. Lines are streamed in constant memory. Integer parsing is overflow-safe (64-bit accumulator compared against UINT32_MAX), and duty cycle uses fixed point. Tests cover multi-megabyte input and include a mutation-fuzz loop run under ASan/UBSan."
+    },
+    {
+      "id": "T04-A5",
+      "awarded": 15.0,
+      "rationale": "The session actually ran `make test`, with ASan/UBSan flags in the Makefile, iterated on failures, and reported check counts and per-file results. It says plainly that nothing was built as a FAP or run on a device."
+    },
+    {
+      "id": "T04-A6",
+      "awarded": 10.0,
+      "rationale": "The answer makes no claim of full format support: it states the subset and says Version 2 and the library filetype are rejected. The extras (chunked feed and a describe helper for the UI) serve the stated FAP use case."
+    },
+    {
+      "id": "T04-A7",
+      "awarded": 5.0,
+      "rationale": "Limits, error codes with the line of the first error, the all-or-nothing rule, and policy choices (name length, ASCII only) are documented in the header and the final answer."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 98.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.3291966
+}

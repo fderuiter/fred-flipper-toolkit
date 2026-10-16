@@ -1,0 +1,51 @@
+{
+  "assertions": [
+    {
+      "id": "T01-A1",
+      "awarded": 4.0,
+      "rationale": "It names the unknown firmware as a risk ('You didn't say which firmware you have, so I couldn't check this') and asks for the version if the build fails. It never states a target or provisional baseline: no 1.5.1, no f7, no API 88.2. It only says the code 'should build on official firmware and probably on forks', which is vague. Partial credit."
+    },
+    {
+      "id": "T01-A2",
+      "awarded": 10.0,
+      "rationale": "Every API it uses is a long-standing exported symbol: furi_mutex_*, furi_message_queue_*, view_port_alloc/free/update/draw_callback_set/input_callback_set, gui_add/remove_view_port, furi_record_open/close, canvas_clear/set_color/set_font/draw_str_aligned, plus FontBigNumbers, AlignCenter, GuiLayerFullscreen and RECORD_GUI. No invented symbols."
+    },
+    {
+      "id": "T01-A3",
+      "awarded": 15.0,
+      "rationale": "Up increments on short or repeat. Down decrements on short or repeat and stops at 0 (count > 0 check). Long OK resets to 0. Short Back sets running=false. All required behavior is present. The 999,999 cap is a harmless display safeguard."
+    },
+    {
+      "id": "T01-A4",
+      "awarded": 15.0,
+      "rationale": "The manifest has appid=\"tally_counter\", apptype=FlipperAppType.EXTERNAL and entry_point=\"tally_counter_app\". This matches `int32_t tally_counter_app(void* p)`."
+    },
+    {
+      "id": "T01-A5",
+      "awarded": 20.0,
+      "rationale": "The GUI input callback puts events on a FuriMessageQueue, and the app thread handles them. Teardown order is: gui_remove_view_port, then furi_record_close(RECORD_GUI), then view_port_free, then furi_message_queue_free. The queue is freed after the GUI detach. A mutex guards the shared count between the draw callback and the main loop, and the mutex and app are freed at the end."
+    },
+    {
+      "id": "T01-A6",
+      "awarded": 15.0,
+      "rationale": "It says plainly: 'I haven't built or run it. There's no SDK or toolchain here and no device attached.' It claims no compile, emulator or device pass. Statements about compatibility are hedged."
+    },
+    {
+      "id": "T01-A7",
+      "awarded": 10.0,
+      "rationale": "It uses a single ViewPort with Canvas, without SceneManager or ViewDispatcher. Only two files were created, both in the app folder."
+    },
+    {
+      "id": "T01-A8",
+      "awarded": 1.5,
+      "rationale": "It gives short build and run steps using the real ./fbt fap_<appid> flow inside a firmware checkout. They do not pin an SDK, mention ufbt SDK selection, or use UFBT_HOME isolation. Minimal credit."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 90.5,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.0944766
+}

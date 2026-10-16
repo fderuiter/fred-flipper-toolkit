@@ -1,0 +1,10 @@
+App(
+    appid="soil_link",
+    name="Soil Link",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="soil_link_app",
+    requires=["gui"],
+    stack_size=2 * 1024,
+    fap_category="GPIO",
+    sources=["soil_link.c", "soil_proto.c"],
+)

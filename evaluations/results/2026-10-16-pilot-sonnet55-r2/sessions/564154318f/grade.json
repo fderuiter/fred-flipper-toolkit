@@ -1,0 +1,50 @@
+{
+  "assertions": [
+    {
+      "id": "T06-A1",
+      "awarded": 30.0,
+      "rationale": "All 8 seeded defects are identified with a correct causal trace. D1: finding 2 says furi_timer_stop doesn't wait for an in-flight tick_callback that uses the model, so free the timer before the model. D2: finding 3 covers the missing gui_remove_view_port and the dangling pointer in the GUI. D3: finding 5 covers malloc in the ISR-context RX callback, the leak when the put fails, and the stream-buffer fix. D4: finding 6 covers the GUI input thread blocking forever on the 4-slot queue and proposes a zero timeout. D5: finding 1 covers the join while holding the mutex the worker acquires. D6: finding 8 covers the race on line/line_len between worker and draw_callback. D7: finding 4 covers notification_message after furi_record_close. D8: finding 11 covers the unbounded count, the multiplication overflow and the unchecked reads. Score is 8/8."
+    },
+    {
+      "id": "T06-A2",
+      "awarded": 19.0,
+      "rationale": "The fixes use real APIs: gui_remove_view_port, furi_timer_free, FuriStreamBuffer/furi_stream_buffer_send and thread flags. The malloc restriction is correctly limited to interrupt context, with no general 'malloc forbidden' claim. Small inaccuracies: 'FuriThreadFlag' is not an exact type name (the real API is furi_thread_flags_*), and the answer calls for NULL checks on malloc, but Furi's malloc halts on OOM instead of returning NULL. The input-queue fix does not explicitly keep Back from being dropped. -1."
+    },
+    {
+      "id": "T06-A3",
+      "awarded": 20.0,
+      "rationale": "The proposed teardown reaches quiescence: stop serial RX first, free the timer (which waits for its callback), set the flag and release the mutex before joining the worker, drain rx_queue, remove the ViewPort before freeing it, notify before closing the record, and free the model/App last. There is no join under a lock and no flush from a callback. Findings 2 and 7 give slightly different orders, but both are safe."
+    },
+    {
+      "id": "T06-A4",
+      "awarded": 12.0,
+      "rationale": "It has a clear overall statement that nothing was compiled or run and that the findings come from reading the code, and it claims no reproduced crash. Evidence level is not labelled per finding, and no tests are proposed as part of the causal traces."
+    },
+    {
+      "id": "T06-A5",
+      "awarded": 10.0,
+      "rationale": "The tool calls were reads only and no files were edited. No decoys are flagged as defects: app_alloc malloc, the main-loop wait-forever, the 100 ms worker timeout, the 10 Hz redraw, the missing SceneManager and FURI_LOG_I are all left alone. The ticks race is called benign."
+    },
+    {
+      "id": "T06-A6",
+      "awarded": 5.0,
+      "rationale": "Findings are severity-ordered, mapped to the reported symptoms, and each has a location and a concrete fix."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [
+    "T06-D1",
+    "T06-D2",
+    "T06-D3",
+    "T06-D4",
+    "T06-D5",
+    "T06-D6",
+    "T06-D7",
+    "T06-D8"
+  ],
+  "decoys_flagged": [],
+  "score": 96.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1480126
+}

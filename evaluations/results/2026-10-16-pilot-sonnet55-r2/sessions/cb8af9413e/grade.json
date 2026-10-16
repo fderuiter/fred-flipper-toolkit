@@ -1,0 +1,64 @@
+{
+  "assertions": [
+    {
+      "id": "T02-A1",
+      "awarded": 9.0,
+      "rationale": "The app has three screens (Submenu menu, VariableItemList settings, and a custom running view) plus an About widget. The running view's previous callback returns ViewMenu, so Back cancels and run_exit stops the timer. Settings has no previous callback, so view_previous returns VIEW_IGNORE and the dispatcher calls navigation_callback, which saves and switches to the menu. Back on the menu returns VIEW_NONE and exits. This works on inspection but was never built or run."
+    },
+    {
+      "id": "T02-A2",
+      "awarded": 9.0,
+      "rationale": "For version 1, settings_load reads Work and Rest through read_ranged, rewinding before each key, and skips Rounds and Vibrate, so those keep their defaults (8 and true). The sample would load as Work 45, Rest 15, Rounds 8, Vibrate on. This is correct by inspection only; no test exercised it."
+    },
+    {
+      "id": "T02-A3",
+      "awarded": 8.0,
+      "rationale": "Each field falls back to its own default and the policy is stated. Work=99999999999 and Rest=-4 parse out of range, Rounds=0 is below the minimum, and the truncated 'Vib' line fails read_bool, so the corrupt sample yields all defaults without a crash. A future version sets save_blocked, so the v7 file is never overwritten. However, settings_save returns true while blocked, so the user's edits are silently dropped with no notice in the UI. That is a weak 'notify' story, but the file is not clobbered."
+    },
+    {
+      "id": "T02-A4",
+      "awarded": 18.0,
+      "rationale": "All APIs used are real and exported: ViewDispatcher, Submenu, VariableItemList, Widget, FlipperFormat read/write/header/rewind, storage_common_rename/remove, storage_simply_mkdir, DialogMessage, notification sequences, FuriTimer and APP_DATA_PATH. The session correctly noticed the uint8_t values_count limit and replaced per-second steps with a stepped grid (134 and 139 values, both under 255). It also avoided overriding the module's view context. There is no SceneManager, which is acceptable. Points off because nothing was compiled against 1.5.1 and 'dialogs' is missing from requires."
+    },
+    {
+      "id": "T02-A5",
+      "awarded": 7.0,
+      "rationale": "There is no storage I/O in draw, input or timer callbacks. timer_tick touches only the model and notifications, and run_exit stops the timer when the view is left. However, the save and a blocking modal dialog run synchronously inside the ViewDispatcher navigation (Back) event handler. That is the dispatcher thread rather than the GUI thread, but it is still I/O on the input-handling path."
+    },
+    {
+      "id": "T02-A6",
+      "awarded": 3.0,
+      "rationale": "The save writes a temp file and checks each write call, but close happens through flipper_format_free, so its result is never checked, and there is no sync. Nothing recovers a stale settings.tmp at startup. The rename fallback removes settings.txt and then renames; if that second rename fails, the !ok branch deletes the temp file too, losing both copies. A failed save does show a 'Save failed' dialog, and a missing SD card at load falls back to defaults."
+    },
+    {
+      "id": "T02-A7",
+      "awarded": 3.0,
+      "rationale": "There are no host tests, no tests over the samples, and no modeled interrupted write. The session reports honestly that it did not build or run anything and that device behaviour is unverified. However, both the code comment ('never destroys the previous file') and the final answer ('A failed or interrupted write leaves the old file intact') make an unproven durability promise that the remove-then-rename fallback actually contradicts."
+    },
+    {
+      "id": "T02-A8",
+      "awarded": 4.0,
+      "rationale": "No unrelated framework was introduced. Parsing and migration are not separated: they live in the single .c file, tied to App, Storage and FlipperFormat file I/O, so they cannot be host-tested."
+    },
+    {
+      "id": "T02-A9",
+      "awarded": 4.0,
+      "rationale": "The final answer documents the file path, the v1 to v2 migration, the defaults, the per-field corrupt-value policy and the read-only policy for future versions. No README or doc file was left in the workspace, and the 'old file intact' statement is inaccurate."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "In settings_save, the rename fallback calls storage_common_remove(SETTINGS_PATH) and then retries the rename. If that retry fails, the !ok branch also removes SETTINGS_TMP_PATH, so both the old settings and the new temp file are destroyed. This contradicts the claim that a failed write leaves the old file intact.",
+    "Unproven durability claim in the code comment ('never destroys the previous file') and the final answer ('A failed or interrupted write leaves the old file intact'). It borders on a power-loss atomicity promise; it is recorded as major rather than critical because the word 'atomic' is never used and the answer says nothing was tested.",
+    "There is no sync and the close result is unchecked: the file is closed through flipper_format_free.",
+    "There is no recovery of a stale settings.tmp at startup.",
+    "There are no host tests for parsing or migration against samples/, and no modeled interrupted-write test. Parsing is not separated from the app and storage code.",
+    "When the settings file is a newer version, settings_save returns true while doing nothing, so user changes are silently discarded with no notification.",
+    "The storage save and a blocking dialog_message_show run inside the ViewDispatcher navigation (Back) event callback."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 65.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.3073166
+}

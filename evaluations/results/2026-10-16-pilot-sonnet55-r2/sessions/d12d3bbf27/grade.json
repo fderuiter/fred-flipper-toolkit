@@ -1,0 +1,50 @@
+{
+  "assertions": [
+    {
+      "id": "T06-A1",
+      "awarded": 29.0,
+      "rationale": "The session found all 8 seeded defects with correct causal traces. D1 (#1): timer stop does not wait; the model is freed, and a late tick calls view_port_update on the freed ViewPort; fix is to free the timer first. D2 (#5): gui_remove_view_port is missing and the ViewPort is freed while registered. D3 (#2): malloc in the ISR RX callback, plus the leak when the queue is full; fix is a stream buffer with zero timeout and an overflow count. D4 (#4): FuriWaitForever put from the GUI thread on a 4-slot queue, with a fix that protects Back. D5 (#3): join while holding the mutex causes a deadlock. D6 (#8): unlocked line/line_len writes against the draw_callback read. D7 (Minor): notification_message after furi_record_close, fixed by notifying first. D8 (#7): unbounded count, multiplication overflow and unchecked reads. Deducted 1 point for two reasons. D7 is downplayed as 'probably harmless'. Several findings (3, 4, 5, 8) have no explicit test step."
+    },
+    {
+      "id": "T06-A2",
+      "awarded": 20.0,
+      "rationale": "Every API in the fixes exists: furi_timer_free, gui_remove_view_port, FuriStreamBuffer with furi_stream_buffer_send/receive, and FuriEventFlag. The review never claims malloc is forbidden in general. It flags malloc only in ISR context, which is correct, and does not suggest furi_alloc."
+    },
+    {
+      "id": "T06-A3",
+      "awarded": 18.0,
+      "rationale": "The proposed teardown reaches quiescence. It stops and frees the timer before freeing the model or ViewPort. It calls gui_remove_view_port before view_port_free. It sets the flag under the lock, releases the lock, then joins. It sends the notification before closing the record and frees the stream buffer last. It also spots that a GUI thread blocked in input_callback could stall gui_remove_view_port during teardown. Deducted for never giving one consolidated, end-to-end teardown sequence, for example where serial rx_stop and deinit fall relative to the worker join."
+    },
+    {
+      "id": "T06-A4",
+      "awarded": 15.0,
+      "rationale": "A global statement says every finding is a source trace, and most findings also carry their own evidence label. Firmware-dependent claims, such as the view_port_free assertion and timer-stop semantics, are marked as coming from memory or the reference notes. The scope section lists what was inspected and what was not. The review makes no reproduced or compiled claims."
+    },
+    {
+      "id": "T06-A5",
+      "awarded": 10.0,
+      "rationale": "The workspace is unchanged, so no files were edited. No decoys were flagged. The worker's 100 ms wait is explicitly accepted, and app_alloc malloc, the periodic redraw, the main-loop wait, FURI_LOG_I and the missing SceneManager are not flagged. The LINE_MAX and `exit` notes are marked as hypothesis or style and do not match any decoy."
+    },
+    {
+      "id": "T06-A6",
+      "awarded": 5.0,
+      "rationale": "Findings are grouped by severity as Critical, Major and Minor. Each gives trigger, consequence and fix, and the review closes with a priority summary tied to the reported symptoms."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [
+    "T06-D1",
+    "T06-D2",
+    "T06-D3",
+    "T06-D4",
+    "T06-D5",
+    "T06-D6",
+    "T06-D7",
+    "T06-D8"
+  ],
+  "decoys_flagged": [],
+  "score": 97.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1656806
+}

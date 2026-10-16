@@ -17,7 +17,7 @@ Implementation phase started 2026-10-16.
 - New claims C-BUILD-004 (a distro toolchain changed the generated API to 89.0) and C-BUILD-005 (official toolchain identity).
 
 - Setup wizard (`scripts/fred_setup.py`, ADR 0002): guided install/uninstall with backups and verification, `doctor`, hash-pinned SDK setup with archive verification, `build`, and a compatibility-card form; 22 offline tests. New human guides: Getting started, Using FRED, Troubleshooting.
-- Pilot round 1 (#8): treatment 84.6 vs baseline 77.4, 58% fewer critical/major errors, comparative gate not met; one improvement round of generic guidance (C-GUI-003, storage testing, migration impacts).
+- Pilot (#8): round 1 treatment 84.6 vs baseline 77.4 (−58% critical/major errors); one improvement round of generic guidance (C-GUI-003, storage testing, migration impacts); round 2 treatment 86.7 vs 77.2 (+9.5 paired, −53% critical/major). Comparative gate not met: the migration family stays below 80, there was one treatment critical, and the token ratio is 1.75×. Follow-ups #12, #13, #14, #21.
 - Expansion research (#11): fork API surfaces, loader major-only rule (C-FAP-004), mJS host tests (C-JS-001), emulator fidelity, MCP audits, GPIO limits (C-GPIO-001).
 
 Checks: `python3 scripts/check_bundle.py` → 0 errors, 0 warnings; `python3 -m unittest discover -s tests -v` → 96 tests OK (Python 3.13.16, Linux).

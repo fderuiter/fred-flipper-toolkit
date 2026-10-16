@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T04-A1",
+      "awarded": 19.0,
+      "rationale": "Read through the code, every corpus file gets the result the oracle expects. valid_parsed is accepted with 2 signals (NEC, NECext). valid_raw is accepted with 1 signal at 38000 Hz with 11 timings. truncated is rejected because the 2-byte address fails parse_hex4. too_many_timings is rejected at timing 1025. future_version and wrong_filetype are rejected. overflow_values is rejected because 4294967296 > UINT32_MAX via the uint64 accumulator, and a '-' in data would also hit BadValue. nonprintable_name is rejected by the control-char check. long_line is rejected by the 128-byte line buffer. empty is rejected as Empty. instruction_in_name (61 chars, within the 64 limit) is accepted as plain data. duplicate_and_short_hex is rejected, but under the stated rule that a second name starts a new button, so it fails as MissingField and the 3-byte command in that file is never reached. The short-hex rejection is covered only by a synthetic test. That is an acceptable stated rule, but the file's specific defects are not exercised as named, so 1 point off."
+    },
+    {
+      "id": "T04-A2",
+      "awarded": 10.0,
+      "rationale": "The supported subset is stated in both the header and the answer: the 8 keys, parsed vs raw, and rejection of unknown keys. parse_hex4 enforces exactly the 'XX XX XX XX' form, length 11, 4 bytes."
+    },
+    {
+      "id": "T04-A3",
+      "awarded": 18.0,
+      "rationale": "The v1 fields match the documented format: header Filetype/Version; name, type, protocol, address, command for parsed signals; frequency, duty_cycle, data for raw signals; '#' comments. The frequency range of 10\u201356 kHz, the 0<duty\u22641 range and the 1024-timing cap are consistent with the firmware. Using its own reader is implicitly justified: it has no Furi dependency so it is host-testable, and it streams chunks from storage_file_read. However, the answer never explicitly weighs it against FlipperFormat or cites the pinned InfraredFileFormats.md. Small deduction."
+    },
+    {
+      "id": "T04-A4",
+      "awarded": 20.0,
+      "rationale": "The parser does no dynamic allocation. Explicit limits cover buttons (128), name (64), protocol (15), line (128), timings (1024) and file size (256 KiB). Raw timings are streamed and counted, never stored. The 10-digit uint64 accumulator rejects values > UINT32_MAX. The token buffer is bounded at 10 digits. The file-size check cannot underflow. Copies are length-checked against fixed buffers."
+    },
+    {
+      "id": "T04-A5",
+      "awarded": 15.0,
+      "rationale": "The session actually ran make test, including iterations after fixing failures, built with -fsanitize=address,undefined and -Werror. It reported the command and the result (22,140 checks, 0 failures), plus per-file expected statuses and a robustness/fuzz pass. It explicitly says there was no FAP build and no device testing."
+    },
+    {
+      "id": "T04-A6",
+      "awarded": 10.0,
+      "rationale": "It makes no full-format claim: it limits itself to the stated subset and rejects other keys. The extras (chunked feed, summary string) serve the requested FAP use case directly. No unrelated features."
+    },
+    {
+      "id": "T04-A7",
+      "awarded": 5.0,
+      "rationale": "The header comment and the final answer document all the limits, the sticky first-error policy with line numbers, the partial-list behaviour, status strings, and the duplicate-name rule as a decision for the user."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 97.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.35190459999999996
+}

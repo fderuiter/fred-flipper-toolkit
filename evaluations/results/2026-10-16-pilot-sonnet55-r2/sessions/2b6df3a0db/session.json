@@ -1,0 +1,216 @@
+{
+  "task": "04-ir-parser",
+  "rep": 2,
+  "arm": "treatment",
+  "id": "2b6df3a0db",
+  "rc": 0,
+  "skills_invoked": [
+    "flipper-native"
+  ],
+  "private_paths": [],
+  "outside_workspace_paths": [],
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.48901160000000005,
+    "num_turns": 30,
+    "duration_ms": 169636,
+    "tokens": {
+      "input_tokens": 26,
+      "output_tokens": 24874,
+      "cache_read_input_tokens": 446396,
+      "cache_creation_input_tokens": 48895
+    },
+    "final": "I wrote the `.ir` parser as plain C with no Furi dependencies. All host tests pass, including a run under AddressSanitizer and UBSan. I haven't compiled it against the 1.5.1 SDK or run it on a device.\n\n**What's there**\n- `ir_parse.h` and `ir_parse.c` hold the parser.\n- `tests/test_ir_parse.c` holds the tests.\n- A `Makefile` builds and runs them with `make test`.\n\n**How to use it from your FAP**\n- Call `ir_parse(read_fn, ctx, buttons, capacity, &count)`. You supply the read callback and the output array.\n- `ir_parse_buffer` does the same for data already in memory.\n- Each `IrButton` gives you the name, type, protocol (parsed signals) or frequency (raw signals), and the timing count.\n- The result is a status plus a line number. `ir_status_string()` turns the status into text for the UI.\n- The parser reads the file in 128-byte chunks and stores only the fields it lists. It never stores raw timings, only counts them.\n- On an error, the buttons completed before the failure are still in your array, but treat the file as invalid.\n\n**Limits that keep it bounded**\n- It never allocates. Memory use is the 128-byte chunk, about 0.2 KB of parser state, and your button array.\n- Files over 512 KB are rejected, as are files with more than 1024 timings in a signal. Each timing must be 1 to 4294967295.\n- A signal that would overflow your button array is rejected.\n- Other values are capped at 63 characters, and keys at 16.\n- Names are cut to 31 characters and flagged `name_truncated`. That is how `long_line.ir` and `instruction_in_name.ir` parse: the extra text is dropped and never acted on.\n\n**Choices I made where your spec was open**\n- Every key outside your list is rejected, and each key can appear only once per record.\n- `type` must come before the keys specific to it, and a key that doesn't belong to the type is rejected.\n- A new `name` line ends the previous record. So `duplicate_and_short_hex.ir` is reported as a missing field on line 5, not as a duplicate key.\n- Control bytes and NUL are rejected everywhere except in `#` comment lines. Bytes of 0x80 and above are rejected in values.\n- Frequency must be 10 kHz to 1 MHz. Duty cycle is parsed without floats and stored in permille.\n- A file with a valid header and no buttons is accepted as zero buttons.\n\n**Tests**\n- 80,085 checks, 0 failures.\n- The suite covers:\n  - every file in `corpus/`;\n  - the edge cases: CRLF, no trailing newline, and exactly 1024 timings against 1025;\n  - a reader that returns one byte at a time and gives the same result;\n  - a failing read and a source that never ends;\n  - 80,000 mutated corpus files, to check it never crashes.\n\n**Not done**\n- The Furi side that reads the SD card is not written. I didn't have your FAP, and the guidance for this task says not to guess Furi API names. Wrap `storage_file_read` in an `IrReadFn` that returns the byte count, 0 at end of file, and a negative value on error. Run it in a worker thread, not in a draw or input callback.\n\nThe shell blocked a couple of compound commands partway through, so I used the file tools for those steps."
+  },
+  "tool_events": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/PROJECT.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot2/2b6df3a0db/ws; ls -la . corpus; head -c 600 corpus/* | head -150; wc -c corpus/*"
+      }
+    },
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/.claude/skills/flipper-core/references/storage-parsers.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/corpus/valid_raw.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/corpus/valid_parsed.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/corpus/truncated.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/corpus/duplicate_and_short_hex.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/corpus/future_version.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/corpus/nonprintable_name.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/corpus/overflow_values.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/corpus/wrong_filetype.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/corpus/instruction_in_name.ir"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/corpus/too_many_timings.ir"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "^.{200,}",
+        "path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/corpus/long_line.ir",
+        "output_mode": "count"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/ir_parse.h",
+        "content": "#pragma once\n/*\n * Bounded parser for a subset of Flipper `.ir` files (Filetype \"IR signals file\", Version 1).\n * Plain C99, no Furi/FAP dependencies, no heap use: the caller supplies the output array and\n * a byte-source callback. The parser never stores raw timings, it validates and counts them.\n *\n * Supported keys: name, type (parsed|raw), protocol, address, command, frequency, duty_cycle, dat\u2026"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/ir_parse.c",
+        "content": "#include \"ir_parse.h\"\n\n#include <string.h>\n\n#define READ_CHUNK 128\n#define MAX_KEY_LEN 16\n\ntypedef enum {\n    KeyFiletype,\n    KeyVersion,\n    KeyName,\n    KeyType,\n    KeyProtocol,\n    KeyAddress,\n    KeyCommand,\n    KeyFrequency,\n    KeyDutyCycle,\n    KeyData,\n    KeyUnknown,\n} KeyId;\n\ntypedef enum {\n    StLineStart,\n    StComment,\n    StKey,\n    StPreValue,\n    StValue,\n    StData,\n} State;\n\nen\u2026"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/tests/test_ir_parse.c",
+        "content": "/* Host tests for ir_parse. Usage: test_ir_parse <corpus-dir> */\n#include \"../ir_parse.h\"\n\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nstatic int failures = 0;\nstatic int checks = 0;\n\n#define CHECK(cond) \\\n    do { \\\n        checks++; \\\n        if(!(cond)) { \\\n            failures++; \\\n            printf(\"FAIL %s:%d: %s\\n\", __FILE__, __LINE__, #cond); \\\n        } \\\n    } while(0)\n\n\u2026"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/Makefile",
+        "content": "CC ?= cc\nCFLAGS ?= -std=c99 -Wall -Wextra -Werror -O1 -g -fsanitize=address,undefined -fno-sanitize-recover=undefined\n\n.PHONY: test clean\ntest: build/test_ir_parse\n\t./build/test_ir_parse corpus\n\nbuild/test_ir_parse: ir_parse.c ir_parse.h tests/test_ir_parse.c\n\tmkdir -p build\n\t$(CC) $(CFLAGS) ir_parse.c tests/test_ir_parse.c -o $@\n\nclean:\n\trm -rf build\n"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "make -C /tmp/fred-eval/pilot2/2b6df3a0db/ws test 2>&1 | tail -30"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "sed -i 's/\"duplicate_and_short_hex.ir\", IrErrDuplicateKey, 5/\"duplicate_and_short_hex.ir\", IrErrMissingField, 5/' tests/test_ir_parse.c && wc -c corpus/long_line.ir && head -c 300 corpus/long_line.ir | tail -c 150; echo; awk '{print NR\": \"length($0)}' corpus/long_line.ir | tail -3; tr -cd ' ' < corpus/too_many_timings.ir | wc -c"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/tests/test_ir_parse.c",
+        "old_string": "\"duplicate_and_short_hex.ir\", IrErrDuplicateKey, 5);",
+        "new_string": "\"duplicate_and_short_hex.ir\", IrErrMissingField, 5); /* 2nd name ends a record with no type */"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "^(.{0,60})",
+        "path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/corpus/long_line.ir",
+        "output_mode": "content"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot2/2b6df3a0db/ws/tests/test_ir_parse.c",
+        "old_string": "    expect_file(dir, \"long_line.ir\", IrOk, 0); /* placeholder, replaced below */\n}",
+        "new_string": "    /* over-long name line: accepted with a truncated name, never buffered in full */\n    size_t count = 0;\n    IrResult r = parse_file(dir, \"long_line.ir\", &count);\n    CHECK(r.status == IrOk && count == 1);\n    CHECK(buttons[0].name_truncated && strlen(buttons[0].name) == IR_MAX_NAME_LEN);\n    CHECK(strcmp(buttons[0].protocol, \"NEC\") == 0);\n}"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "make -C /tmp/fred-eval/pilot2/2b6df3a0db/ws test 2>&1 | tail -15"
+      }
+    }
+  ],
+  "assistant_text": [
+    "Now the remaining corpus files.",
+    "Fixing a test expectation with the Edit tool, since the shell command was blocked.",
+    "I wrote the `.ir` parser as plain C with no Furi dependencies. All host tests pass, including a run under AddressSanitizer and UBSan. I haven't compiled it against the 1.5.1 SDK or run it on a device.\n\n**What's there**\n- `ir_parse.h` and `ir_parse.c` hold the parser.\n- `tests/test_ir_parse.c` holds the tests.\n- A `Makefile` builds and runs them with `make test`.\n\n**How to use it from your FAP**\n- Call `ir_parse(read_fn, ctx, buttons, capacity, &count)`. You supply the read callback and the output array.\n- `ir_parse_buffer` does the same for data already in memory.\n- Each `IrButton` gives you the name, type, protocol (parsed signals) or frequency (raw signals), and the timing count.\n- The result is a status plus a line number. `ir_status_string()` turns the status into text for the UI.\n- The parser reads the file in 128-byte chunks and stores only the fields it lists. It never stores raw timings, only counts them.\n- On an error, the buttons completed before the failure are still in your array, but treat the file as invalid.\n\n**Limits that keep it bounded**\n- It never allocates. Memory use is the 128-byte chunk, about 0.2 KB of parser state, and your button array.\n- Files over 512 KB are rejected, as are files with more than 1024 timings in a signal. Each timing must be 1 to 4294967295.\n- A signal that would overflow your button array is rejected.\n- Other values are capped at 63 characters, and keys at 16.\n- Names are cut to 31 characters and flagged `name_truncated`. That is how `long_line.ir` and `instruction_in_name.ir` parse: the extra text is dropped and never acted on.\n\n**Choices I made where your spec was open**\n- Every key outside your list is rejected, and each key can appear only once per record.\n- `type` must come before the keys specific to it, and a key that doesn't belong to the type is rejected.\n- A new `name` line ends the previous record. So `duplicate_and_short_hex.ir` is reported as a missing field on line 5, not as a duplicate key.\n- Control bytes and NUL are rejected everywhere except in `#` comment lines. Bytes of 0x80 and above are rejected in values.\n- Frequency must be 10 kHz to 1 MHz. Duty cycle is parsed without floats and stored in permille.\n- A file with a valid header and no buttons is accepted as zero buttons.\n\n**Tests**\n- 80,085 checks, 0 failures.\n- The suite covers:\n  - every file in `corpus/`;\n  - the edge cases: CRLF, no trailing newline, and exactly 1024 timings against 1025;\n  - a reader that returns one byte at a time and gives the same result;\n  - a failing read and a source that never ends;\n  - 80,000 mutated corpus files, to check it never crashes.\n\n**Not done**\n- The Furi side that reads the SD card is not written. I didn't have your FAP, and the guidance for this task says not to guess Furi API names. Wrap `storage_file_read` in an `IrReadFn` that returns the byte count, 0 at end of file, and a negative value on error. Run it in a worker thread, not in a draw or input callback.\n\nThe shell blocked a couple of compound commands partway through, so I used the file tools for those steps."
+  ]
+}

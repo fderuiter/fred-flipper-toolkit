@@ -1,0 +1,66 @@
+{
+  "assertions": [
+    {
+      "id": "T02-A1",
+      "awarded": 9.0,
+      "rationale": "There are three screens: a Submenu menu, a custom settings View and a custom running View, plus About and popup screens. In the running view, Back uses previous_callback to return to the menu, and the exit callback stops the timer. The settings screen is a custom View instead of VariableItemList. The stated reason holds: values_count is uint8_t, so the list can't hold a 5\u2013600 range. Minor deduction: popup_done_cb calls view_dispatcher_switch_to_view directly from the popup's timer context instead of through a custom event."
+    },
+    {
+      "id": "T02-A2",
+      "awarded": 10.0,
+      "rationale": "For v1 files, settings_load reads Work and Rest with range checks and reads Rounds and Vibrate only when version >= 2. Defaults are 8 rounds and vibrate on, so settings_v1.txt gives Work 45, Rest 15, Rounds 8, Vibrate on. The file is then rewritten as v2. This was never run, but the code path is correct."
+    },
+    {
+      "id": "T02-A3",
+      "awarded": 4.0,
+      "rationale": "Corrupt file: the per-field fallback policy is stated and implemented. The out-of-range or unparsable Work, Rest -4, Rounds 0 and missing Vibrate each fall back to defaults, a 'Settings damaged' popup appears, and nothing crashes. Future file: the v7 load returns SettingsLoadOk with no notice to the user. Any visit to Settings followed by Back calls settings_save, which silently downgrades the file to v2 and drops Profile, even if nothing was changed. That is not explicit user consent to overwrite a newer-format file. The answer also wrongly says a damaged file is kept until the user changes settings; pressing Back alone overwrites it."
+    },
+    {
+      "id": "T02-A4",
+      "awarded": 17.0,
+      "rationale": "The APIs used exist and are exported in 1.5.1 / API 88.2: ViewDispatcher, Submenu, Widget, Popup, view_allocate_model/with_view_model, FuriTimer, the FlipperFormat read/write calls including write_header_cstr and file_close, storage_sd_status, storage_common_rename/remove, storage_simply_mkdir and APP_DATA_PATH. No deprecated enable_queue call. SceneManager is not used, which is fine. Deductions: nothing was compiled, there are small risks such as FontBigNumbers glyph coverage for ':' and a 2K stack with FlipperFormat, and VariableItemList was not used."
+    },
+    {
+      "id": "T02-A5",
+      "awarded": 4.0,
+      "rationale": "The timer is stopped in run_exit, which is correct. However, settings_save, which does mkdir, file writes, remove and rename, runs inside settings_back, the view's previous_callback. The dispatcher calls that during input handling, so storage I/O happens in the GUI input/navigation path instead of through a custom event or app-level handler. Draw and timer callbacks contain no storage I/O."
+    },
+    {
+      "id": "T02-A6",
+      "awarded": 4.0,
+      "rationale": "Done: the save writes to a temp file, checks every FlipperFormat write and the close result, cleans up the temp file on failure, shows a 'No SD card' popup at startup and a 'Not saved' popup when saving fails. Missing: there is no sync step, the result of storage_common_remove is ignored, and there is no stale-temp recovery at startup. If a crash happens between remove and rename, a valid settings.tmp is ignored and defaults are loaded."
+    },
+    {
+      "id": "T02-A7",
+      "awarded": 3.0,
+      "rationale": "There are no host tests, and the logic is not structured to be host-testable: parsing depends on FlipperFormat and Storage. Nothing tests the samples or a modeled interrupted write. The session honestly reports that nothing was built or run and that device testing is pending, so there is no fabricated evidence. The final answer does admit the remove-before-rename window, but settings.h documents settings_save as 'Atomic (temp file + rename)', which contradicts that."
+    },
+    {
+      "id": "T02-A8",
+      "awarded": 5.0,
+      "rationale": "No unrelated framework was added, and the code is small. settings.c is split from the UI, but parsing and migration are mixed with storage I/O instead of being a pure, separable layer."
+    },
+    {
+      "id": "T02-A9",
+      "awarded": 3.0,
+      "rationale": "The final answer describes the file path, v1\u2192v2 migration defaults, the per-field corrupt policy and the v7 policy (read known keys, downgrade on next save). There is no README or format document in the workspace. The documented behaviour of the corrupt-file save is partly inaccurate."
+    }
+  ],
+  "critical_failures": [
+    "Future-version clobber: settings_v7_future.txt loads as SettingsLoadOk with no user notice, and the next Back from Settings (even with no changes) silently rewrites it as v2 and drops Profile.",
+    "Storage I/O in a GUI callback: settings_save (file write, remove, rename) is called from the settings view's previous_callback during input handling."
+  ],
+  "major_errors": [
+    "settings.h documents settings_save as 'Atomic (temp file + rename)', but the implementation removes the old file before the rename, so it is not atomic; this contradicts the handoff's own disclaimer.",
+    "No stale temp-file recovery at startup: a valid settings.tmp left by an interrupted save is ignored and defaults are used.",
+    "The return value of storage_common_remove is ignored before the rename, and no sync is done before replacing the file.",
+    "The handoff wrongly says the damaged file is not overwritten until the user changes settings; Back from Settings always saves.",
+    "No host tests and no pure parsing/migration layer; samples and interrupted writes are never exercised.",
+    "popup_done_cb switches views directly from the popup's timer callback context instead of posting a custom event."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 59.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.2525166
+}

@@ -1,0 +1,53 @@
+{
+  "assertions": [
+    {
+      "id": "T01-A1",
+      "awarded": 4.0,
+      "rationale": "Partial credit. The session acknowledges that the user's firmware is unknown. It notes that ufbt defaults to the official SDK and that 'API versions can differ', and asks for build errors. It never states a target or provisional baseline (official 1.5.1 / f7 / API 88.2). It also understates the risk: it claims the app 'should build on official, Unleashed, Momentum and RogueMaster' because it only uses basic APIs, which ignores that a FAP's API version must match the installed firmware's."
+    },
+    {
+      "id": "T01-A2",
+      "awarded": 10.0,
+      "rationale": "Every API used is a standard public export: furi_mutex_*, furi_message_queue_*, view_port_alloc/free/draw_callback_set/input_callback_set/update, gui_add_view_port/gui_remove_view_port, furi_record_open/close, canvas_clear/set_color/set_font/draw_str_aligned, plus FontBigNumbers, GuiLayerFullscreen and RECORD_GUI. No invented symbols were found."
+    },
+    {
+      "id": "T01-A3",
+      "awarded": 15.0,
+      "rationale": "Short Up increments, capped at 999999. Short Down decrements with a guard at 0. InputTypeLong + InputKeyOk resets the count to 0. Short Back sets running=false. The count is drawn with FontBigNumbers, centred at (64,32)."
+    },
+    {
+      "id": "T01-A4",
+      "awarded": 15.0,
+      "rationale": "application.fam has appid=\"tally_counter\", apptype=FlipperAppType.EXTERNAL and entry_point=\"tally_counter_app\". The entry point matches the signature int32_t tally_counter_app(void* p)."
+    },
+    {
+      "id": "T01-A5",
+      "awarded": 20.0,
+      "rationale": "The input callback puts events into a FuriMessageQueue, and the app thread consumes them. Teardown order is: gui_remove_view_port, then furi_record_close(RECORD_GUI), then view_port_free, then furi_message_queue_free, then furi_mutex_free. The queue is freed after the GUI detach, and a mutex guards the shared state between the draw and app threads."
+    },
+    {
+      "id": "T01-A6",
+      "awarded": 15.0,
+      "rationale": "The final answer and README both say the app was not compiled or run, citing no toolchain and no device. No simulator or emulator pass is claimed. The denied Bash call was only a heredoc that writes files, and the session reported that it was denied."
+    },
+    {
+      "id": "T01-A7",
+      "awarded": 10.0,
+      "rationale": "A single ViewPort is used, with no SceneManager or ViewDispatcher. Only application.fam, tally_counter.c and README.md were created."
+    },
+    {
+      "id": "T01-A8",
+      "awarded": 2.0,
+      "rationale": "Short build instructions are given (pip install ufbt, ufbt, ufbt launch, copy the .fap). There is no pinned SDK selection (e.g. ufbt update with a specific version or channel) and no UFBT_HOME isolation. Switching to a custom-firmware SDK is mentioned without any command for doing it."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Overconfident compatibility claim: says that using only furi/gui/input means the app 'should build on official, Unleashed, Momentum and RogueMaster firmware' and that it 'avoided anything firmware-specific'. This implies the binary is portable across firmwares. A FAP built against one firmware's SDK and API version may refuse to load on a firmware with a different API major version, and the session never set a provisional target."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 91.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.10532459999999999
+}

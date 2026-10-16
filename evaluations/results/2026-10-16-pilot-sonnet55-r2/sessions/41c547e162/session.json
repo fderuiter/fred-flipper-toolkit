@@ -1,0 +1,97 @@
+{
+  "task": "03-uart",
+  "rep": 2,
+  "arm": "baseline",
+  "id": "41c547e162",
+  "rc": 0,
+  "skills_invoked": [],
+  "private_paths": [],
+  "outside_workspace_paths": [],
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1693835,
+    "num_turns": 11,
+    "duration_ms": 61007,
+    "tokens": {
+      "input_tokens": 12,
+      "output_tokens": 7910,
+      "cache_read_input_tokens": 102235,
+      "cache_creation_input_tokens": 20009
+    },
+    "final": "I wrote the Soil Link app, but I haven't built or run any of it. Shell commands were denied in this session, so I couldn't compile it or run the host test. The workspace also had no existing FAP, so I created a new one in `soil_link/`.\n\n**What it does**\n- **Reading:** it listens on the USART header (pins 13/14) at 115200 8N1.\n- **Display:** the screen shows the latest moisture (as %), the temperature (in \u00b0C), the count of good frames and the error count.\n- **Back:** it stops reading and exits, freeing everything in reverse order. It also hands the header back to the expansion service.\n\n**How frames are parsed** (`soil_parser.c`)\n- **Parser:** it is a byte-at-a-time state machine, so frames split across reads or arriving in a burst are handled. After any bad data it re-scans the bytes already buffered, so a real frame hiding behind a false `0xA5` isn't lost.\n- **CRC:** it uses CRC-16/CCITT-FALSE over the length byte and payload, read as little endian on the wire.\n- **Error counting:** a run of bad bytes (garbage, a length over 32, or a CRC mismatch) counts as one error. A frame with a good CRC but a payload under 4 bytes, or moisture above 1000, also counts as one.\n- **Threading:** the serial interrupt only pushes bytes into a stream buffer. A worker thread drains it in chunks and feeds the parser.\n\n**What I did not check**\n- **Build and test:** `test/test_parser.c` should pass on the burst capture. On the noise capture it only prints the counts, so you'll need to check them by hand. The CRC values in the captures are unverified against my implementation.\n- **Serial calls:** the serial and expansion calls follow the 1.5.1 API as I remember it. A compile against the SDK will confirm them.\n\n**Hardware**\n- The sensor's logic level and power needs are unconfirmed, so the app does not switch on 5 V or change any GPIO.\n- Flipper GPIO is 3.3 V logic. Check the board's TX level before connecting it, and power it from a source you've confirmed is suitable."
+  },
+  "tool_events": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/41c547e162/ws/PROJECT.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot2/41c547e162/ws; find . -type f | head -50; cat captures/* | head -40"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/pilot2/41c547e162/ws"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/41c547e162/ws/captures/burst_hex.txt"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/41c547e162/ws/captures/noise_hex.txt"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/41c547e162/ws/soil_link/application.fam",
+        "content": "App(\n    appid=\"soil_link\",\n    name=\"Soil Link\",\n    apptype=FlipperAppType.EXTERNAL,\n    entry_point=\"soil_link_app\",\n    requires=[\"gui\"],\n    stack_size=2 * 1024,\n    fap_category=\"GPIO\",\n)\n"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/41c547e162/ws/soil_link/soil_parser.h",
+        "content": "#pragma once\n\n#include <stdbool.h>\n#include <stddef.h>\n#include <stdint.h>\n\n#define SOIL_SYNC        0xA5\n#define SOIL_MAX_PAYLOAD 32\n#define SOIL_MAX_FRAME   (2 + SOIL_MAX_PAYLOAD + 2)\n\ntypedef struct {\n    uint8_t buf[SOIL_MAX_FRAME];\n    size_t len;\n    bool in_garbage; // inside a run of unusable bytes, already counted once\n\n    bool has_reading;\n    uint16_t moisture; // 0..1000\n    int16_t t\u2026"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/41c547e162/ws/soil_link/soil_parser.c",
+        "content": "#include \"soil_parser.h\"\n\n#include <string.h>\n\nuint16_t soil_crc16_ccitt_false(const uint8_t* data, size_t len) {\n    uint16_t crc = 0xFFFF;\n    while(len--) {\n        crc ^= (uint16_t)(*data++) << 8;\n        for(int i = 0; i < 8; i++) {\n            crc = (crc & 0x8000) ? (uint16_t)((crc << 1) ^ 0x1021) : (uint16_t)(crc << 1);\n        }\n    }\n    return crc;\n}\n\nvoid soil_parser_reset(SoilParser* p\u2026"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/41c547e162/ws/soil_link/soil_link.c",
+        "content": "#include <furi.h>\n#include <furi_hal.h>\n#include <gui/gui.h>\n#include <expansion/expansion.h>\n#include <stdio.h>\n\n#include \"soil_parser.h\"\n\n#define SOIL_BAUD 115200\n\ntypedef struct {\n    Gui* gui;\n    ViewPort* view_port;\n    FuriMessageQueue* input_queue;\n    FuriMutex* mutex; // guards parser\n    SoilParser parser;\n\n    FuriHalSerialHandle* serial;\n    FuriStreamBuffer* rx_stream;\n    FuriThread\u2026"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/41c547e162/ws/soil_link/test/test_parser.c",
+        "content": "// Host test: gcc -I.. test_parser.c ../soil_parser.c -o t && ./t\n#include <assert.h>\n#include <stdio.h>\n#include \"soil_parser.h\"\n\nstatic void feed(SoilParser* p, const uint8_t* d, size_t n) {\n    for(size_t i = 0; i < n; i++) soil_parser_feed(p, d[i]);\n}\n\nint main(void) {\n    SoilParser p;\n\n    // burst: 3 frames back to back, 4th split across two reads\n    static const uint8_t a[] = {0xA5,0x04,0\u2026"
+      }
+    }
+  ],
+  "assistant_text": [
+    "Bash was denied, so I'll use the dedicated tools instead.",
+    "The workspace has no existing FAP source, only `PROJECT.md` and two captures. So I'm writing a small self-contained app, with the frame parser split out so it can be tested on a host.",
+    "I wrote the Soil Link app, but I haven't built or run any of it. Shell commands were denied in this session, so I couldn't compile it or run the host test. The workspace also had no existing FAP, so I created a new one in `soil_link/`.\n\n**What it does**\n- **Reading:** it listens on the USART header (pins 13/14) at 115200 8N1.\n- **Display:** the screen shows the latest moisture (as %), the temperature (in \u00b0C), the count of good frames and the error count.\n- **Back:** it stops reading and exits, freeing everything in reverse order. It also hands the header back to the expansion service.\n\n**How frames are parsed** (`soil_parser.c`)\n- **Parser:** it is a byte-at-a-time state machine, so frames split across reads or arriving in a burst are handled. After any bad data it re-scans the bytes already buffered, so a real frame hiding behind a false `0xA5` isn't lost.\n- **CRC:** it uses CRC-16/CCITT-FALSE over the length byte and payload, read as little endian on the wire.\n- **Error counting:** a run of bad bytes (garbage, a length over 32, or a CRC mismatch) counts as one error. A frame with a good CRC but a payload under 4 bytes, or moisture above 1000, also counts as one.\n- **Threading:** the serial interrupt only pushes bytes into a stream buffer. A worker thread drains it in chunks and feeds the parser.\n\n**What I did not check**\n- **Build and test:** `test/test_parser.c` should pass on the burst capture. On the noise capture it only prints the counts, so you'll need to check them by hand. The CRC values in the captures are unverified against my implementation.\n- **Serial calls:** the serial and expansion calls follow the 1.5.1 API as I remember it. A compile against the SDK will confirm them.\n\n**Hardware**\n- The sensor's logic level and power needs are unconfirmed, so the app does not switch on 5 V or change any GPIO.\n- Flipper GPIO is 3.3 V logic. Check the board's TX level before connecting it, and power it from a source you've confirmed is suitable."
+  ]
+}

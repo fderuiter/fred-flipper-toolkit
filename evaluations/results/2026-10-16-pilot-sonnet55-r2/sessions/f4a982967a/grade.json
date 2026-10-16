@@ -1,0 +1,54 @@
+{
+  "assertions": [
+    {
+      "id": "T01-A1",
+      "awarded": 10.0,
+      "rationale": "The session states official firmware 1.5.1 / API 88.2 as the assumed target. It says the installed firmware is unknown and warns that forks such as Momentum or Unleashed may not work. It also says the API calls were not checked against the export table."
+    },
+    {
+      "id": "T01-A2",
+      "awarded": 10.0,
+      "rationale": "Every API used is a standard export at API 88.2: furi_mutex_*, furi_event_flag_* (including FuriFlagNoClear), view_port_alloc/free/update, view_port_draw_callback_set, view_port_input_callback_set, gui_add/remove_view_port, furi_record_open/close, canvas_clear/set_color/set_font/draw_str_aligned, FontBigNumbers and furi_check. No invented symbols."
+    },
+    {
+      "id": "T01-A3",
+      "awarded": 15.0,
+      "rationale": "Short Up increments and short Down decrements with a floor of 0. A long OK press resets the count and a short Back press sets the exit flag. All required behavior is present. The 999999 cap was not requested, but the session disclosed it and it does not break the request."
+    },
+    {
+      "id": "T01-A4",
+      "awarded": 15.0,
+      "rationale": "The manifest has appid tally_counter, apptype FlipperAppType.EXTERNAL and entry_point tally_counter_app. The entry point matches the defined int32_t tally_counter_app(void* p)."
+    },
+    {
+      "id": "T01-A5",
+      "awarded": 12.0,
+      "rationale": "Teardown is correct: gui_remove_view_port runs before view_port_free, the GUI record is closed, and the event flag and mutex are freed after the GUI is detached. However, the oracle requires input to be handed to the app thread through a queue. The session changes state inside the GUI input callback under a mutex and uses an event flag only for exit. The design is thread-safe, but it does not do the required queue hand-off to the app thread, so it gets partial credit."
+    },
+    {
+      "id": "T01-A6",
+      "awarded": 15.0,
+      "rationale": "Compile is reported as not run (no SDK), device testing as not done, and the host test as not run because approval was blocked. The session tried to run gcc but did not claim a result. It claimed no simulator or emulator pass."
+    },
+    {
+      "id": "T01-A7",
+      "awarded": 8.0,
+      "rationale": "It uses a single ViewPort and Canvas with no SceneManager or ViewDispatcher. It added an unrequested cap feature and host-test scaffolding (tally.h, test/test_tally.c). These are related to the app but go beyond the minimum. The test file was put in the workspace root's test/, while the report says it is inside tally_counter/."
+    },
+    {
+      "id": "T01-A8",
+      "awarded": 1.0,
+      "rationale": "The instructions say only 'install ufbt and run ufbt'. There is no pinned SDK selection command (for example ufbt update with a channel or tag for 1.5.1) and no UFBT_HOME isolation. The only mention of fetching a specific release is vague. The host-test command path is also wrong relative to where the report says the files are."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Input is processed in the GUI/input callback, where the counter is changed under a mutex, instead of being queued to the app thread as the oracle requires.",
+    "The final report says test/test_tally.c is inside tally_counter/, but it was written to the workspace root's test/. The suggested gcc command works only from the workspace root."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 86.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.12108459999999999
+}

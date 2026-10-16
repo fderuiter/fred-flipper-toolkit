@@ -1,0 +1,48 @@
+{
+  "assertions": [
+    {
+      "id": "T07-A1",
+      "awarded": 12.0,
+      "rationale": "The session correctly reports that meter_legacy_format is no longer exported ('-' in 89.0) and that furi_hal_adc_configure gained a FuriHalAdcScale parameter. It also notes furi_hal_adc_set_averaging as new and optional, and correctly treats internal_adc_calibrate as '-' in both tables. It states 88.2 \u2192 89.0 but never says this is a major version change or what that means. Partial credit for that missing part."
+    },
+    {
+      "id": "T07-A2",
+      "awarded": 13.0,
+      "rationale": "meter.c now has no removed import. The hand-written prototype was deleted and the call replaced with local snprintf formatting. configure uses the two-argument form, and the fork call and include were removed. The scale value FuriHalAdcScale2048 is not in the supplied tables. The session clearly marked it as an unverified guess with a code comment and asked the user to confirm it, which is acceptable as an explicit question. However, the value has no real justification from the voltage range. Small deduction."
+    },
+    {
+      "id": "T07-A3",
+      "awarded": 9.0,
+      "rationale": "Lineage is handled well: cfw_meter_set_backlight_boost is identified as coming from the community fork header and absent from both official tables. On compatibility, it says the signature change gives a compile error and the removed export gives a link/undefined-reference problem. It does not say that an already-built FAP is rejected on the new major API version. It does not say the removed export causes a load/import failure for the existing binary, and it never states that behaviour needs device testing. The source-versus-binary distinction is only partly made."
+    },
+    {
+      "id": "T07-A4",
+      "awarded": 15.0,
+      "rationale": "No lifecycle regressions were introduced; the edits leave the alloc/start/free/release order unchanged. It flags the unsynchronised meter.volts write from the timer callback as a race. It does not say that the ADC read runs in timer daemon (timer service) context, and it does not raise the existing free-without-stop or ADC-use-in-callback concerns."
+    },
+    {
+      "id": "T07-A5",
+      "awarded": 11.0,
+      "rationale": "It honestly states there was no build, no SDK headers and no toolchain, and that the enum value must be checked against the 89.0 headers. No compile success is claimed. It never explicitly plans a rebuild against the target SDK (for example with ufbt/fbt and the 89.0 SDK)."
+    },
+    {
+      "id": "T07-A6",
+      "awarded": 10.0,
+      "rationale": "Edits are minimal and targeted: three small replacements, with meter_extra.h left in place and no unrelated rewrites."
+    },
+    {
+      "id": "T07-A7",
+      "awarded": 4.0,
+      "rationale": "The final answer gives clear migration notes: what broke, what changed, what was unaffected, and open questions. The notes exist only in the chat reply; no migration notes file was written to the workspace. The major-version and device-testing points are missing."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Describes the removed export as a link-time undefined reference only. It omits that an existing FAP would fail import resolution at load time and be rejected on the new major API version."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 74.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.12278059999999999
+}

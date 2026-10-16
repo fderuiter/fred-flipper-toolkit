@@ -1,0 +1,8 @@
+Filetype: IR signals file
+Version: 1
+#
+name: Huge
+type: raw
+frequency: 4294967296
+duty_cycle: 0.33
+data: 500 4294967295 -7 500

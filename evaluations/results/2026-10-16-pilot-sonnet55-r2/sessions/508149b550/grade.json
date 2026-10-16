@@ -1,0 +1,59 @@
+{
+  "assertions": [
+    {
+      "id": "T02-A1",
+      "awarded": 9.0,
+      "rationale": "The app uses a ViewDispatcher with Submenu (Start/Settings/About), VariableItemList settings, a Widget About screen and a custom running View. Previous callbacks are wired correctly (menu \u2192 VIEW_NONE exits; the other views return to the menu). run_input consumes a short Back press, clears `running` and switches to the menu, and the model is updated through with_view_model. The navigation reads correctly but was never run, so one point is held back."
+    },
+    {
+      "id": "T02-A2",
+      "awarded": 10.0,
+      "rationale": "settings_parse handles Version 1 by accepting Work/Rest and leaving Rounds=8 and Vibrate=true at their defaults, returning Migrated. settings_load marks the settings dirty so the file is rewritten as v2. test_logic.c asserts 45/15/8/true for samples/settings_v1.txt. Off-grid values are kept exactly."
+    },
+    {
+      "id": "T02-A3",
+      "awarded": 8.0,
+      "rationale": "The corrupt sample is rejected (an 11-digit value fails parse_uint) and defaults are used. The policy is stated (defaults, notice, file kept), and the test asserts the defaults. The v7 file returns Future before the body is checked. preserve_existing stops any save unless the user edits settings, and even then the file is moved to settings.rej rather than overwritten. Deductions: this edit-triggered move has no explicit confirmation, and the startup notice for a future-version file says only 'file kept' without warning it will be moved on edit. An earlier .rej is deleted without warning. The .bak fallback path can delete an unreadable or future-version .bak."
+    },
+    {
+      "id": "T02-A4",
+      "awarded": 17.0,
+      "rationale": "All the APIs used exist in the 1.x SDK as far as can be judged: view_dispatcher_* including the tick callback, submenu/variable_item_list/widget, the 4-argument with_view_model, dialog_message_*, storage_file_*/storage_common_rename/storage_common_exists/storage_simply_mkdir, EXT_PATH, and sequence_single_vibro and sequence_double_vibro. No deprecated enable_queue call. SceneManager is not used, which is acceptable for a flat app. Deduction: FlipperFormat is not used at all. A hand-written line parser replaces it, so FlipperFormat-style comment lines would be treated as corrupt. The parser is host-testable but strays from the stated FlipperFormat format."
+    },
+    {
+      "id": "T02-A5",
+      "awarded": 9.0,
+      "rationale": "Storage I/O happens only at startup, in the custom-event handler on the dispatcher thread (save on Start), and at exit. The draw, input and tick callbacks contain no I/O. The countdown is stopped by the `running` flag when Back is pressed. The tick event still fires every 200 ms on all screens and simply returns early; this is acceptable but not a true timer stop."
+    },
+    {
+      "id": "T02-A6",
+      "awarded": 9.0,
+      "rationale": "The save writes settings.tmp and checks the write length, sync and close results. It removes the tmp file on failure and rotates main \u2192 .bak, then tmp \u2192 main. A stale tmp is removed at startup, and a missing main file falls back to .bak. The mkdir result is checked. An SD read failure blocks saving for the session with a notice, and a save failure shows a 'Check SD card' dialog. Minor gaps: when the tmp \u2192 main rename fails in the preserve branch, the tmp file is left behind and the 'restore' tries a nonexistent .bak."
+    },
+    {
+      "id": "T02-A7",
+      "awarded": 8.0,
+      "rationale": "The host tests cover all four samples plus edge cases, round-trip, ladder and timer math. On manual inspection they look like they would compile and pass, but they were never executed. The session said so honestly (Bash denied) and gave the exact command to run. Device testing is listed as pending, and power-loss atomicity is explicitly not claimed. Missing: there is no modeled-storage or interrupted-write test, and the save/recovery logic is not host-tested at all."
+    },
+    {
+      "id": "T02-A8",
+      "awarded": 9.0,
+      "rationale": "No unrelated framework is pulled in. Parsing, migration, the ladder and timer math sit in a Furi-free logic.c/h. The .bak/.rej scheme and the stepped value ladder add some complexity, but they are justified."
+    },
+    {
+      "id": "T02-A9",
+      "awarded": 3.0,
+      "rationale": "The final answer explains the versions, migration, the future/corrupt policy, the save sequence and what is still to do. There is no README or format document in the workspace, and the v2 key set and value encoding (true/false) are documented only in code."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Future-version policy: the startup notice says 'file kept', but the first settings edit moves the v7 file to settings.rej without explicit confirmation (the earlier .rej is deleted); the user is not warned about this.",
+    "No modeled interrupted-write or storage host test; the save/recovery path is untested."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 82.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.3603246
+}

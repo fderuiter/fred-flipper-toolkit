@@ -1,0 +1,4 @@
+# synthetic burst: three valid frames back to back, then one frame split across two reads
+A5 04 2C 01 E1 00 C5 F4 A5 04 2D 01 E2 00 22 D7 A5 04 2E 01 E3 00 CF 7F
+A5 04 2F 01
+E4 00 EC 90

@@ -38,5 +38,5 @@ These validate the bundle and helpers. They are not evaluations of agent benefit
 | Helper unit/security tests | pass (offline) |
 | Live activation in a named Claude Code version | pass: 23/24, 0/8 negative false activations, 6/6 held-out; Claude Code 2.1.301, two models, both scopes ([summary](../evaluations/results/2026-10-16-activation-summary.md)) |
 | SDK compile of fixtures, host tests of fixture logic | pass: verified 1.5.1 SDK, toolchain 39 ([record](../evaluations/results/2026-10-16-sdk-qualification/README.md)) |
-| Controlled 42-session pilot | not-run (needs model-session budget) |
+| Controlled 42-session pilot | **gate not met**: round 1 treatment 84.6 vs baseline 77.4; round 2 (after one improvement round) 86.7 vs 77.2, about 53–58% fewer critical/major errors, but the migration family stays below 80, there was one treatment critical, and the token ratio was 1.75× ([round 1](../evaluations/results/2026-10-16-pilot-sonnet55/README.md), [round 2](../evaluations/results/2026-10-16-pilot-sonnet55-r2/README.md)) |
 | Device qualification | not-run (needs authorized hardware) |

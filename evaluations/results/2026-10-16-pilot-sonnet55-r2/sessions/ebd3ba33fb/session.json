@@ -1,0 +1,183 @@
+{
+  "task": "02-settings",
+  "rep": 3,
+  "arm": "treatment",
+  "id": "ebd3ba33fb",
+  "rc": 0,
+  "skills_invoked": [
+    "flipper-native"
+  ],
+  "private_paths": [
+    "cd /tmp/fred-eval/pilot2/ebd3ba33fb/ws/interval_timer/tests && gcc -std=c11 -Wall -Wextra -fsanitize=address,undefined -I.. test_settings.c ../interval_settings.c -o /tmp/claude-0/-tmp-fred-eval-pilot2-ebd3ba33fb-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t && /tmp/claude-0/-tmp-fred-eval-pilot2-ebd3ba33fb-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t ../../samples"
+  ],
+  "outside_workspace_paths": [
+    "/tmp/claude-0/-tmp-fred-eval-pilot2-ebd3ba33fb-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t"
+  ],
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.6056866000000001,
+    "num_turns": 24,
+    "duration_ms": 221334,
+    "tokens": {
+      "input_tokens": 24,
+      "output_tokens": 33787,
+      "cache_read_input_tokens": 416366,
+      "cache_creation_input_tokens": 56533
+    },
+    "final": "The interval timer FAP is written, but I haven't compiled or run any of it. Running the host tests was denied because no one is available to approve commands in this session, and there is no Flipper SDK or device here. I'm finishing with the summary.\n\n## What's in `interval_timer/`\n- **`application.fam`**: external app `interval_timer`, entry point `interval_timer_app`.\n- **`interval_settings.[ch]`**: plain C with no Furi calls, so it can be host-tested. It holds the settings parser and v1\u2192v2 migration, the SD store, the 1 s / 5 s step mapping the settings screen uses, and the countdown state machine.\n- **`interval_timer.c`**: the Furi app.\n  - It has a main menu (Start / Settings / About), a settings list, and a running screen.\n  - Back on the running screen cancels and returns to the menu.\n  - The countdown runs off the dispatcher tick, so there is no timer to tear down.\n- **`tests/test_settings.c`**: host tests that read your real files in `samples/`. They also cover parser edge cases, a fault injected at each save step, and the run state machine.\n\n## Design decisions\n- **v1 upgrade:** `settings_v1.txt` loads as Work 45 / Rest 15, and Rounds and Vibrate take the defaults 8 and on. The next save writes v2 and keeps the old file as `.bak`.\n  - Out-of-range v1 values are clamped rather than rejected, because I don't know what ranges the old release allowed. v2 values out of range are rejected.\n- **Future version** (`settings_v7_future.txt`): the app uses defaults in memory, shows \"Newer file: read-only\", and never writes the file.\n- **Corrupt file** (`settings_v2_corrupt.txt`): the app uses defaults and shows \"Settings reset\". On the next save the bad file is kept as `.bad`.\n- **Saving:** a save writes a `.tmp` file with every write length and sync checked, then rotates the old file to `.bak` and installs the new one. If the main file is missing or bad, load recovers from `.tmp` or `.bak`.\n- **SD card failure:** if the card can't be read, saving is blocked and the menu shows \"SD error: not saved\". A failed save shows \"Save failed (SD?)\". Neither stops the app from running.\n- **No atomicity claim:** I don't claim saves survive power loss; that is untested on this filesystem.\n- **Settings granularity:** the settings list holds at most 255 values per item, so seconds are 1 s steps up to 60 s and 5 s steps above that. A loaded value that isn't on a step (for example 123 s) is shown at the nearest step.\n- **Slow work:** saving happens from a custom event and at exit, not inside the Back handler.\n\n## Evidence\n| Check | Status |\n|---|---|\n| Source read | The `samples/` files and the bundled storage and UI references were read. The firmware source and `api_symbols.csv` were not available. |\n| Host tests | Not run: blocked, no approval available. To run them: `cd interval_timer/tests && gcc -std=c11 -Wall -Wextra -fsanitize=address,undefined -I.. test_settings.c ../interval_settings.c -o t && ./t ../../samples`. |\n| Compiled against SDK 1.5.1 / API 88.2 | Not run: no SDK here. |\n| Device behavior | Not tested. |\n\nSome Furi calls are written from memory and not checked against the API 88.2 exports. Check these first when building:\n- `storage_simply_mkdir`\n- `storage_common_remove`\n- `view_free_model`\n- the `sequence_*` vibration and backlight notification names\n- that Back on the menu view (which has no previous callback) exits the app\n\nI also haven't tried the 100 ms tick refresh or the vibration timing on hardware.\n\nI'd build with a pinned `ufbt` SDK in an isolated `UFBT_HOME`. I didn't, because there is no SDK here and I wasn't asked to download one."
+  },
+  "tool_events": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/PROJECT.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot2/ebd3ba33fb/ws; find . -type f | head -50; for f in samples/*; do echo \"== $f\"; cat -A \"$f\" | head -20; done"
+      }
+    },
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot2/ebd3ba33fb/ws/samples && for f in *; do echo \"== $f\"; cat -A $f; done"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/.claude/skills/flipper-core/references/storage-parsers.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/.claude/skills/flipper-core/references/runtime-ui.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/samples/settings_v1.txt"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/samples/settings_v2.txt"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/samples/settings_v2_corrupt.txt"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/samples/settings_v7_future.txt"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/interval_timer/interval_settings.h",
+        "content": "#pragma once\n/* Pure C (no Furi): settings model, parser/migration, store, run state machine.\n * Host-testable; see tests/test_settings.c. */\n#include <stdint.h>\n#include <stdbool.h>\n#include <stddef.h>\n\n#define IT_WORK_MIN   5\n#define IT_WORK_MAX   600\n#define IT_REST_MIN   0\n#define IT_REST_MAX   600\n#define IT_ROUNDS_MIN 1\n#define IT_ROUNDS_MAX 99\n\n#define IT_FILETYPE   \"Interval Timer Settings\u2026"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/interval_timer/interval_settings.c",
+        "content": "#include \"interval_settings.h\"\n\n#include <stdio.h>\n#include <string.h>\n\n#define SWITCH_S 60 /* 1 s steps up to here, 5 s steps above */\n#define STEP_S   5\n\nvoid it_settings_defaults(ItSettings* s) {\n    s->work_s = 30;\n    s->rest_s = 10;\n    s->rounds = 8;\n    s->vibrate = true;\n}\n\nstatic bool key_is(const char* k, size_t klen, const char* name) {\n    return klen == strlen(name) && memcmp(k, name\u2026"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/interval_timer/interval_timer.c",
+        "content": "#include \"interval_settings.h\"\n\n#include <furi.h>\n#include <gui/gui.h>\n#include <gui/view_dispatcher.h>\n#include <gui/modules/submenu.h>\n#include <gui/modules/variable_item_list.h>\n#include <gui/modules/widget.h>\n#include <notification/notification_messages.h>\n#include <storage/storage.h>\n\n#define TAG \"IntervalTimer\"\n\n#define SETTINGS_PATH APP_DATA_PATH(\"settings.txt\")\n\ntypedef enum {\n    ViewMenu\u2026"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/interval_timer/interval_timer.c",
+        "old_string": "    UNUSED(context);\n    /* Back is not consumed: the dispatcher calls the previous callback (to_menu)\n     * and the exit callback, which is the cancel path. On Done any key leaves too. */\n    if(event->type == InputTypeShort && event->key == InputKeyOk) return false;\n    return false;",
+        "new_string": "    UNUSED(event);\n    UNUSED(context);\n    /* Back is deliberately not consumed: the dispatcher then switches to to_menu's\n     * view, which fires run_exit (the cancel path). */\n    return false;"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/interval_timer/interval_timer.c",
+        "old_string": "    view_free(app->run_view);",
+        "new_string": "    view_free_model(app->run_view);\n    view_free(app->run_view);"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/interval_timer/application.fam",
+        "content": "App(\n    appid=\"interval_timer\",\n    name=\"Interval Timer\",\n    apptype=FlipperAppType.EXTERNAL,\n    entry_point=\"interval_timer_app\",\n    requires=[\"gui\", \"storage\", \"notification\"],\n    sources=[\"interval_timer.c\", \"interval_settings.c\"],\n    stack_size=2 * 1024,\n    fap_category=\"Tools\",\n)\n"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/interval_timer/tests/test_settings.c",
+        "content": "/* Host test: gcc -Wall -Wextra -I.. test_settings.c ../interval_settings.c -o t && ./t ../../samples */\n#include \"interval_settings.h\"\n\n#include <stdio.h>\n#include <stdlib.h>\n#include <string.h>\n\nstatic int failures, checks;\n#define CHECK(c) \\\n    do { \\\n        checks++; \\\n        if(!(c)) { \\\n            failures++; \\\n            printf(\"FAIL %s:%d %s\\n\", __FILE__, __LINE__, #c); \\\n        } \\\n\u2026"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot2/ebd3ba33fb/ws/interval_timer/tests && gcc -std=c11 -Wall -Wextra -fsanitize=address,undefined -I.. test_settings.c ../interval_settings.c -o /tmp/claude-0/-tmp-fred-eval-pilot2-ebd3ba33fb-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t && /tmp/claude-0/-tmp-fred-eval-pilot2-ebd3ba33fb-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t ../../samples",
+        "description": "Build and run host tests"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot2/ebd3ba33fb/ws/interval_timer/tests/test_settings.c",
+        "old_string": "Vibrate: true\\r\\n\", ItParseCorrupt);",
+        "new_string": "Vibrate: true\\r\\n\", ItParseOk); /* CRLF tolerated */"
+      }
+    }
+  ],
+  "assistant_text": [
+    "The interval timer FAP is written, but I haven't compiled or run any of it. Running the host tests was denied because no one is available to approve commands in this session, and there is no Flipper SDK or device here. I'm finishing with the summary.\n\n## What's in `interval_timer/`\n- **`application.fam`**: external app `interval_timer`, entry point `interval_timer_app`.\n- **`interval_settings.[ch]`**: plain C with no Furi calls, so it can be host-tested. It holds the settings parser and v1\u2192v2 migration, the SD store, the 1 s / 5 s step mapping the settings screen uses, and the countdown state machine.\n- **`interval_timer.c`**: the Furi app.\n  - It has a main menu (Start / Settings / About), a settings list, and a running screen.\n  - Back on the running screen cancels and returns to the menu.\n  - The countdown runs off the dispatcher tick, so there is no timer to tear down.\n- **`tests/test_settings.c`**: host tests that read your real files in `samples/`. They also cover parser edge cases, a fault injected at each save step, and the run state machine.\n\n## Design decisions\n- **v1 upgrade:** `settings_v1.txt` loads as Work 45 / Rest 15, and Rounds and Vibrate take the defaults 8 and on. The next save writes v2 and keeps the old file as `.bak`.\n  - Out-of-range v1 values are clamped rather than rejected, because I don't know what ranges the old release allowed. v2 values out of range are rejected.\n- **Future version** (`settings_v7_future.txt`): the app uses defaults in memory, shows \"Newer file: read-only\", and never writes the file.\n- **Corrupt file** (`settings_v2_corrupt.txt`): the app uses defaults and shows \"Settings reset\". On the next save the bad file is kept as `.bad`.\n- **Saving:** a save writes a `.tmp` file with every write length and sync checked, then rotates the old file to `.bak` and installs the new one. If the main file is missing or bad, load recovers from `.tmp` or `.bak`.\n- **SD card failure:** if the card can't be read, saving is blocked and the menu shows \"SD error: not saved\". A failed save shows \"Save failed (SD?)\". Neither stops the app from running.\n- **No atomicity claim:** I don't claim saves survive power loss; that is untested on this filesystem.\n- **Settings granularity:** the settings list holds at most 255 values per item, so seconds are 1 s steps up to 60 s and 5 s steps above that. A loaded value that isn't on a step (for example 123 s) is shown at the nearest step.\n- **Slow work:** saving happens from a custom event and at exit, not inside the Back handler.\n\n## Evidence\n| Check | Status |\n|---|---|\n| Source read | The `samples/` files and the bundled storage and UI references were read. The firmware source and `api_symbols.csv` were not available. |\n| Host tests | Not run: blocked, no approval available. To run them: `cd interval_timer/tests && gcc -std=c11 -Wall -Wextra -fsanitize=address,undefined -I.. test_settings.c ../interval_settings.c -o t && ./t ../../samples`. |\n| Compiled against SDK 1.5.1 / API 88.2 | Not run: no SDK here. |\n| Device behavior | Not tested. |\n\nSome Furi calls are written from memory and not checked against the API 88.2 exports. Check these first when building:\n- `storage_simply_mkdir`\n- `storage_common_remove`\n- `view_free_model`\n- the `sequence_*` vibration and backlight notification names\n- that Back on the menu view (which has no previous callback) exits the app\n\nI also haven't tried the 100 ms tick refresh or the vibration timing on hardware.\n\nI'd build with a pinned `ufbt` SDK in an isolated `UFBT_HOME`. I didn't, because there is no SDK here and I wasn't asked to download one."
+  ]
+}

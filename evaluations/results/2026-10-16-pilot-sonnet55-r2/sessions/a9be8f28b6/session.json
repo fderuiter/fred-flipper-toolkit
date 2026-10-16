@@ -1,0 +1,68 @@
+{
+  "task": "05-ble-feasibility",
+  "rep": 2,
+  "arm": "treatment",
+  "id": "a9be8f28b6",
+  "rc": 0,
+  "skills_invoked": [
+    "flipper-core"
+  ],
+  "private_paths": [],
+  "outside_workspace_paths": [],
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1326676,
+    "num_turns": 8,
+    "duration_ms": 30792,
+    "tokens": {
+      "input_tokens": 12,
+      "output_tokens": 2757,
+      "cache_read_input_tokens": 113136,
+      "cache_creation_input_tokens": 23440
+    },
+    "final": "I couldn't write this FAP, because a stock Flipper Zero on official firmware 1.5.1 can't control the kettle by itself. I've saved the reasoning and a plan in `/tmp/fred-eval/pilot2/a9be8f28b6/ws/DECISION.md`.\n\n**Why it can't work:** the K2 protocol needs the Flipper to scan, connect, discover the `ff00` service, write `ff01` and subscribe to `ff02`. The Flipper's Bluetooth stack on 1.5.1 only acts as a peripheral. The calls for scanning, connecting and reading or writing the kettle's characteristics aren't available to FAPs, and I didn't invent replacements. That's per the skill's reference notes; I didn't check the firmware source myself. Custom firmware or a fork could change this, but that isn't stock.\n\n**What would work without a phone:**\n- **Companion board:** a small BLE-capable board, such as an ESP32 or nRF52, does the scanning, bonding and keep-alive. The Flipper FAP is just the on/off and 40\u2013100 \u00b0C screen, talking to the board over UART.\n- **Computer instead:** a laptop or Raspberry Pi could do the Bluetooth part, with the Flipper as the remote screen.\n\nI haven't built or run any of this, and I sent nothing to the kettle.\n\n**Open questions:**\n- Which companion board, or a computer, are you willing to use? I can write the FAP screen, the UART protocol and the companion code once you pick.\n- What checksum does the kettle's command frame use? `kettle-protocol.md` doesn't say."
+  },
+  "tool_events": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/a9be8f28b6/ws/PROJECT.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot2/a9be8f28b6/ws; ls -la; cat kettle-protocol.md"
+      }
+    },
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot2/a9be8f28b6/ws; find .claude -type f | head"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot2/a9be8f28b6/ws/.claude/skills/flipper-core; ls . references assets 2>&1; cat references/capability-map.md references/compatibility.md; cat references/engineering-rules.md references/evidence-policy.md 2>&1 | head -80"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot2/a9be8f28b6/ws/DECISION.md",
+        "content": "# Kettle remote: feasibility decision\n\n**Result: a FAP-only controller for the AcmeBrew K2 is not supported on official firmware 1.5.1. I did not write the FAP.**\n\n## Compatibility card\n| Item | Value |\n|---|---|\n| Firmware | official 1.5.1 (commit 9e810dc), f7, SDK API 88.2 [C-BASE-001/002] |\n| Surface requested | external native FAP |\n| Hardware / toolchain | unknown (not stated); only blocks bu\u2026"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I couldn't write this FAP, because a stock Flipper Zero on official firmware 1.5.1 can't control the kettle by itself. I've saved the reasoning and a plan in `/tmp/fred-eval/pilot2/a9be8f28b6/ws/DECISION.md`.\n\n**Why it can't work:** the K2 protocol needs the Flipper to scan, connect, discover the `ff00` service, write `ff01` and subscribe to `ff02`. The Flipper's Bluetooth stack on 1.5.1 only acts as a peripheral. The calls for scanning, connecting and reading or writing the kettle's characteristics aren't available to FAPs, and I didn't invent replacements. That's per the skill's reference notes; I didn't check the firmware source myself. Custom firmware or a fork could change this, but that isn't stock.\n\n**What would work without a phone:**\n- **Companion board:** a small BLE-capable board, such as an ESP32 or nRF52, does the scanning, bonding and keep-alive. The Flipper FAP is just the on/off and 40\u2013100 \u00b0C screen, talking to the board over UART.\n- **Computer instead:** a laptop or Raspberry Pi could do the Bluetooth part, with the Flipper as the remote screen.\n\nI haven't built or run any of this, and I sent nothing to the kettle.\n\n**Open questions:**\n- Which companion board, or a computer, are you willing to use? I can write the FAP screen, the UART protocol and the companion code once you pick.\n- What checksum does the kettle's command frame use? `kettle-protocol.md` doesn't say."
+  ]
+}

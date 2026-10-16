@@ -1,0 +1,49 @@
+{
+  "assertions": [
+    {
+      "id": "T06-A1",
+      "awarded": 28.0,
+      "rationale": "The review fully traces 7 of the 8 seeded defects, each with trigger, consequence and fix: D1 (#3: timer stop is not a barrier, model freed, view_port_update on a freed ViewPort, free the timer first), D2 (#4: missing gui_remove_view_port), D3 (#2: malloc in the RX ISR plus a leak when the put fails; stream-buffer fix with zero timeout and a drop count), D5 (#1: join while holding the mutex the worker acquires), D6 (#6: unsynchronized line/line_len read by draw_callback), D7 (#5: notification_message used after record close) and D8 (#7: unbounded count, multiplication wrap, unchecked reads). D4 gets only partial credit. It is in #9 and ranked Minor. The review says the GUI thread blocks with FuriWaitForever on the 4-slot queue, but calls it a 'stall'. It misses the indefinite-block case once the main loop stops consuming, and the fix (coalesce or a larger queue) does not include a zero/short timeout for input. Score: 7.5/8 of 30 \u2248 28."
+    },
+    {
+      "id": "T06-A2",
+      "awarded": 19.0,
+      "rationale": "All proposed APIs are real: furi_timer_free, gui_remove_view_port, FuriStreamBuffer, FuriThreadFlag, storage_file_size and furi_hal_serial_* calls. There is no 'malloc forbidden' or furi_alloc claim. The only objection to malloc concerns ISR context, which is correct. The NULL return from serial_control_acquire is described correctly. One small deduction: the speculation that furi_hal_serial_init after acquire may be redundant is labeled a hypothesis but is somewhat dubious."
+    },
+    {
+      "id": "T06-A3",
+      "awarded": 20.0,
+      "rationale": "The proposed teardown reaches quiescence without deadlock. It sets the stop flag under the mutex and releases it, stops RX, deinits and releases serial, joins with no lock held, stops and frees the timer, calls gui_remove_view_port and then view_port_free before closing the GUI record, closes notification after any use, and frees the model last. There is no join under a lock and no flush from a callback."
+    },
+    {
+      "id": "T06-A4",
+      "awarded": 14.0,
+      "rationale": "The review states up front that all findings come from source trace, with nothing compiled or run. Firmware-dependent claims (#4, #8, the latency point in #10) are marked as hypotheses, and there is an explicit scope section. It makes no claim of a reproduced crash. Small deduction: the evidence level is given once globally rather than on each finding."
+    },
+    {
+      "id": "T06-A5",
+      "awarded": 10.0,
+      "rationale": "No files were edited; the workspace is unchanged. No decoys are flagged as defects. App/Model malloc in thread context, the main-loop WaitForever, the 100 ms worker timeout, the 10 Hz timer, the absence of SceneManager and FURI_LOG_I are either not criticized or treated as fine. 'Model is a needless separate allocation' is a style note, not a defect claim."
+    },
+    {
+      "id": "T06-A6",
+      "awarded": 4.5,
+      "rationale": "The output is ranked Critical/Major/Minor and is actionable: fixes, tests, a symptom mapping and a teardown order. Small deduction because D4 is ranked Minor when it is a real GUI-thread hang risk."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [
+    "T06-D1",
+    "T06-D2",
+    "T06-D3",
+    "T06-D5",
+    "T06-D6",
+    "T06-D7",
+    "T06-D8"
+  ],
+  "decoys_flagged": [],
+  "score": 95.5,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1649526
+}

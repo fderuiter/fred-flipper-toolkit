@@ -1,0 +1,6 @@
+Filetype: Interval Timer Settings
+Version: 2
+Work: 30
+Rest: 10
+Rounds: 8
+Vibrate: true

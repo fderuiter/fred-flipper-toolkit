@@ -1,0 +1,49 @@
+{
+  "assertions": [
+    {
+      "id": "T05-A1",
+      "awarded": 14.0,
+      "rationale": "The answer lists the central operations taken from kettle-protocol.md: scan for K2-xxxx, connect, discover service ff00, enable notifications on ff02 through the CCCD, bond, and write to ff01. It covers the 30 s idle drop only as a keep-alive item in the ESP32 option. It never names reconnect handling as a required operation, so one point is deducted."
+    },
+    {
+      "id": "T05-A2",
+      "awarded": 15.0,
+      "rationale": "It clearly says the request cannot be done on stock 1.5.1 and refuses to write a FAP. It recommends a BLE-capable ESP32 companion over GPIO/UART, correctly noting that the official ESP32-S2 Wi-Fi devboard has no BLE. It also lists a host/phone alternative and does not claim custom firmware as a solution."
+    },
+    {
+      "id": "T05-A3",
+      "awarded": 8.0,
+      "rationale": "It says official firmware supports only the peripheral role and that the 1.5.1 public SDK has no scan, central connect or GATT-client calls. However, it cites no source: no gap.c, no api_symbols.csv and no header. The tool calls show only PROJECT.md and kettle-protocol.md were read, so this is an assertion from memory, which the oracle calls folklore. The point that the co-processor runs Flipper's own stack and apps can't replace it only partly separates what the silicon can do from what the public API exposes. It never says outright that the STM32WB hardware can act as a central but the FAP API does not expose it."
+    },
+    {
+      "id": "T05-A4",
+      "awarded": 3.0,
+      "rationale": "It barely specifies a companion protocol. Missing: framing, length fields, the statement that CRC is not authentication, UART timeouts, reconnect handling, protection against replaying stale commands, and a device allowlist. A keep-alive is the only robustness item mentioned. On safety it does not advise a bypass, but it asserts that the kettle's safety features cannot be overridden by a remote instead of designing to preserve them."
+    },
+    {
+      "id": "T05-A5",
+      "awarded": 6.0,
+      "rationale": "It honestly points out gaps in the protocol notes: unknown checksum algorithm, on/off values, passkey type, and write with or without response. That is partly the 'appliance behavior pending' point. It does not separate what was inspected (only the two workspace files) from what was inferred: the SDK claims and the 'would not compile or link' claim come from memory with nothing run or checked. It also states safety behaviour as fact without marking it unverified."
+    },
+    {
+      "id": "T05-A6",
+      "awarded": 10.0,
+      "rationale": "No FAP or fake central-mode code was written; the workspace is unchanged."
+    },
+    {
+      "id": "T05-A7",
+      "awarded": 5.0,
+      "rationale": "The decision summary is clear: why it can't work, ranked options with a recommendation, open questions, and a next step."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Unsupported claim that 'Safety isn't a concern' and that a remote cannot override boil-dry/lid protection. The protocol notes only say the features exist, not that remote commands can't defeat them. This is an unverified safety assertion presented as fact.",
+    "SDK/API claims (no central or GATT-client exports in 1.5.1, 'would not compile or link') were made without inspecting any SDK source or symbol table and are not marked as unverified."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 61.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.08477660000000001
+}

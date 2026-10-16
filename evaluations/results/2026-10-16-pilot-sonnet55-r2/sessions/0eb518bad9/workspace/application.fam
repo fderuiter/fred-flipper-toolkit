@@ -1,0 +1,10 @@
+# Synthetic benchmark input for FRED evaluation task 06. Not a distributable app.
+App(
+    appid="uart_logger_eval",
+    name="UART Logger (eval)",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="uart_logger_app",
+    requires=["gui", "notification", "storage"],
+    stack_size=2 * 1024,
+    fap_category="Tools",
+)

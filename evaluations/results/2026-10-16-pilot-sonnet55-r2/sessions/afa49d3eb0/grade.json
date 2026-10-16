@@ -1,0 +1,48 @@
+{
+  "assertions": [
+    {
+      "id": "T05-A1",
+      "awarded": 13.0,
+      "rationale": "Lists scan for K2-xxxx, connect, discover service ff00, enable notifications on ff02 via the CCCD, bonding, ff01 command writes and a keepalive for the 30 s idle drop. It does not list reconnection as a required operation, and the write and keepalive steps appear only in the option section rather than in the requirements list."
+    },
+    {
+      "id": "T05-A2",
+      "awarded": 14.0,
+      "rationale": "Clearly concludes that a FAP-only controller is impossible on stock 1.5.1 and recommends an ESP32 BLE-central companion over UART. One point off because it suggests the official Flipper WiFi Devboard, which is ESP32-S2 and has no Bluetooth, so it cannot act as a BLE central. The 'any ESP32' alternative still makes the proposal workable."
+    },
+    {
+      "id": "T05-A3",
+      "awarded": 9.0,
+      "rationale": "Says the official stack is peripheral-only, the SDK profiles (serial, HID) are peripheral-side, and no exported API covers scanning, client connection or GATT discovery. It hints at the silicon-versus-API split ('getting at the radio's central role would mean changing the firmware'). It cites no source (gap.c or the export table) and admits the claim is from memory, not verified against the SDK."
+    },
+    {
+      "id": "T05-A4",
+      "awarded": 4.0,
+      "rationale": "Gives only UART transport, keepalive handling and preserving the kettle's boil-dry and lid protection. It does not cover the companion link itself: no framing or length fields, no CRC (or a note that CRC is not authentication), no timeouts, no reconnect or backoff policy, no protection against replaying stale commands, and no device allowlist."
+    },
+    {
+      "id": "T05-A5",
+      "awarded": 9.0,
+      "rationale": "Honestly says the SDK was not inspected and the claims come from memory. Reading kettle-protocol.md is visible in the tool calls. Correctly flags the undefined checksum algorithm. It never says that the appliance's physical behavior is untested or pending."
+    },
+    {
+      "id": "T05-A6",
+      "awarded": 10.0,
+      "rationale": "No FAP or code was generated. The session declined to write a fake central implementation."
+    },
+    {
+      "id": "T05-A7",
+      "awarded": 5.0,
+      "rationale": "Clear decision summary: why it can't work, a recommended option, a rejected option, and specific follow-up questions."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Recommends the official Flipper WiFi Devboard as the BLE-central companion. That board uses an ESP32-S2, which has no Bluetooth radio, so it cannot run the proposed BLE-central firmware."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 64.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.0805246
+}

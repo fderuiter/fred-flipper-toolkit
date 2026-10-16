@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T05-A1",
+      "awarded": 15.0,
+      "rationale": "Both the final answer and the card list every required operation from kettle-protocol.md: scan for K2-xxxx, connect as central, discover service ff00, write ff01 frames, enable ff02 notifications via the CCCD, bond on first connection, and reconnect after the 30 s idle drop. They are mapped one per row in the capability table."
+    },
+    {
+      "id": "T05-A2",
+      "awarded": 15.0,
+      "rationale": "States clearly that a FAP-only controller is not supported on official 1.5.1. Recommends a BLE-central MCU on GPIO over UART, and names a host companion and custom firmware as alternatives. Does not claim FAP-only feasibility."
+    },
+    {
+      "id": "T05-A3",
+      "awarded": 14.0,
+      "rationale": "Says GAP is configured as peripheral and that the central/GATT-client calls a FAP needs are not exported, naming real ST ACI functions (aci_gap_create_connection, aci_gatt_disc_*, aci_gatt_write_char_*). It explicitly separates the public-API limit from the silicon. However, the evidence comes second-hand from skill registry claims C-BLE-001/002. The session did not cite gap.c or inspect api_symbols.csv, although it says so honestly. Points docked for not citing primary source."
+    },
+    {
+      "id": "T05-A4",
+      "awarded": 17.0,
+      "rationale": "The proposed UART protocol is bounded and versioned. It covers request IDs, lengths, CRC, timeouts, connect/bond/reconnect states, no replay of stale commands after reconnect, an allowlist limited to the configured K2-xxxx target, a 30 s keepalive, temperature clamped to 40\u2013100 \u00b0C, and the kettle's boil-dry and lid protection kept with no bypass. It never says that CRC is not authentication, and the design is high-level."
+    },
+    {
+      "id": "T05-A5",
+      "awarded": 14.0,
+      "rationale": "Labels sources clearly: PROJECT.md, the skill registry (not re-inspected), inferred, and feasibility-level. It states that nothing was compiled, run on a device, or tested against the kettle, and that appliance behavior and the reverse-engineered protocol are untested. Small deduction: the card's lineage row cites the baseline commit hash 9e810dc to PROJECT.md, which does not contain that hash."
+    },
+    {
+      "id": "T05-A6",
+      "awarded": 10.0,
+      "rationale": "No FAP code was written. The only file created is a documentation card, and implementation waits on the user's choice of hardware."
+    },
+    {
+      "id": "T05-A7",
+      "awarded": 5.0,
+      "rationale": "The final answer gives a clear, short decision, the recommended route, the information still needed from the user (which board, the checksum rule), and what has not been verified, and points to the full card."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 90.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.0973486
+}

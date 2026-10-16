@@ -1,0 +1,51 @@
+{
+  "assertions": [
+    {
+      "id": "T01-A1",
+      "awarded": 4.0,
+      "rationale": "The session says the installed firmware is unknown and that a compile error is possible on other firmware versions, so it flags the risk. It never sets a target or a provisional baseline (official 1.5.1 / f7 / API 88.2). Instead it claims the APIs work on Official, Unleashed, Momentum and RogueMaster, and only hedges that claim. Partial credit."
+    },
+    {
+      "id": "T01-A2",
+      "awarded": 10.0,
+      "rationale": "Every API used is a standard export at API 88.2: furi_mutex_*, furi_message_queue_*, view_port_alloc/free/update, view_port_draw_callback_set/input_callback_set, gui_add_view_port/gui_remove_view_port, furi_record_open/close with RECORD_GUI, canvas_clear/set_font/draw_str_aligned, and FontPrimary/FontSecondary/FontBigNumbers. The FontBigNumbers string contains digits only, which that font supports."
+    },
+    {
+      "id": "T01-A3",
+      "awarded": 15.0,
+      "rationale": "A short Up increments the count, with an extra cap at 999999. A short Down decrements only while count > 0, so the floor is zero. InputTypeLong on InputKeyOk resets to 0. Only InputTypeShort on Back exits. The count is drawn in FontBigNumbers at the centre of the screen."
+    },
+    {
+      "id": "T01-A4",
+      "awarded": 15.0,
+      "rationale": "The manifest has appid=\"tally_counter\", apptype=FlipperAppType.EXTERNAL and entry_point=\"tally_counter_app\". That name matches `int32_t tally_counter_app(void* p)`."
+    },
+    {
+      "id": "T01-A5",
+      "awarded": 20.0,
+      "rationale": "The input callback puts each InputEvent on a FuriMessageQueue, and the app thread consumes it. Teardown order is gui_remove_view_port, then furi_record_close(RECORD_GUI), then view_port_free, then furi_message_queue_free. The queue is freed after the GUI detach. A mutex guards shared state between the draw callback and the app thread, and the mutex and state are freed last."
+    },
+    {
+      "id": "T01-A6",
+      "awarded": 15.0,
+      "rationale": "The session states plainly that it could not compile or run the app because no SDK is installed and no device is attached. It ran no build, emulator or device step and claimed none."
+    },
+    {
+      "id": "T01-A7",
+      "awarded": 10.0,
+      "rationale": "It uses a single ViewPort and Canvas with no SceneManager or ViewDispatcher. Only application.fam and tally_counter.c were created. The blocked Bash heredoc attempt was replaced by Write calls to the same two files."
+    },
+    {
+      "id": "T01-A8",
+      "awarded": 2.0,
+      "rationale": "Build instructions are given: fbt in applications_user, or running ufbt in the app folder. There is no pinned SDK selection (e.g., ufbt update with a channel or version) and no UFBT_HOME isolation. The ufbt advice is to run it and let it download the default SDK."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 91.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1002886
+}

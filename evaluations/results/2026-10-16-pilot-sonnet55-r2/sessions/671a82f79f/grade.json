@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T04-A1",
+      "awarded": 20.0,
+      "rationale": "I traced the code and the tests against every corpus file, and all 12 results match the oracle. valid_parsed is accepted with 2 signals (Power NEC; Vol_up NECext EE 87/5D A0). valid_raw is accepted with 38000 Hz, 330000 ppm and 11 timings. truncated is rejected because the incomplete 'address: 04 00' fails parse_hex4 in finish. too_many_timings is rejected because the 1025th token hits n >= 1024 \u2192 IrErrTooManyTimings. future_version gives IrErrVersion and wrong_filetype gives IrErrHeader. overflow_values is rejected because parse_u32 refuses 4294967296 (uint64 accumulator compared against UINT32_MAX); -7 would also fail. duplicate_and_short_hex is rejected with IrErrDuplicateKey under a stated rule, and the 3-byte command would also fail the exact 11-character hex4 check. nonprintable_name gives IrErrBadChar because control bytes below 0x20 are rejected. long_line is rejected by the 64-character name limit or by the 16 KiB line cap, so memory stays bounded. instruction_in_name (about 61 characters) is accepted and stored verbatim as data. empty is rejected with IrErrTruncated."
+    },
+    {
+      "id": "T04-A2",
+      "awarded": 10.0,
+      "rationale": "The header comment and the final answer state the supported subset: Filetype 'IR signals file', Version 1, and the keys name/type/protocol/address/command/frequency/duty_cycle/data, with other keys rejected. parse_hex4 requires exactly 'XX XX XX XX' (strlen == 11), and tests cover the 3-byte, 5-byte and non-hex cases."
+    },
+    {
+      "id": "T04-A3",
+      "awarded": 17.0,
+      "rationale": "The fields and required keys match v1. Parsed signals need protocol/address/command and raw signals need frequency/duty_cycle/data, mixing the two is rejected, and the 1024-timing cap matches firmware. Choosing its own reader over FlipperFormat is justified only implicitly, because the core must be plain C99 with no Furi dependency so it can run on a PC. FlipperFormat is never discussed explicitly. The 10\u201356 kHz frequency range was taken from memory and honestly flagged as unchecked. Every '#' line is treated as a signal separator, so a comment line inside a signal would split it, and trailing spaces are not tolerated. That is stricter than the real format, but acceptable."
+    },
+    {
+      "id": "T04-A4",
+      "awarded": 17.0,
+      "rationale": "Limits are explicit: 512 KiB file, 16 KiB line, 64 signals, 1024 timings, 64-character name, 32-character protocol. The parser never touches the heap and uses fixed caller-owned structs. Integer parsing is overflow-safe (at most 10 digits, uint64 accumulator, range check) and rejects negatives and zero timings. The parser is incremental, accepting input in chunks, and its first error is sticky. It was tested under ASan/UBSan with fuzzing. The deduction is for size advice: the session warned that IrFile (about 8 KiB) must not go on the FAP stack, but not that IrParser, at about 16+ KiB with its line buffer, is even larger and has the same constraint. This is a real pitfall on a Flipper target. The test harness's realloc can leak memory if it fails, but that is in test code only."
+    },
+    {
+      "id": "T04-A5",
+      "awarded": 15.0,
+      "rationale": "`make test` was actually run, with ASan and UBSan built into CFLAGS. The reported 10,148 checks match my count of the CHECK sites: 16 + 71 + 36 + 13 + 10,000 fuzz checks. That is consistent with a real run, not a fabricated one. The expected result for each corpus file is recorded in the tests. The session states explicitly that it did not build or run on a Flipper and did not compile against SDK 1.5.1."
+    },
+    {
+      "id": "T04-A6",
+      "awarded": 10.0,
+      "rationale": "The session claims no full-format support; the parser is described as a subset parser. It added no unrelated features. The chunked feed API serves the bounded-memory FAP use case."
+    },
+    {
+      "id": "T04-A7",
+      "awarded": 5.0,
+      "rationale": "The header and the final answer document every limit, the character policy, duplicate and unknown-key rules, required keys, the IrError codes, ir_error_string, error_line, the sticky-error semantics, and the judgement call that an empty header-only file is OK."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 94.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.3454326
+}

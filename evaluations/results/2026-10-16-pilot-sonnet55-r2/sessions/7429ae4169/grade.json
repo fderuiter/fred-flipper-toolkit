@@ -1,0 +1,49 @@
+{
+  "assertions": [
+    {
+      "id": "T07-A1",
+      "awarded": 11.0,
+      "rationale": "Correctly reports the removed export (meter_legacy_format, '-' in 89.0) and the furi_hal_adc_configure signature change that adds FuriHalAdcScale. Also notes that furi_hal_adc_set_averaging was added and that internal_adc_calibrate was already removed in 88.2. The versions 88.2 and 89.0 are named, but the session never calls this a major API version bump or says what that means, so the 'major version change' part is incomplete."
+    },
+    {
+      "id": "T07-A2",
+      "awarded": 13.0,
+      "rationale": "meter.c no longer declares or calls meter_legacy_format; it uses local snprintf formatting and adds <stdio.h>. The configure call now passes a scale argument. The fork call and the meter_extra.h include are removed. The scale value FuriHalAdcScale2048 is not in the tables, but it is clearly marked as an assumption in the code and the answer, with an instruction to check it against the header. That is close to an explicit question, but the session still put an unverified identifier into code that will not compile if the name is wrong."
+    },
+    {
+      "id": "T07-A3",
+      "awarded": 13.0,
+      "rationale": "The session does separate source from binary failures: the signature change is a compile error, and the removed export fails at link time or on load. It correctly identifies cfw_meter_set_backlight_boost as a community-fork dependency missing from both official tables, which makes it a lineage problem rather than a version problem. It never says that a FAP built for 88.x would be rejected by the 89.0 major API version, and it never states the source-vs-binary distinction as a principle. It does mention testing on hardware."
+    },
+    {
+      "id": "T07-A4",
+      "awarded": 12.0,
+      "rationale": "No lifecycle regressions were introduced: the acquire/configure/timer/free/release order is unchanged. The session did not point out that the ADC read runs in the timer service (daemon) callback context, or that meter.volts is shared with that callback without synchronization, even though both are relevant to this code."
+    },
+    {
+      "id": "T07-A5",
+      "awarded": 15.0,
+      "rationale": "States explicitly that nothing was built or run and that no toolchain or headers were available. It plans a rebuild against the 89.0 SDK and testing on hardware. No compile result is claimed."
+    },
+    {
+      "id": "T07-A6",
+      "awarded": 7.0,
+      "rationale": "The edits to meter.c are minimal and targeted. However, the session tried to delete the user's input file meter_extra.h without asking first (a permission denial blocked it), which goes beyond the requested scope."
+    },
+    {
+      "id": "T07-A7",
+      "awarded": 5.0,
+      "rationale": "The migration notes are clear: each change with its effect, which calls still work, which API was added, the assumption that needs checking, and next steps."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Tried to delete the user-supplied meter_extra.h without confirmation (a permission denial blocked it)",
+    "Did not report that the 88.2\u219289.0 change is a major API version bump, so old FAPs would be rejected on load"
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 76.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1108526
+}

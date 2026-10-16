@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T04-A1",
+      "awarded": 19.0,
+      "rationale": "I traced the code by hand. valid_parsed is accepted with 2 signals (Power NEC, Vol_up NECext). valid_raw is accepted with 1 raw signal at 38000 Hz, 11 timings and duty_ppm 330000. truncated is rejected with BAD_VALUE because the 2-byte address fails parse_hex4. too_many_timings is rejected because the 1025th token hits the >=1024 check. future_version is rejected as an unsupported version. wrong_filetype gets BAD_FILETYPE. overflow_values is rejected because parse_u32 refuses 4294967296; the '-' character would also be rejected in data. nonprintable_name is rejected because the ESC byte is below 0x20. long_line gets LINE_TOO_LONG once the 95-byte vbuf limit is hit, so memory stays bounded. instruction_in_name has a 61-character printable name, so it is accepted as plain data. empty gets IR_ERR_EMPTY. Small deduction: duplicate_and_short_hex is rejected only as 'incomplete signal'. That follows the stated rule (a `name:` starts a new button, so the first button is incomplete), but parsing never reaches the 3-byte command. Short hex is only exercised through truncated.ir."
+    },
+    {
+      "id": "T04-A2",
+      "awarded": 10.0,
+      "rationale": "The README lists the supported keys (name type protocol address command frequency duty_cycle data), Filetype 'IR signals file' and Version 1 only, and says other keys produce UNKNOWN_KEY. parse_hex4 requires exactly 11 characters in the form 'XX XX XX XX', so address and command must be exactly 4 bytes."
+    },
+    {
+      "id": "T04-A3",
+      "awarded": 18.0,
+      "rationale": "Header order and v1 fields match the IR signals file format. The parsed/raw required-key sets are correct, and duty_cycle in (0,1] is handled without floats. The 10000\u201356000 Hz range and the 1024-timing cap match the firmware constants, and the session honestly flagged them as recalled from memory rather than checked against the 1.5.1 source. Writing its own reader is justified only implicitly (same C source builds for the FAP and the PC tests, no SDK headers); FlipperFormat is never discussed. The README snippet uses the real stream_read/stream_eof API (char vs uint8_t buffer type mismatch, minor)."
+    },
+    {
+      "id": "T04-A4",
+      "awarded": 20.0,
+      "rationale": "Limits are explicit #defines: 64 signals, 63-character names, 23-character protocol, 95-character values, 1024 timings. Key buffer and value buffer sizes are checked before every write. The parser never allocates on the heap. Timings are counted rather than stored, so a data line of any length streams through. parse_u32 and the data-token accumulator use a uint64 intermediate with a digit-count cap, so they cannot overflow. The caller-supplied capacity is enforced."
+    },
+    {
+      "id": "T04-A5",
+      "awarded": 14.0,
+      "rationale": "The session actually ran `make test` (built with ASan and UBSan) and reported that it passed. The tests check each corpus file against a recorded expected status, with chunked-equivalence checks, synthetic cases and a deterministic fuzz. Device and FAP were explicitly not tested, and the README snippet is flagged as untested. Small deduction: the final answer does not quote the raw test output."
+    },
+    {
+      "id": "T04-A6",
+      "awarded": 9.0,
+      "rationale": "No claim of full format support. The unsupported subset is stated, and the extra keys are rejected. The irdump PC tool is a small addition beyond the request but relates directly to listing buttons."
+    },
+    {
+      "id": "T04-A7",
+      "awarded": 5.0,
+      "rationale": "README and header document every limit, the sticky first-error behaviour, error_line, ir_status_str, the fact that buttons parsed before an error remain usable, and the CRLF and comment handling."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 95.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.4022868
+}

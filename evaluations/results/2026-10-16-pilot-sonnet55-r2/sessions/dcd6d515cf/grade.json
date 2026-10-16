@@ -1,0 +1,59 @@
+{
+  "assertions": [
+    {
+      "id": "T02-A1",
+      "awarded": 10.0,
+      "rationale": "There are three screens: a Submenu with Start/Settings/About, a custom settings View, and a custom running View, plus a DialogEx used for notices. Back from the running view goes through run_previous_cb, which calls run_stop (clears `running` and releases the backlight) and returns ViewMenu. Back from settings returns to the menu, and Back from the menu exits. Navigation is coherent."
+    },
+    {
+      "id": "T02-A2",
+      "awarded": 10.0,
+      "rationale": "The v1 path in it_settings_parse keeps Work 45 and Rest 15. Rounds and Vibrate keep their defaults (8 and true) and the result is ItParseMigrated. The settings_v1 sample ends with a newline, so the trailing-newline check passes. A host test asserts this exact outcome. The file is rewritten as v2 only after the user edits and saves, and the v1 file is kept as .bak."
+    },
+    {
+      "id": "T02-A3",
+      "awarded": 10.0,
+      "rationale": "The stated policy rejects the whole corrupt file (the sample has no trailing newline, an 11-digit Work and a negative Rest), uses defaults, shows a notice and blocks saving. A future version returns ItParseFuture and gets the same treatment: the file is never rotated or overwritten, and save_settings_if_dirty refuses with a 'Not saved / kept untouched' notice. No clobber path exists. One defect: a truncated future file is labelled 'damaged' instead of 'newer version', but it is still protected."
+    },
+    {
+      "id": "T02-A4",
+      "awarded": 16.0,
+      "rationale": "The app uses real exported APIs: ViewDispatcher with custom-event and tick callbacks, Submenu, DialogEx, View/with_view_model, storage_common_stat/remove/rename, storage_file_* including sync, storage_simply_mkdir, notification sequences and APP_DATA_PATH. No invented APIs were found, and the uncertain names are honestly listed as unverified. Deductions: the FlipperFormat library is not used and a hand-rolled parser reads the FlipperFormat text instead. That parser treats valid FlipperFormat variations (comment lines, a missing final newline) as corrupt. The standard VariableItemList is replaced with a custom view, though the reason given (keeping exact values) is reasonable."
+    },
+    {
+      "id": "T02-A5",
+      "awarded": 10.0,
+      "rationale": "Storage I/O happens only at startup, in custom_event_cb (dispatcher thread, triggered by the settings previous callback) and at teardown. Draw, input and tick callbacks never touch storage. The countdown uses the dispatcher tick, guarded by `running`, which is cleared on Back, on completion and at exit. The backlight is released through run_stop."
+    },
+    {
+      "id": "T02-A6",
+      "awarded": 9.0,
+      "rationale": "fs_write_all checks the write length and the sync and close results, and the save goes tmp -> remove bak -> cur->bak -> tmp->cur, with rollback and tmp cleanup on failure. At load, a stale tmp is removed and a missing cur is recovered from .bak. A missing SD card maps to ItLoadUnreadable with a notice, and a failed save (for example a full card) shows 'Save failed, check SD card' and retries at exit. Minor deductions: a corrupt file or an SD card missing at launch blocks saving for the whole session, with no way for the user to recover, and the save retry at exit fails silently."
+    },
+    {
+      "id": "T02-A7",
+      "awarded": 10.0,
+      "rationale": "Host tests were written for all four samples, range edges, and modeled interrupted writes using an in-memory filesystem with fault injection at every step. The session honestly reported that they were never run because Bash was denied, and every evidence field is marked not-run or blocked. Device testing is listed as pending and power-loss atomicity is explicitly disclaimed. Points are deducted because nothing was executed. Inspection also shows the unrun suite contains a check that will fail: 'Version: 3\\ngarbage' is expected to return Future, but the trailing-newline check returns Corrupt first. Several memcmp comparisons of ItSettings structs include padding bytes, so they may fail at random."
+    },
+    {
+      "id": "T02-A8",
+      "awarded": 9.0,
+      "rationale": "No unrelated framework is added, and SceneManager is omitted with a reason given. The pure codec (it_settings.c) and the store policy over an abstract ItFsOps (it_store.c) are cleanly separated from the Furi binding. Slight deduction for re-implementing a format parser that the FlipperFormat API already provides."
+    },
+    {
+      "id": "T02-A9",
+      "awarded": 4.0,
+      "rationale": "NOTES.md documents the v1/v2 handling, the future-version policy, the file names, the save sequence, the ownership table, the unresolved APIs and the pending device cases. The exact v2 key/value layout is documented only in code and headers, not in NOTES.md."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "it_settings_parse checks for a trailing newline before the Version check, so a future-version file without a final newline is classified as corrupt instead of future. This contradicts the code comment ('Future check happens before body validation on purpose'), and the unrun host test expecting ItParseFuture for 'Version: 3\\ngarbage' would fail. The file is still protected from overwriting.",
+    "The host tests compare ItSettings structs with memcmp, which includes padding bytes after the bool. Some of those copies come from uninitialized stack values (tmp/parsed), so these checks may fail at random when the tests are actually run."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 88.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.4114126
+}

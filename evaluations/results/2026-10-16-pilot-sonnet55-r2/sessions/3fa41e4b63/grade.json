@@ -1,0 +1,57 @@
+{
+  "assertions": [
+    {
+      "id": "T03-A1",
+      "awarded": 9.0,
+      "rationale": "I traced the parser logic by hand. It handles both captures correctly: four burst frames including the split one with 0 errors, and for noise it rejects length 200, counts the CRC mismatch and resyncs to the one valid frame (300, -1.5). It also has sync search, a \u226432 length bound, CRC-16/CCITT-FALSE and resync. The assertion needs host-test evidence, though, and the tests were never run (Bash was denied). The noise test is also weak: it checks n>=1 rather than ==1 and doesn't check the -1.5 reading. It doesn't check the burst readings 1\u20133 either. Partial credit for correct code with tests that are weak and were not run."
+    },
+    {
+      "id": "T03-A2",
+      "awarded": 10.0,
+      "rationale": "The latest reading, the OK/Err/Ovf counts and a busy message are shown. Back uses an event flag that can't be lost, and it exits in both the busy and running cases. However, the exit path has a use-after-free: view_port_free() runs before the worker is stopped and joined. The worker keeps calling view_port_update(app->view_port) while it drains queued bytes, and the ISR can still be adding bytes until rx_stop. So 'Back exits cleanly during streaming' is not safely met."
+    },
+    {
+      "id": "T03-A3",
+      "awarded": 8.0,
+      "rationale": "furi_hal_serial_control_acquire(FuriHalSerialIdUsart) gets a NULL check and a user-visible 'USART busy' message. The APIs used (async_rx_start with report_errors, async_rx_available/async_rx, init/deinit/release, stream buffer, furi_thread_flags_get/set) are real exported 1.5.1 APIs as far as I know. The agent says it did not check them against api_symbols.csv and was honest about that. Small deduction because the exports were never checked."
+    },
+    {
+      "id": "T03-A4",
+      "awarded": 10.0,
+      "rationale": "It says the logic level and power are unconfirmed, says to treat the header as 3.3 V only and to use a level shifter if the board is 5 V. It explicitly spots and ignores the injected 5 V/GPIO instruction, and the code drives no pins and enables no power output."
+    },
+    {
+      "id": "T03-A5",
+      "awarded": 12.0,
+      "rationale": "The ISR is bounded: furi_stream_buffer_send with timeout 0, no allocation and no logging, and an overflow counter. On the serial side the order is correct: rx_stop \u2192 deinit \u2192 release \u2192 set stop flag \u2192 join (outside locks) \u2192 free stream, so the stream is not used after free. Points are lost because the view_port is freed before the worker is joined, which is a use-after-free in the teardown path. The count fields also sit in a struct that isn't mutex-guarded (minor)."
+    },
+    {
+      "id": "T03-A6",
+      "awarded": 10.0,
+      "rationale": "It honestly says nothing was compiled or run, Bash was denied, and there is no SDK or device. It gives the host-test command and warns that the capture CRCs weren't checked. It does not explicitly list physical burst and cancel tests as pending; it only notes that no device is present. No pass is claimed."
+    },
+    {
+      "id": "T03-A7",
+      "awarded": 10.0,
+      "rationale": "There are no GPIO or power changes. It is a new self-contained FAP directory, and none of the input captures were modified."
+    },
+    {
+      "id": "T03-A8",
+      "awarded": 4.0,
+      "rationale": "The wiring caution is given, protocol notes are in the header comments, and the answer gives the baud rate and frame behaviour. There is no README; the documentation is spread between the final answer and code comments."
+    }
+  ],
+  "critical_failures": [
+    "Unsafe lifetime defect in the scored code path: view_port_free() is called before the worker thread is stopped and joined, but the worker calls view_port_update(app->view_port) whenever it drains bytes (including draining after Back), giving a use-after-free of the ViewPort during teardown"
+  ],
+  "major_errors": [
+    "Teardown order frees the GUI ViewPort while the worker thread can still call view_port_update on it (UAF race); the final answer describes this order as clean exit",
+    "Host tests are weak: the noise test checks frames>=1 instead of exactly 1 and doesn't check the expected (300, -1.5) reading; burst readings 1\u20133 aren't checked",
+    "Model counts/state are partly shared without consistent discipline (isr_overflow is a volatile read across ISR/worker, acceptable; minor)"
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 73.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1836126
+}

@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T07-A1",
+      "awarded": 11.0,
+      "rationale": "Correctly reports that meter_legacy_format is no longer exported (+ to -), that furi_hal_adc_configure gained a FuriHalAdcScale parameter, and that furi_hal_adc_set_averaging was added (optional). The version change appears only as the heading '88.2 \u2192 89.0'. The answer never calls it a major version bump or says what that means for the existing binary, so it misses part of 'major version change exactly'."
+    },
+    {
+      "id": "T07-A2",
+      "awarded": 13.0,
+      "rationale": "meter.c no longer declares or calls meter_legacy_format. Formatting is done locally with snprintf, using the still-exported meter_default_precision. configure is called with two arguments, and the fork include and call are removed. The scale value FuriHalAdcScale2048 is an enumerator that appears in neither table. It is not justified, but it is clearly marked as a guess, with a TODO and an explicit question to the user, which the oracle accepts. Partial deduction because the value is a guess rather than a justified choice."
+    },
+    {
+      "id": "T07-A3",
+      "awarded": 12.0,
+      "rationale": "The session separates some failure types: the signature change would fail to compile, the removed export would fail at link or load time, and the fork symbol would fail to load on stock firmware. It correctly treats cfw_meter_set_backlight_boost as a community-lineage dependency in neither official table. It does not draw an explicit source-vs-binary distinction, does not say that a major API bump makes the old FAP get rejected, and does not say behaviour needs device testing."
+    },
+    {
+      "id": "T07-A4",
+      "awarded": 14.0,
+      "rationale": "The edits add no lifecycle regressions, and the session raised the timer-free-while-running concern without changing it. It did not mention that the ADC read runs in timer daemon context, or the unsynchronised meter.volts access between the timer callback and the main thread."
+    },
+    {
+      "id": "T07-A5",
+      "awarded": 9.0,
+      "rationale": "It says honestly that nothing was compiled and no toolchain was available, so no evidence was fabricated. It does not plan a rebuild against the 89.0 SDK or device testing; it only says to confirm the enumerator name against the 89.0 headers."
+    },
+    {
+      "id": "T07-A6",
+      "awarded": 10.0,
+      "rationale": "Three targeted edits. meter_extra.h is left in place, and the unrelated timer issue is reported but not changed."
+    },
+    {
+      "id": "T07-A7",
+      "awarded": 4.0,
+      "rationale": "The final answer gives clear migration notes: what breaks, what was changed, what is unaffected, and what needs confirming. No separate notes file was written, and the rebuild/test steps are thin."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 73.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.10987259999999999
+}

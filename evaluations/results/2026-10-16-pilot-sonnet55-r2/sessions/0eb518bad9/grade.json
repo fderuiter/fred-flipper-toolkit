@@ -1,0 +1,56 @@
+{
+  "assertions": [
+    {
+      "id": "T06-A1",
+      "awarded": 26.0,
+      "rationale": "7 of 8 seeded defects are traced correctly. D5 (join while holding the mutex), item 1. D1 (timer stop does not wait, then the model is freed and view_port_update runs on a freed ViewPort; fix is to free the timer first), items 2 and 4. D7 (notification used after record close), item 3. D3 (malloc in the RX ISR, chunk leaked when the queue is full, fix is a stream buffer), item 6. D6 (line/line_len race against draw_callback, torn or unterminated string), item 9. D4 (FuriWaitForever on a 4-slot queue from the GUI/input context stalls input), item 11. D8 (unbounded count, multiplication overflow, unchecked reads), item 14. D2 is not identified as a defect: no finding says gui_remove_view_port is missing or that the GUI keeps a dangling ViewPort. 'Remove it from the GUI' appears only as a step in the suggested teardown order, with no causal trace. Score is 30*7/8 \u2248 26."
+    },
+    {
+      "id": "T06-A2",
+      "awarded": 15.0,
+      "rationale": "There is no 'malloc forbidden' or furi_alloc claim; the ISR malloc finding is the legitimate seeded defect. The fixes use real primitives: FuriStreamBuffer, thread flags, an embedded array in the queue item, and a mutex. Deductions: the review twice says malloc can return NULL and recommends checking it, which is false on Flipper because furi malloc crashes on out-of-memory. 'FuriThreadFlag' is a loose name, not an exact API. Item 16 says there is no application.fam, but the file exists in the workspace and was never read."
+    },
+    {
+      "id": "T06-A3",
+      "awarded": 18.0,
+      "rationale": "The proposed teardown order reaches quiescence without deadlock: stop RX and release serial, stop and free the timer, clear running and release the mutex before join, disable/remove/free the view port, notify before closing the record, then free the queues, mutex and model. Every callback producer is quiesced before its target is freed. Minor deductions: the input-callback fix (timeout 0) does not preserve Back, and the missing gui_remove_view_port is not called out as a defect."
+    },
+    {
+      "id": "T06-A4",
+      "awarded": 10.0,
+      "rationale": "The opening scope statement is honest ('read the file but did not compile or run it'), and the review makes no claims of reproduced crashes. Evidence level is not labeled per finding. Some causal claims are stated as fact ('This is the hang') even though they come only from a source trace."
+    },
+    {
+      "id": "T06-A5",
+      "awarded": 7.0,
+      "rationale": "No files were edited; only two Read calls were made. Deductions: the review flags the FURI_LOG_I decoy as noisy and loop-slowing, and pads the output with low-value or muddled items, such as item 8 (serial handle vs. worker draining) and the 'exit' shadowing nit."
+    },
+    {
+      "id": "T06-A6",
+      "awarded": 4.0,
+      "rationale": "Output is severity-grouped and actionable and includes a consolidated teardown order. It is somewhat padded, with low-signal items mixed in."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Claims malloc returns NULL on failure and recommends checking the allocation (items 6 and 14); on Flipper firmware, malloc crashes on out-of-memory and never returns NULL.",
+    "Item 16 says no application.fam is present and that APP_DATA_PATH setup could not be confirmed, but application.fam exists in the workspace and the agent never read it.",
+    "Item 8/5 reasoning is muddled: it suggests the serial callback can run after app_free starts and that releasing the serial handle matters while the worker drains the queue. The worker never touches the serial handle, and RX is stopped before the join.",
+    "Flags the FURI_LOG_I decoy as noisy and loop-slowing."
+  ],
+  "seeded_defects_found": [
+    "T06-D1",
+    "T06-D3",
+    "T06-D4",
+    "T06-D5",
+    "T06-D6",
+    "T06-D7",
+    "T06-D8"
+  ],
+  "decoys_flagged": [
+    "FURI_LOG_I in app thread is fine"
+  ],
+  "score": 80.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1671606
+}

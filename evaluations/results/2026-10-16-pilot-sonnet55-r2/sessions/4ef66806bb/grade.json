@@ -1,0 +1,53 @@
+{
+  "assertions": [
+    {
+      "id": "T06-A1",
+      "awarded": 29.0,
+      "rationale": "The review found all 8 seeded defects with correct causal traces. D5 (#1): join while holding the mutex that the worker takes each loop, with the right trigger and fix. D2 (#3): no gui_remove_view_port. D7 (#4): notification pointer used after furi_record_close. D4 (#5): FuriWaitForever put on a 4-slot queue blocks the GUI thread once the main loop stops draining. D3 (#6, #7): malloc in the ISR RX callback, chunk leaked on a failed put, stream-buffer fix. D6 (#9): unsynchronised line/line_len shared by worker and draw callback, fixed with a snapshot under the mutex. D8 (#14, #15): untrusted count, size_t multiplication overflow, unchecked reads, bounded by file size. D1 (#2) is slightly incomplete. The review correctly says furi_timer_stop does not wait for the callback, which then dereferences the freed model, and gives the fix 'free the model last'. It does not say that view_port_update can run on an already-freed ViewPort. It also never says to call furi_timer_free before freeing the ViewPort or model; it only says 'don't free state until both have returned'. Small deduction."
+    },
+    {
+      "id": "T06-A2",
+      "awarded": 20.0,
+      "rationale": "Every API used in a fix is real: gui_remove_view_port, FuriStreamBuffer, thread flags, storage_file_size, furi_record_close ordering and NULL checks. The only malloc criticism is malloc inside the ISR callback, which is correct. It does not claim malloc is forbidden in general, does not mention furi_alloc, and does not invent APIs. API claims recalled from memory are hedged."
+    },
+    {
+      "id": "T06-A3",
+      "awarded": 14.0,
+      "rationale": "The proposed order (serial RX stop/deinit/release, then timer stop, then release the lock before join, then free queues, then remove the viewport, then free it, then notify before closing records, then free state) fixes the join-under-lock deadlock and the record-close bug. It still leaves gaps. Step 4 frees the queues (including app->events) before step 5 removes the viewport, so input_callback can still put into a freed queue. That also contradicts finding #5, which says to remove the viewport first. furi_timer_free is not explicitly placed before the ViewPort and model are freed, so a pending tick_callback can still reach view_port_update; the order only says 'until both have returned'."
+    },
+    {
+      "id": "T06-A4",
+      "awarded": 10.0,
+      "rationale": "There is a clear scope and evidence statement: files read, no edits, nothing compiled or run, API behaviour recalled from memory of 1.5.1. Uncertain claims are hedged ('to my recollection') and no reproduced crash is claimed. It does not label the evidence level for each finding (source trace vs reproduced), which the oracle asks for."
+    },
+    {
+      "id": "T06-A5",
+      "awarded": 10.0,
+      "rationale": "Tool calls were only Read, ls and cat, so no files were edited and the workspace is unchanged. None of the decoys was flagged: malloc in app_alloc, the blocking main-loop get, the worker's 100 ms timeout, the 10 Hz redraw timer, the lack of a SceneManager and FURI_LOG_I. The extra findings (unchecked acquire, leaked chunks, short reads) match the oracle's additional valid findings."
+    },
+    {
+      "id": "T06-A6",
+      "awarded": 5.0,
+      "rationale": "Findings are ranked by severity and grouped, each has a location and a concrete fix, and the review ends with a fix priority list tied to the reported symptoms."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "The proposed teardown order frees the message queues, including app->events, before gui_remove_view_port. input_callback could then call furi_message_queue_put on a freed queue, and this contradicts the review's own finding #5.",
+    "The teardown order never places furi_timer_free before the ViewPort and model are freed. It relies on 'stop the timer' plus a vague 'until both have returned', which leaves the pending tick_callback/view_port_update window from T06-D1 only partly closed."
+  ],
+  "seeded_defects_found": [
+    "T06-D1",
+    "T06-D2",
+    "T06-D3",
+    "T06-D4",
+    "T06-D5",
+    "T06-D6",
+    "T06-D7",
+    "T06-D8"
+  ],
+  "decoys_flagged": [],
+  "score": 88.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1692246
+}

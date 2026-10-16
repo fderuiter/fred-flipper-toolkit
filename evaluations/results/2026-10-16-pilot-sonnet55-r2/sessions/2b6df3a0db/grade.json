@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T04-A1",
+      "awarded": 16.0,
+      "rationale": "I traced the delivered code and 11 of 12 corpus files match the oracle. valid_parsed is accepted with 2 signals (NEC and NECext). valid_raw is accepted at 38000 Hz with 11 timings. truncated is rejected (BadValue, line 7, at EOF). too_many_timings is rejected (TooManyTimings). future_version is rejected (BadVersion). wrong_filetype is rejected (BadFiletype). overflow_values is rejected (frequency 4294967296 > UINT32_MAX gives BadValue). duplicate_and_short_hex is rejected under the stated rule that a new name ends the previous record (MissingField, line 5). The 3-byte command is never reached, but parse_hex4 would reject it. nonprintable_name is rejected (the ESC byte gives BadCharacter). instruction_in_name is accepted as data with a truncated name. empty is rejected (EmptyFile). The mismatch is long_line.ir: the oracle expects a reject under a line/name length limit, but the parser accepts it by silently truncating the name. Memory stays bounded, but the expected result is wrong. The duplicate expectation was changed to match the observed output after the first run; the change was disclosed and is consistent with the stated rule."
+    },
+    {
+      "id": "T04-A2",
+      "awarded": 10.0,
+      "rationale": "The header comment and the answer state the supported subset (the 8 keys, parsed/raw, all other keys rejected). parse_hex4 requires exactly 'XX XX XX XX' (length 11, 4 bytes) for both address and command."
+    },
+    {
+      "id": "T04-A3",
+      "awarded": 16.0,
+      "rationale": "The fields match v1: Filetype 'IR signals file', Version 1, name, type parsed/raw, protocol, 4-byte address and command, frequency, a float duty_cycle in (0,1], and space-separated uint32 data with a 1024-timing cap. Using its own reader instead of FlipperFormat is justified only implicitly, by the requirement for a host-testable core with no Furi dependency. FlipperFormat is never discussed. Small deviations: the frequency upper bound is 1 MHz, looser than the firmware's raw-signal validity range. Truncating names at 31 characters can make distinct names collide. No Furi APIs were invented; storage_file_read is real."
+    },
+    {
+      "id": "T04-A4",
+      "awarded": 20.0,
+      "rationale": "The parser never allocates and reads through a fixed 128-byte chunk. It has explicit caps: key 16, value 63, name 31, protocol 15, 1024 timings, 512 KB file size, and a button capacity supplied by the caller. Decimal parsing goes through uint64 and checks against UINT32_MAX, with a 10-digit limit. Negative timings and zero timings are rejected. The endless-source test confirms the file-size cap stops the read."
+    },
+    {
+      "id": "T04-A5",
+      "awarded": 15.0,
+      "rationale": "`make test` was actually run, with ASan and UBSan in CFLAGS, and the tool calls show it being re-run after the edits. The reported total of 80,085 checks is consistent with 4\u00d720000 fuzz checks plus the unit checks. The answer says plainly that the code was not compiled against SDK 1.5.1 and not run on a device. It also discloses that some shell commands were blocked."
+    },
+    {
+      "id": "T04-A6",
+      "awarded": 10.0,
+      "rationale": "There is no claim of full-format support; the header says it is a subset. The delivered files are the parser, its tests and a Makefile, with no unrelated features. The Furi side was deliberately left unwritten instead of guessing at APIs."
+    },
+    {
+      "id": "T04-A7",
+      "awarded": 5.0,
+      "rationale": "The limits are documented as macros in ir_parse.h and in the answer. Error reporting (an IrStatus plus a 1-based line, ir_status_string, and partial results on error) is documented in the header and the handoff, along with integration guidance."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 92.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.3794286
+}

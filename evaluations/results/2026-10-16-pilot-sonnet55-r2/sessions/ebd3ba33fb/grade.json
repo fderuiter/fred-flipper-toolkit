@@ -1,0 +1,61 @@
+{
+  "assertions": [
+    {
+      "id": "T02-A1",
+      "awarded": 4.0,
+      "rationale": "Menu (Start/Settings/About), a VariableItemList settings screen and a custom run view are wired up. Back from the run view is not consumed, so the to_menu previous callback runs, run_exit clears `running`, and the user returns to the menu. That part is correct. Two defects break navigation elsewhere. (1) `view_set_context(list_view, app)` overwrites the context that variable_item_list_alloc set on its own view. The module's input callback then treats App* as VariableItemList*, so any key press on the settings screen is memory-unsafe. (2) The menu view has no previous callback and the dispatcher has no navigation-event callback. view_previous therefore returns VIEW_IGNORE and Back on the menu does nothing, so the app cannot be exited. The session listed this as unverified rather than claiming it works."
+    },
+    {
+      "id": "T02-A2",
+      "awarded": 10.0,
+      "rationale": "The parser returns ItParseMigratedV1 for settings_v1.txt with Work 45 and Rest 15. Rounds 8 and Vibrate true come from it_settings_defaults. A host test asserts exactly this. Out-of-range v1 values are clamped, and this policy is stated. The v2 rewrite moves the v1 file to .bak."
+    },
+    {
+      "id": "T02-A3",
+      "awarded": 10.0,
+      "rationale": "The corrupt sample (11-digit Work, negative Rest, truncated final line) returns ItParseCorrupt. The app falls back to defaults, shows 'Settings reset', and keeps the bad file as .bad on the next save, a stated policy that loses no data. A file with Version greater than 2 returns ItParseFuture before the body is read. The store sets read_only, it_store_save refuses, and the UI shows 'Newer file: read-only'. A test confirms the file is left untouched."
+    },
+    {
+      "id": "T02-A4",
+      "awarded": 12.0,
+      "rationale": "Every call used exists: ViewDispatcher with tick and custom events, Submenu, VariableItemList, Widget, view model APIs, storage_file_* calls, storage_common_rename/remove, storage_simply_mkdir, APP_DATA_PATH and the notification sequences. No invented API. Points are lost for misusing the modules: the VariableItemList view's context is overwritten, its enter/exit callbacks may be overridden too, and Back-to-exit is wrong without a navigation callback. The session also says storage_file_close returns void, but it returns bool. Leaving out SceneManager is fine."
+    },
+    {
+      "id": "T02-A5",
+      "awarded": 8.0,
+      "rationale": "The draw, input, previous and tick callbacks do no storage I/O. settings_exit only posts a custom event, and the save runs in custom_event_callback. The countdown is driven by the dispatcher tick and gated by `running`, which run_exit clears, so it stops when the view is left. Deduction: the run model is ViewModelTypeLockFree, so writes in tick_callback and reads in run_draw on the GUI thread are not synchronized."
+    },
+    {
+      "id": "T02-A6",
+      "awarded": 8.0,
+      "rationale": "Save writes .tmp with CREATE_ALWAYS and checks both the write length and storage_file_sync. It then moves main to .bak/.bad and renames .tmp into place, with each result checked. When main is missing or corrupt, load recovers from .tmp and then .bak, and the parser validates both. SD read failure blocks saving ('SD error: not saved'), and a failed save shows 'Save failed (SD?)'. Deduction: the storage_file_close result is ignored and wrongly described as void."
+    },
+    {
+      "id": "T02-A7",
+      "awarded": 9.0,
+      "rationale": "The host tests are substantial. They read the real samples/ files, use an in-memory filesystem that injects a fault at every mutating save step (including torn writes), and check the parser edges, the index mapping and the run state machine. The tests were never executed because the Bash call was denied, and the session reported this honestly with the exact command to run them. Device and SDK checks are reported as pending, and there is no atomicity claim. Partial credit because none of the evidence was actually executed."
+    },
+    {
+      "id": "T02-A8",
+      "awarded": 10.0,
+      "rationale": "No unrelated framework. Parsing, migration, the store abstraction and the run state machine are in pure C (interval_settings.c) with no Furi dependency, and the Furi glue is in interval_timer.c."
+    },
+    {
+      "id": "T02-A9",
+      "awarded": 4.0,
+      "rationale": "The final answer documents the v1 upgrade, the corrupt-file and future-version policies, the save scheme and SD handling, and the header comments describe the version enum. There is no separate README in the workspace, and the v2 file format is shown only in code."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "`view_set_context(variable_item_list_get_view(list), app)` overwrites the VariableItemList view's internal context. The module's input callback then reads App* as VariableItemList*, which is memory-unsafe whenever a key is pressed on the settings screen. Overriding the module view's enter/exit callbacks is also unsafe.",
+    "The main menu has no previous callback and the dispatcher has no navigation-event callback, so view_previous returns VIEW_IGNORE and Back on the menu does not stop the dispatcher. The app cannot be exited. The session flagged this as unverified.",
+    "The session states storage_file_close is void ('errors surface via the checks above'). It returns bool, and the close result is never checked.",
+    "A ViewModelTypeLockFree model is written from the tick callback and read in the draw callback with no synchronization."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 75.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.41924459999999997
+}

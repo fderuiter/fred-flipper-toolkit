@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T07-A1",
+      "awarded": 15.0,
+      "rationale": "The session reported all three expected changes accurately: the 88.2 \u2192 89.0 major version bump, `meter_legacy_format` no longer exported (status `-`), and `furi_hal_adc_configure` gaining a `FuriHalAdcScale` parameter. It also noted the added `furi_hal_adc_set_averaging` and correctly left it out because it would change behavior."
+    },
+    {
+      "id": "T07-A2",
+      "awarded": 12.0,
+      "rationale": "`meter.c` was updated correctly in structure. The removed function's prototype and call were replaced with a local `snprintf`. The configure call now passes a second argument. The `cfw_` call and the `meter_extra.h` include were removed. Deduction: the scale value `FuriHalAdcScale2048mV` is a guessed identifier, and the real SDK enumerator is `FuriHalAdcScale2048`. The session clearly marked it as an assumption, both in the code and in the answer, and asked the user to check the header. That makes it an honest guess rather than a justified value or a plain open question, but it is still code that will likely fail to compile as written."
+    },
+    {
+      "id": "T07-A3",
+      "awarded": 9.0,
+      "rationale": "The lineage point was handled well: the session said `cfw_meter_set_backlight_boost` appears in neither official table and comes from a community fork. It did not separate source compatibility (signature change causes a compile error) from binary/import compatibility (removed export causes a load failure; a major API bump means the old FAP is rejected). It described everything only as 'would fail to link', and its only comment on the major version was that there 'may be changes outside these tables'. It never said that the old binary will not load on 89.x, and it never said behavior needs testing on a device."
+    },
+    {
+      "id": "T07-A4",
+      "awarded": 14.0,
+      "rationale": "No lifecycle regressions were introduced: acquire/configure/alloc/start/free/release order is unchanged, the buffer is bounded with `sizeof`, and the `double` cast is correct. It did not point out that the ADC is read in the timer-service (daemon) callback while the main thread reads `meter.volts` without synchronization, and it did not mention freeing a running timer. Both were relevant here."
+    },
+    {
+      "id": "T07-A5",
+      "awarded": 11.0,
+      "rationale": "The session said plainly that it did not compile and had no SDK or toolchain, and it was open about the blocked Python edit. No evidence was fabricated. The rebuild plan was only implied ('check furi_hal_adc.h ... before you build'). It never explicitly planned a rebuild against the 89.0 target SDK or a device test."
+    },
+    {
+      "id": "T07-A6",
+      "awarded": 10.0,
+      "rationale": "The edits were minimal and targeted: `stdio.h` added, three call sites changed, the fork include removed. `meter_extra.h` was left in place rather than deleted, and the user was told about it."
+    },
+    {
+      "id": "T07-A7",
+      "awarded": 4.0,
+      "rationale": "The final answer is a clear, usable set of migration notes covering what breaks, why, what changed, what still works, and the assumptions to verify. No separate notes file was written, and the note on binary compatibility is missing."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 75.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1132406
+}

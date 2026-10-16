@@ -1,0 +1,52 @@
+{
+  "assertions": [
+    {
+      "id": "T06-A1",
+      "awarded": 28.0,
+      "rationale": "D2 through D8 are each identified with a correct trigger, consequence and fix. D2: missing gui_remove_view_port. D3: malloc in the ISR-context RX callback plus a leak when the queue is full; fix is a stream buffer. D4: FuriWaitForever on a 4-slot queue from the GUI thread. D5: join while holding the mutex the worker needs. D6: unlocked line/line_len shared with draw_callback. D7: notification used after record close. D8: unbounded count, multiply overflow, unchecked reads. D1 gets only partial credit. The session says the model is freed while timer and draw callbacks are live and proposes freeing the timer first. However, finding 9 says the later furi_timer_free 'only works because the timer was stopped earlier', which contradicts the core of D1: stop does not wait for an in-flight or pending callback. That gives 7.5/8 \u00d7 30 \u2248 28."
+    },
+    {
+      "id": "T06-A2",
+      "awarded": 18.0,
+      "rationale": "These suggested APIs are real: gui_remove_view_port, furi_stream_buffer_send (ISR-safe), storage_file_size, furi_thread flags, and expansion disable. The session does not claim malloc is forbidden in general; it only objects to heap use in ISR context, which is correct. Points are deducted for the suggestion to use 'view-port model locking'. ViewPort has no model API; model locking belongs to View/with_view_model."
+    },
+    {
+      "id": "T06-A3",
+      "awarded": 17.0,
+      "rationale": "The proposed order is: stop producers (serial, timer), set running under the lock, release, join, remove the view port, then free the queues, mutex and model. The timer is freed before the model, input puts use zero timeout so the GUI cannot block, and the notification is sent before the record close. This establishes quiescence without a join under a lock. Points are deducted because finding 9 asserts that furi_timer_stop alone made the late free safe, which is wrong reasoning about quiescence."
+    },
+    {
+      "id": "T06-A4",
+      "awarded": 12.0,
+      "rationale": "There is a clear global scope and evidence statement: the file was read only, nothing was compiled or run, and every finding comes from reading the code. No reproduced crashes are claimed, and uncertainty is hedged where appropriate (expansion, stack size). Findings are not individually labelled with an evidence level, and the D1 timer-stop claim is overstated."
+    },
+    {
+      "id": "T06-A5",
+      "awarded": 9.0,
+      "rationale": "Only Read calls were made, so no files were edited. No decoy is flagged as a defect: malloc in app_alloc, the blocking waits and the 10 Hz redraw are all left alone. One minor note calls FURI_LOG_I per line 'noisy', which edges toward the FURI_LOG_I decoy but is not presented as a defect."
+    },
+    {
+      "id": "T06-A6",
+      "awarded": 4.0,
+      "rationale": "The output is severity-ranked and grouped, gives a concrete fix for each finding, and maps findings to the reported symptoms. It does not propose a test or reproduction for each finding."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Claims furi_timer_free after view_port_free 'only works because the timer was stopped earlier'. furi_timer_stop does not guarantee that pending or in-flight callbacks have finished, which is the core of seeded defect D1.",
+    "Suggests 'view-port model locking' as an option for draw_callback. ViewPort has no model API; model locking belongs to View (with_view_model)."
+  ],
+  "seeded_defects_found": [
+    "T06-D2",
+    "T06-D3",
+    "T06-D4",
+    "T06-D5",
+    "T06-D6",
+    "T06-D7",
+    "T06-D8"
+  ],
+  "decoys_flagged": [],
+  "score": 88.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.15538459999999998
+}

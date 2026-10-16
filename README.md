@@ -68,7 +68,7 @@ Baseline (checked 2026-10-16): official firmware **1.5.1**, commit [`9e810dc`](h
 | Fixture compilation against the 1.5.1 SDK | pass — 6 designated apps, 0 warnings, API 88.2 ([record](evaluations/results/2026-10-16-sdk-qualification/README.md)) |
 | Host tests of fixture logic | pass — gcc/clang, ASan/UBSan ([record](evaluations/results/2026-10-16-sdk-qualification/README.md)) |
 | Live activation (24 cases + 6 held-out) | pass — 23/24, 0 negative false activations, 6/6 held-out ([record](evaluations/results/2026-10-16-activation-summary.md)) |
-| Controlled model comparison | see [#8](https://github.com/fderuiter/fred-flipper-toolkit/issues/8) |
+| Controlled model comparison | gate **not met**: treatment 86.7 vs baseline 77.2 (+9.5), about half the critical/major errors, but the migration family is below 80 and there was one critical ([round 2](evaluations/results/2026-10-16-pilot-sonnet55-r2/README.md), [#8](https://github.com/fderuiter/fred-flipper-toolkit/issues/8)) |
 | Device behavior | not run ([#9](https://github.com/fderuiter/fred-flipper-toolkit/issues/9)) |
 
 Native FAP support is **host-tested** in FRED's terms (designated fixtures compiled and their logic host-tested), not device-verified. Other firmware lineages are not supported. Compilation will never be presented as proof of hardware behavior.

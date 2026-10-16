@@ -1,0 +1,49 @@
+{
+  "assertions": [
+    {
+      "id": "T05-A1",
+      "awarded": 14.0,
+      "rationale": "It lists scanning for K2-xxxx, connecting, discovering service ff00, writing ff01, enabling notifications on ff02, bonding on first connection, and handling the 30 s idle drop with a keep-alive. It does not list reconnect as its own operation, and the list is spread through prose rather than given as a clear checklist."
+    },
+    {
+      "id": "T05-A2",
+      "awarded": 13.0,
+      "rationale": "It clearly says a FAP-only controller is not possible on stock 1.5.1 and proposes an ESP32 companion over UART, with a phone or host as the fallback. Points are deducted because the main example, the official WiFi Dev Board, uses an ESP32-S2, which has no Bluetooth and cannot be a BLE central."
+    },
+    {
+      "id": "T05-A3",
+      "awarded": 9.0,
+      "rationale": "It says the public API (furi_hal_bt and the profile layer) only supports advertising and hosting the app's own GATT service, and it touches on the silicon-versus-public-API distinction through the STM32WB co-processor. It does not cite gap.c or the absence of client exports, and it inspected no SDK or firmware source, so the claim rests on recalled knowledge. It also wrongly says the co-processor does 'the scanning and connecting' for the phone link. In that link the Flipper is the peripheral: it advertises and the phone connects."
+    },
+    {
+      "id": "T05-A4",
+      "awarded": 4.0,
+      "rationale": "The companion protocol is only plain-text UART commands (ON/OFF/TEMP 85). It defines no framing, length fields, or companion-link CRC, and never notes that CRC is not authentication. It also covers no timeouts, reconnect handling, stale-replay protection, or device allowlist. It does mention a keep-alive, flags the unknown kettle checksum, keeps the kettle's own safety features, and adds a confirm step before 'on'."
+    },
+    {
+      "id": "T05-A5",
+      "awarded": 5.0,
+      "rationale": "It honestly says the checksum is unknown and must come from captures, and it claims no compile or device results. It does not separate inspected facts from inferred ones: the API claims are stated as fact without inspecting any source. It never says physical or appliance behaviour is untested."
+    },
+    {
+      "id": "T05-A6",
+      "awarded": 10.0,
+      "rationale": "It wrote no FAP and explicitly refused to write code that would only pretend to do central operations."
+    },
+    {
+      "id": "T05-A7",
+      "awarded": 5.0,
+      "rationale": "The decision summary is clear: it opens with the verdict, ranks the alternatives, and ends with specific follow-up questions."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Recommends the official Flipper WiFi Dev Board as a BLE central companion. That board uses an ESP32-S2, which has no Bluetooth radio.",
+    "Says the STM32WB co-processor 'does the scanning and connecting for the Flipper's own phone link'. In that link the Flipper is the advertising peripheral and the phone is the central that scans and connects."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 60.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.0855606
+}
