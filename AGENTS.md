@@ -2,7 +2,7 @@
 
 ## Current phase
 
-Implementation phase: **v0.1.0-preview** prepared on `main` (release commit `de33d1c`). Creating the `v0.1.0-preview` tag and GitHub release is pending in #20. The repository contains the four-skill bundle (`skills/`), shared references and claim registry, two offline helpers (`scripts/`), tests, benchmark definitions (`evaluations/`) and the research record (`docs/research/`, preserved as the evidence base). Live activation and SDK qualification are recorded in `evaluations/results/`. The controlled model comparison (#8) and device qualification (#9) gate any stronger claim. Do not describe the toolkit as device-verified or production-ready.
+Implementation phase: **v0.1.0-preview** released 2026-10-16 as a GitHub pre-release. Tag `v0.1.0-preview` points at `a85490a`, which differs from release commit `de33d1c` only in release-status wording (AGENTS.md, ROADMAP, handoff prompt). The repository contains the four-skill bundle (`skills/`), shared references and claim registry, two offline helpers (`scripts/`), tests, benchmark definitions (`evaluations/`) and the research record (`docs/research/`, preserved as the evidence base). Live activation and SDK qualification are recorded in `evaluations/results/`. The controlled model comparison (#8) and device qualification (#9) gate any stronger claim. Do not describe the toolkit as device-verified or production-ready.
 
 The user authorized implementation work committed directly to `main` in small coherent commits, and updating existing roadmap issues. Inspect the current head before committing, preserve concurrent and unrelated changes, use a checked fast-forward update, and never force-push. Authorization for one task does not extend to unrelated external actions.
 
