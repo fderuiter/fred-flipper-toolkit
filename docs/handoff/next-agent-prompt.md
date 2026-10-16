@@ -71,7 +71,7 @@ Fetch each issue first; acceptance criteria live there.
 3. **#13: token ratio.** Measure per-reference loading from `evaluations/results/*/sessions/*/session.json` (tool events show which files were read). Trim duplication between `engineering-rules.md` and the topic references, and make reference loading more selective. Rerun activation after any description change.
 4. **#12: held-out validation.** Build fixtures and oracles for the seven held-out variants in `evaluations/oracles/heldout.json`, with reference solutions where buildable. Run a paired pilot on them with `run_pilot.py`. Results decide #21, #22 and #23, then #8.
 5. **#23: paired gain.** Report the held-out paired gain with uncertainty (bootstrap over pairs), then make the gate decision on #8.
-6. **#14: sandboxed host tests.** Make evaluated sessions able to compile and run tests without being able to read the repository. Use a container, a separate OS user, or a VM. The harness's current deny rules and allowlist cannot safely allow a general shell.
+6. **#14: sandboxed host tests.** Done offline: `evaluations/harness/sandbox.py` and `run_pilot.py run --sandbox` (proof in `evaluations/results/2026-10-16-sandbox-proof/`). Remaining: the paired smoke run, which needs approved model spend, and confirming how Claude Code authenticates inside the sandbox (`ANTHROPIC_API_KEY` or `--sandbox-credentials`).
 7. **#15: wizard on Windows and macOS.** It has only been verified on Ubuntu 24.04 / Python 3.13.
 8. **#9: device qualification.** Needs a Flipper Zero on official 1.5.1 and a 3.3 V USB-UART adapter. Follow `evaluations/device/README.md` exactly and record observations.
 9. **#19: monthly maintenance review**, due 2026-11-16, recurring.
@@ -114,8 +114,12 @@ python3 scripts/compare_api.py --old OLD_api_symbols.csv --new NEW_api_symbols.c
 python3 evaluations/harness/run_activation.py --model claude-sonnet-5-5 --scope project \
   --out evaluations/results/<date>-activation-<label> --jobs 8
 
+# Sandbox proof (no model session; Linux)
+python3 evaluations/harness/sandbox.py probe --out /tmp/sandbox-probe.json
+python3 evaluations/harness/run_pilot.py run --sandbox --dry-run --out /tmp/pilot-dry
+
 # Paired pilot (~$10 sessions + ~$10 grading per 42 sessions); write to scratch, copy in when graded
-python3 evaluations/harness/run_pilot.py run    --out /tmp/pilot --seed <new seed> --jobs 6
+python3 evaluations/harness/run_pilot.py run    --out /tmp/pilot --seed <new seed> --jobs 6   # add --sandbox for a general shell
 python3 evaluations/harness/run_pilot.py grade  --out /tmp/pilot --jobs 6
 python3 evaluations/harness/run_pilot.py report --out /tmp/pilot
 ```
