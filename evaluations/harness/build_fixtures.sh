@@ -2,7 +2,11 @@
 # Build designated FRED fixtures with uFBT against the SDK selected in UFBT_HOME,
 # run ufbt lint (formatting/naming only), and print each .fap SHA-256.
 # Usage: UFBT_HOME=<isolated dir> PATH=<venv with ufbt>:$PATH sh build_fixtures.sh <outdir>
+# Hashes are only comparable across runs with the same WORK and UFBT_HOME paths and a fixed
+# PYTHONHASHSEED (issue #17; evaluations/results/2026-10-16-build-reproducibility).
 : "${UFBT_HOME:?set UFBT_HOME to the isolated SDK state directory}"
+export PYTHONHASHSEED="${PYTHONHASHSEED:-0}"
+echo "WORK=${WORK:-/tmp/fred-sdk} UFBT_HOME=$UFBT_HOME PYTHONHASHSEED=$PYTHONHASHSEED"
 R=$(cd "$(dirname "$0")/.." && pwd)
 OUT=${1:?output directory}
 rm -rf ${WORK:-/tmp/fred-sdk}/apps "$OUT"; mkdir -p ${WORK:-/tmp/fred-sdk}/apps "$OUT"

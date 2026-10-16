@@ -1,0 +1,204 @@
+{
+  "mode": "sandbox",
+  "sandbox": {
+    "backend": "unshare",
+    "as_root": true,
+    "work": "/work",
+    "home": "/home/fred-eval",
+    "ro_binds": [
+      [
+        "/usr",
+        "/usr"
+      ],
+      [
+        "/etc",
+        "/etc"
+      ],
+      [
+        "/opt/claude-code/bin",
+        "/opt/fred-claude"
+      ],
+      [
+        "/tmp/fred-sandbox-probe-fgunpkdy/run",
+        "/run/fred"
+      ]
+    ],
+    "rw_binds": [
+      [
+        "/tmp/fred-sandbox-probe-fgunpkdy/ws",
+        "/work"
+      ],
+      [
+        "/tmp/fred-sandbox-probe-fgunpkdy/home",
+        "/home/fred-eval"
+      ]
+    ],
+    "allow_hosts": [
+      "api.anthropic.com"
+    ],
+    "private": [
+      "/home/claude/fred-flipper-toolkit"
+    ],
+    "credentials_copied": false
+  },
+  "claude": "/opt/claude-code/bin/claude",
+  "claude_version": "2.1.301 (Claude Code)",
+  "euid": 0,
+  "wrapper_rc": 0,
+  "wrapper_stderr": "",
+  "kernel": "6.18.44-fc-v139",
+  "fixture": "03-uart",
+  "checks": [
+    {
+      "check": "no_effective_capabilities",
+      "command": "! grep -q '^CapEff:.*[1-9a-f]' /proc/self/status",
+      "expect_success": true,
+      "rc": 0,
+      "pass": true
+    },
+    {
+      "check": "repository_absent",
+      "command": "test ! -e /home/claude/fred-flipper-toolkit",
+      "expect_success": true,
+      "rc": 0,
+      "pass": true
+    },
+    {
+      "check": "oracle_unreadable",
+      "command": "cat /home/claude/fred-flipper-toolkit/evaluations/oracles/01-utility.json",
+      "expect_success": false,
+      "rc": 1,
+      "pass": true
+    },
+    {
+      "check": "rubric_unreadable",
+      "command": "cat /home/claude/fred-flipper-toolkit/evaluations/rubric.json",
+      "expect_success": false,
+      "rc": 1,
+      "pass": true
+    },
+    {
+      "check": "no_evaluation_files_anywhere",
+      "command": "find / -path /proc -prune -o \\( -name rubric.json -o -name heldout.json -o -name oracles -o -name 'research-design*' -o -name run_pilot.py \\) -print 2>/dev/null | grep -q .",
+      "expect_success": false,
+      "rc": 1,
+      "pass": true
+    },
+    {
+      "check": "only_session_home",
+      "command": "test \"$(ls -A /home)\" = fred-eval && test ! -e /root",
+      "expect_success": true,
+      "rc": 0,
+      "pass": true
+    },
+    {
+      "check": "host_processes_hidden",
+      "command": "test \"$(ls /proc | grep -c '^[0-9]')\" -lt 10",
+      "expect_success": true,
+      "rc": 0,
+      "pass": true
+    },
+    {
+      "check": "old_root_detached",
+      "command": "test ! -e /.old && ! grep -q ' /.old' /proc/self/mounts",
+      "expect_success": true,
+      "rc": 0,
+      "pass": true
+    },
+    {
+      "check": "write_usr_denied",
+      "command": "touch /usr/fred-probe",
+      "expect_success": false,
+      "rc": 1,
+      "pass": true
+    },
+    {
+      "check": "write_etc_denied",
+      "command": "touch /etc/fred-probe",
+      "expect_success": false,
+      "rc": 1,
+      "pass": true
+    },
+    {
+      "check": "write_run_denied",
+      "command": "touch /run/fred/fred-probe",
+      "expect_success": false,
+      "rc": 1,
+      "pass": true
+    },
+    {
+      "check": "remount_denied",
+      "command": "mount -o remount,rw /usr",
+      "expect_success": false,
+      "rc": 32,
+      "pass": true
+    },
+    {
+      "check": "write_workspace",
+      "command": "touch /work/.probe && rm /work/.probe",
+      "expect_success": true,
+      "rc": 0,
+      "pass": true
+    },
+    {
+      "check": "direct_egress_blocked",
+      "command": "python3 -c \"import socket;socket.create_connection(('1.1.1.1',443),3)\"",
+      "expect_success": false,
+      "rc": 1,
+      "pass": true
+    },
+    {
+      "check": "proxy_denies_repository_host",
+      "command": "curl -sS --max-time 20 -o /dev/null https://api.github.com/repos/fderuiter/fred-flipper-toolkit",
+      "expect_success": false,
+      "rc": 56,
+      "pass": true
+    },
+    {
+      "check": "compound_compile_and_test_gcc",
+      "command": "cd /work && gcc -std=c11 -Wall -Wextra -Werror -fsanitize=address,undefined -o probe_gcc probe_test.c && ./probe_gcc | grep -q PASS && rm probe_gcc",
+      "expect_success": true,
+      "rc": 0,
+      "pass": true
+    },
+    {
+      "check": "compound_compile_and_test_clang",
+      "command": "cd /work && clang -std=c11 -Wall -Wextra -Werror -o probe_clang probe_test.c && ./probe_clang | grep -q PASS && rm probe_clang",
+      "expect_success": true,
+      "rc": 0,
+      "pass": true
+    },
+    {
+      "check": "make_runs",
+      "command": "cd /work && printf 'all:\\n\\t@echo made\\n' > probe.mk && make -f probe.mk | grep -q made && rm probe.mk",
+      "expect_success": true,
+      "rc": 0,
+      "pass": true
+    },
+    {
+      "check": "claude_binary_starts",
+      "command": "/opt/fred-claude/claude --version",
+      "expect_success": true,
+      "rc": 0,
+      "pass": true
+    },
+    {
+      "check": "proxy_allows_api_host",
+      "command": "curl -sS --max-time 30 -o /dev/null https://api.anthropic.com/",
+      "expect_success": true,
+      "rc": 0,
+      "pass": true
+    }
+  ],
+  "proxy_log": [
+    {
+      "request": "CONNECT api.github.com:443 HTTP/1.1",
+      "allowed": false
+    },
+    {
+      "request": "CONNECT api.anthropic.com:443 HTTP/1.1",
+      "allowed": true
+    }
+  ],
+  "pass": true
+}

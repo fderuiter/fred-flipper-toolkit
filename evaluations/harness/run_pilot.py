@@ -7,6 +7,12 @@ permissions, budget, uniform prompt and a fresh copy of only
 evaluations/fixtures/<task>/. Treatment additionally gets the four FRED skills
 at project scope. Order is randomized with a recorded seed.
 
+With --sandbox (Linux), each session runs inside evaluations/harness/sandbox.py:
+only its workspace, a fresh HOME and read-only system folders exist, and
+network egress is limited to the model API. Both arms then get a general shell
+(allow rule "Bash") so they can compile and run their own host tests. The run
+refuses to start unless the sandbox probe passes, and records it.
+
 Phase "grade": each session's final answer and produced files are scored by a
 separate grader session that sees the task definition and reviewer-side oracle
 but not the arm label (session IDs are opaque). Scores are per predeclared
@@ -31,11 +37,15 @@ import hashlib
 import json
 import os
 import random
+import shlex
 import shutil
 import statistics
 import subprocess
 import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import sandbox  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 EV = ROOT / "evaluations"
@@ -53,6 +63,9 @@ TOOLS = "Read,Glob,Grep,Write,Edit,Skill,Bash"
 ALLOWED = ["Read", "Glob", "Grep", "Write", "Edit", "Skill",
            "Bash(gcc *)", "Bash(cc *)", "Bash(clang *)", "Bash(make *)", "Bash(./*)", "Bash(ls *)",
            "Bash(python3 -c *)", "Bash(xxd *)", "Bash(od *)"]
+# Sandbox mode: identical for both arms; isolation comes from the sandbox, not from allow rules.
+ALLOWED_SANDBOX = ["Read", "Glob", "Grep", "Write", "Edit", "Skill", "Bash"]
+SANDBOX_OK = (sandbox.WORK, sandbox.HOME, "/tmp/", "/usr/", "/bin/", "/dev/null", sandbox.CLAUDE_DIR)
 PRIVATE = (str(ROOT), "/root", "/tmp/claude-0", "/home", "/tmp/fred-sdk", "/tmp/fred-build")
 
 
@@ -80,7 +93,21 @@ def deny_settings() -> dict:
     return {"permissions": {"deny": deny}}
 
 
-def run_session(job: dict, args) -> dict:
+def claude_args(args, settings: str) -> list[str]:
+    allowed = ALLOWED_SANDBOX if args.sandbox else ALLOWED
+    return ["-p", PROMPT, "--model", args.model, "--effort", args.effort,
+            "--tools", TOOLS, "--allowedTools", *allowed, "--settings", settings,
+            "--strict-mcp-config", "--no-session-persistence", "--permission-prompts", "none",
+            "--output-format", "stream-json", "--verbose", "--max-budget-usd", str(args.budget)]
+
+
+def make_sandbox(base: Path, ws: Path, args) -> "sandbox.Sandbox":
+    return sandbox.Sandbox(base, ws, claude=args.claude_bin,
+                           allow_hosts=tuple(args.sandbox_allow_host) if args.sandbox_allow_host else None,
+                           credentials=Path(args.sandbox_credentials) if args.sandbox_credentials else None)
+
+
+def prepare_workspace(job: dict, args) -> tuple[Path, Path]:
     base = Path(args.work) / job["id"]
     if base.exists():
         shutil.rmtree(base)
@@ -89,13 +116,42 @@ def run_session(job: dict, args) -> dict:
     if job["arm"] == "treatment":
         for name in FRED:
             shutil.copytree(ROOT / "skills" / name, ws / ".claude" / "skills" / name)
-    settings = base / "settings.json"
-    settings.write_text(json.dumps(deny_settings()))
+    os.chmod(base, 0o755)
+    return base, ws
+
+
+def dry_run_session(job: dict, args) -> dict:
+    """No model session: show what the agent would see in the sandbox, per arm."""
+    base, ws = prepare_workspace(job, args)
+    check = (f"pwd; ls -A; ls .claude/skills 2>/dev/null || echo no-skills; "
+             f"test -e {shlex.quote(str(ROOT))} && echo REPO-VISIBLE || echo repo-absent; "
+             f"cc -o /tmp/t -x c - <<'C' && /tmp/t\nint main(void){{return 0;}}\nC\n"
+             f"echo compiled=$?; {sandbox.CLAUDE_DIR}/{args.claude_bin.name} --version")
+    with make_sandbox(base, ws, args) as sb:
+        settings = sb.put_run_file("settings.json", json.dumps(deny_settings()))
+        cmd = sb.command(["sh", "-c", check])
+        p = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        rec = {**job, "rc": p.returncode, "stdout": p.stdout.splitlines(), "stderr": p.stderr[-1000:],
+               "would_run": [sb.claude_path(), *claude_args(args, settings)]}
+    print(f"{job['id']} {job['task']} rep{job['rep']} {job['arm']}: rc={p.returncode} "
+          f"{' | '.join(rec['stdout'][-5:])}", flush=True)
+    return rec
+
+
+def run_session(job: dict, args) -> dict:
+    base, ws = prepare_workspace(job, args)
     env = {k: v for k, v in os.environ.items() if k not in STRIP_ENV}
-    cmd = ["claude", "-p", PROMPT, "--model", args.model, "--effort", args.effort,
-           "--tools", TOOLS, "--allowedTools", *ALLOWED, "--settings", str(settings),
-           "--strict-mcp-config", "--no-session-persistence", "--permission-prompts", "none",
-           "--output-format", "stream-json", "--verbose", "--max-budget-usd", str(args.budget)]
+    sb = None
+    if args.sandbox:
+        sb = make_sandbox(base, ws, args).__enter__()
+        cmd = sb.command([sb.claude_path(), *claude_args(args, sb.put_run_file(
+            "settings.json", json.dumps(deny_settings())))])
+        ws_view, ok_prefixes = sandbox.WORK, SANDBOX_OK
+    else:
+        settings = base / "settings.json"
+        settings.write_text(json.dumps(deny_settings()))
+        cmd = ["claude", *claude_args(args, str(settings))]
+        ws_view, ok_prefixes = str(ws), ("/usr/", "/bin/", "/dev/null", "/tmp/fred-eval/pilot/" + job["id"])
     try:
         p = subprocess.run(cmd, cwd=ws, env=env, stdin=subprocess.DEVNULL, capture_output=True,
                            text=True, timeout=args.timeout)
@@ -103,6 +159,9 @@ def run_session(job: dict, args) -> dict:
     except subprocess.TimeoutExpired as exc:
         raw = exc.stdout.decode() if isinstance(exc.stdout, bytes) else (exc.stdout or "")
         rc = "timeout"
+    finally:
+        if sb:
+            sb.__exit__(None, None, None)
     events, texts, skills, private, outside, result = [], [], [], [], [], {}
     for line in raw.splitlines():
         try:
@@ -122,8 +181,8 @@ def run_session(job: dict, args) -> dict:
                         if any(r in val for r in PRIVATE):
                             private.append(val)
                         for tok in val.split():
-                            if tok.startswith("/") and not tok.startswith(str(ws)) and not tok.startswith(
-                                    ("/usr/", "/bin/", "/dev/null", "/tmp/fred-eval/pilot/" + job["id"])):
+                            if tok.startswith("/") and not tok.startswith(ws_view) and not tok.startswith(
+                                    ok_prefixes):
                                 outside.append(tok)
                 elif c.get("type") == "text":
                     texts.append(c["text"])
@@ -141,6 +200,8 @@ def run_session(job: dict, args) -> dict:
     shutil.copytree(ws, out / "workspace", ignore=shutil.ignore_patterns(".claude"))
     rec = {**job, "rc": rc, "skills_invoked": sorted(set(skills)), "private_paths": sorted(set(private)),
            "outside_workspace_paths": sorted(set(outside)),
+           "sandbox": sb.record() if sb else None,
+           "proxy_denied": [e["request"] for e in sb.proxy.log if not e["allowed"]] if sb else [],
            "result": result, "tool_events": events, "assistant_text": texts}
     (out / "session.json").write_text(json.dumps(rec, indent=2) + "\n")
     print(f"{job['id']} {job['task']} rep{job['rep']} {job['arm']}: rc={rc} cost={result.get('cost_usd')} "
@@ -383,21 +444,50 @@ def main(argv=None) -> int:
     ap.add_argument("--only", default="", help="comma-separated session ids (rerun/grade subset)")
     ap.add_argument("--set", choices=tuple(SETS), default="training",
                     help="task set: training (evaluations/) or heldout (evaluations/heldout/)")
+    ap.add_argument("--tasks", default="", help="comma-separated task subset (e.g. a smoke run)")
+    ap.add_argument("--sandbox", action="store_true",
+                    help="run sessions in the namespace sandbox with a general shell (Linux; see sandbox.py)")
+    ap.add_argument("--sandbox-allow-host", action="append",
+                    help="host the sandbox proxy may tunnel to (default: the model API host)")
+    ap.add_argument("--sandbox-credentials", help="copy this .credentials.json into each sandbox HOME")
+    ap.add_argument("--claude", help="Claude Code binary for --sandbox (default: resolved from PATH)")
+    ap.add_argument("--dry-run", action="store_true",
+                    help="with --sandbox: build every workspace and sandbox but launch no model session")
     args = ap.parse_args(argv)
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     if args.phase == "run":
+        tasks = [t for t in set_tasks(args.set) if not args.tasks or t in args.tasks.split(",")]
         jobs = [{"task": t, "rep": r, "arm": a, "id": sid(t, r, a, args.seed)}
-                for t in set_tasks(args.set) for r in range(1, args.reps + 1) for a in ("baseline", "treatment")]
+                for t in tasks for r in range(1, args.reps + 1) for a in ("baseline", "treatment")]
         random.Random(args.seed).shuffle(jobs)
         if args.only:
             jobs = [j for j in jobs if j["id"] in args.only.split(",")]
+        probe = None
+        if args.dry_run and not args.sandbox:
+            ap.error("--dry-run needs --sandbox")
+        if args.sandbox:
+            args.claude_bin = Path(args.claude).resolve() if args.claude else sandbox.find_claude()
+            if not args.claude_bin:
+                ap.error("--sandbox: Claude Code binary not found; pass --claude")
+            probe = sandbox.run_probe(args.claude_bin, allow=tuple(args.sandbox_allow_host or ()) or None,
+                                      credentials=Path(args.sandbox_credentials) if args.sandbox_credentials else None)
+            (out / "sandbox-probe.json").write_text(json.dumps(probe, indent=2) + "\n")
+            if not probe["pass"]:
+                failed = [c["check"] for c in probe["checks"] if not c["pass"]]
+                print(f"sandbox probe failed ({failed}); not starting any session", file=sys.stderr)
+                return 2
         (out / "run.json").write_text(json.dumps({
             "set": args.set, "model": args.model, "effort": args.effort, "budget_usd_per_session": args.budget,
             "timeout_s": args.timeout, "seed": args.seed, "prompt": PROMPT, "tools": TOOLS,
-            "allowed": ALLOWED, "deny_roots": PRIVATE, "order": jobs}, indent=2) + "\n")
+            "allowed": ALLOWED_SANDBOX if args.sandbox else ALLOWED, "deny_roots": PRIVATE,
+            "sandbox": bool(args.sandbox), "sandbox_probe_pass": probe["pass"] if probe else None,
+            "dry_run": bool(args.dry_run), "order": jobs}, indent=2) + "\n")
+        fn = dry_run_session if args.dry_run else run_session
         with cf.ThreadPoolExecutor(max_workers=args.jobs) as pool:
-            list(pool.map(lambda j: run_session(j, args), jobs))
+            recs = list(pool.map(lambda j: fn(j, args), jobs))
+        if args.dry_run:
+            (out / "dry-run.json").write_text(json.dumps(recs, indent=2) + "\n")
     elif args.phase == "grade":
         sdirs = sorted((out / "sessions").iterdir())
         if args.only:

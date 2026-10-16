@@ -215,6 +215,33 @@ class Sdk(Base):
         self.assertEqual(code, 2)
         self.assertIn("not set up yet", err)
 
+    def _fake_sdk_build(self):
+        home = self.base / "sdk"
+        exe = fred_setup.venv_bin(home / "venv", "ufbt")
+        exe.parent.mkdir(parents=True)
+        exe.write_text("")
+        calls = []
+
+        def fake_run(cmd, cwd, env, **_):
+            calls.append((Path(cwd), env))
+            (Path(cwd) / "dist").mkdir(exist_ok=True)
+            (Path(cwd) / "dist" / "fred_tally.fap").write_bytes(b"fap")
+            return mock.Mock(returncode=0, stdout="", stderr="")
+
+        app = ROOT / "evaluations" / "reference" / "01-utility"
+        out = io.StringIO()
+        with mock.patch.object(fred_setup.subprocess, "run", fake_run), contextlib.redirect_stdout(out):
+            for _ in range(2):
+                self.assertEqual(fred_setup.build_app(app, home, fred_setup.UI(yes=True), scratch=True), 0)
+        return home, calls
+
+    def test_scratch_build_uses_fixed_path_and_hash_seed(self):
+        home, calls = self._fake_sdk_build()
+        self.assertEqual([c[0] for c in calls], [home / "build" / "01-utility"] * 2)
+        for _, env in calls:
+            self.assertEqual(env["PYTHONHASHSEED"], "0")
+            self.assertEqual(env["UFBT_HOME"], str(home / "ufbt-home"))
+
 
 class Card(Base):
     def test_card_written_and_not_overwritten_without_confirmation(self):

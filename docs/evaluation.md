@@ -42,6 +42,10 @@ These validate the bundle and helpers. They are not evaluations of agent benefit
 | Controlled 42-session pilot | **gate not met**: round 1 treatment 84.6 vs baseline 77.4; round 2 (after one improvement round) 86.7 vs 77.2, about 53–58% fewer critical/major errors, but the migration family stays below 80, there was one treatment critical, and the token ratio was 1.75× ([round 1](../evaluations/results/2026-10-16-pilot-sonnet55/README.md), [round 2](../evaluations/results/2026-10-16-pilot-sonnet55-r2/README.md)) |
 | Device qualification | not-run (needs authorized hardware) |
 
+## Sandboxed sessions (#14)
+
+The two recorded pilot rounds used allow rules (`Bash(gcc *)` and similar), which reject compound commands, so many sessions could not run their own host tests. `run_pilot.py run --sandbox` (Linux) runs each session in `evaluations/harness/sandbox.py`: new mount, PID and network namespaces whose filesystem holds only the workspace (`/work`), a fresh HOME, read-only `/usr` and `/etc`, and the Claude Code binary; no capabilities; network only through a proxy that tunnels to the model API host. Both arms then get the same general `Bash` permission. The run refuses to start unless `sandbox.py probe` passes, and stores the probe in `sandbox-probe.json`; `--dry-run` builds every workspace and sandbox without launching a model session. Proof without model spend: [results/2026-10-16-sandbox-proof](../evaluations/results/2026-10-16-sandbox-proof/README.md). A paired smoke run with model sessions has not been run. Results from sandboxed runs are not directly comparable with the two recorded rounds, because the agents' tool access differs.
+
 ## Known gaps from the pilot (tracked)
 
 | Gap (round 2) | Value | Gate | Issue |

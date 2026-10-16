@@ -71,7 +71,7 @@ Fetch each issue first; acceptance criteria live there.
 3. **#13: token ratio.** Per-file loading is measured (`evaluations/harness/measure_reference_load.py`, record `evaluations/results/2026-10-16-reference-load.md`), duplication is trimmed (#27), and rubric version 2 revises the budget to ≤ 2.0× when the same run shows ≥ 50% fewer critical/major errors ([ADR 0003](../adr/0003-token-budget-revision.md)). Remaining: confirm activation still passes, and check the ratio on the held-out pilot (#12).
 4. **#12: held-out validation.** Fixtures, task definitions, oracles and reference solutions for the seven variants exist in `evaluations/heldout/` (see its README; host tests pass). Still open: the uFBT builds of the H01 and H06 apps (`build_fixtures.sh`), and the paired run `run_pilot.py --set heldout` once the user approves the spend. Results decide #21, #22 and #23, then #8.
 5. **#23: paired gain.** `run_pilot.py report` now prints bootstrap intervals (pairs, and tasks as a sensitivity check); the training rounds are in `evaluations/results/2026-10-16-paired-gain-bootstrap.md`. Report the held-out paired gain with them, then make the gate decision on #8.
-6. **#14: sandboxed host tests.** Make evaluated sessions able to compile and run tests without being able to read the repository. Use a container, a separate OS user, or a VM. The harness's current deny rules and allowlist cannot safely allow a general shell.
+6. **#14: sandboxed host tests.** Done offline: `evaluations/harness/sandbox.py` and `run_pilot.py run --sandbox` (proof in `evaluations/results/2026-10-16-sandbox-proof/`). Remaining: the paired smoke run, which needs approved model spend, and confirming how Claude Code authenticates inside the sandbox (`ANTHROPIC_API_KEY` or `--sandbox-credentials`).
 7. **#15: wizard on Windows and macOS.** It has only been verified on Ubuntu 24.04 / Python 3.13.
 8. **#9: device qualification.** Needs a Flipper Zero on official 1.5.1 and a 3.3 V USB-UART adapter. Follow `evaluations/device/README.md` exactly and record observations.
 9. **#19: monthly maintenance review**, due 2026-11-16, recurring.
@@ -114,8 +114,12 @@ python3 scripts/compare_api.py --old OLD_api_symbols.csv --new NEW_api_symbols.c
 python3 evaluations/harness/run_activation.py --model claude-sonnet-5-5 --scope project \
   --out evaluations/results/<date>-activation-<label> --jobs 8
 
+# Sandbox proof (no model session; Linux)
+python3 evaluations/harness/sandbox.py probe --out /tmp/sandbox-probe.json
+python3 evaluations/harness/run_pilot.py run --sandbox --dry-run --out /tmp/pilot-dry
+
 # Paired pilot (~$10 sessions + ~$10 grading per 42 sessions); write to scratch, copy in when graded
-python3 evaluations/harness/run_pilot.py run    --out /tmp/pilot --seed <new seed> --jobs 6
+python3 evaluations/harness/run_pilot.py run    --out /tmp/pilot --seed <new seed> --jobs 6   # add --sandbox for a general shell
 python3 evaluations/harness/run_pilot.py grade  --out /tmp/pilot --jobs 6
 python3 evaluations/harness/run_pilot.py report --out /tmp/pilot
 ```
