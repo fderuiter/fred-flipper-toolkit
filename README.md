@@ -33,6 +33,8 @@ On Windows use `py -3 scripts\fred_setup.py`. The wizard shows its plan and asks
 | [Using FRED](docs/using-fred.md) | What each skill does, example requests, how to read the answers |
 | [Troubleshooting](docs/troubleshooting.md) | Common problems and fixes |
 | [Manual install and other agents](docs/project-instructions.md) | Copying folders by hand, routing snippet, non-Claude clients |
+| [Release notes v0.1.0-preview](docs/releases/v0.1.0-preview.md) | What this release verifies and its known gaps |
+| [Handoff prompt](docs/handoff/next-agent-prompt.md) | Starting a new AI agent session on the remaining work |
 
 The skills grant no tool permissions and run no commands on activation. Install all four together; a partial install is reported as broken.
 

@@ -2,11 +2,11 @@
 
 ## Current phase
 
-Implementation phase: v0.1 **preview**. The repository contains the four-skill bundle (`skills/`), shared references and claim registry, two offline helpers (`scripts/`), tests, benchmark definitions (`evaluations/`) and the research record (`docs/research/`, preserved as the evidence base). Live activation and SDK qualification are recorded in `evaluations/results/`. The controlled model comparison (#8) and device qualification (#9) gate any stronger claim. Do not describe the toolkit as device-verified or production-ready.
+Implementation phase: **v0.1.0-preview released** (tag `v0.1.0-preview`). The repository contains the four-skill bundle (`skills/`), shared references and claim registry, two offline helpers (`scripts/`), tests, benchmark definitions (`evaluations/`) and the research record (`docs/research/`, preserved as the evidence base). Live activation and SDK qualification are recorded in `evaluations/results/`. The controlled model comparison (#8) and device qualification (#9) gate any stronger claim. Do not describe the toolkit as device-verified or production-ready.
 
 The user authorized implementation work committed directly to `main` in small coherent commits, and updating existing roadmap issues. Inspect the current head before committing, preserve concurrent and unrelated changes, use a checked fast-forward update, and never force-push. Authorization for one task does not extend to unrelated external actions.
 
-Read the README, [docs/architecture.md](docs/architecture.md), the relevant reference under `skills/flipper-core/references/` and the existing issues before editing. Preserve the MIT license/copyright.
+New sessions continuing the work should start with [docs/handoff/next-agent-prompt.md](docs/handoff/next-agent-prompt.md). Read the README, [docs/architecture.md](docs/architecture.md), the relevant reference under `skills/flipper-core/references/` and the existing issues before editing. Preserve the MIT license/copyright.
 
 ## Checks
 

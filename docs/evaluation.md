@@ -40,3 +40,14 @@ These validate the bundle and helpers. They are not evaluations of agent benefit
 | SDK compile of fixtures, host tests of fixture logic | pass: verified 1.5.1 SDK, toolchain 39 ([record](../evaluations/results/2026-10-16-sdk-qualification/README.md)) |
 | Controlled 42-session pilot | **gate not met**: round 1 treatment 84.6 vs baseline 77.4; round 2 (after one improvement round) 86.7 vs 77.2, about 53–58% fewer critical/major errors, but the migration family stays below 80, there was one treatment critical, and the token ratio was 1.75× ([round 1](../evaluations/results/2026-10-16-pilot-sonnet55/README.md), [round 2](../evaluations/results/2026-10-16-pilot-sonnet55-r2/README.md)) |
 | Device qualification | not-run (needs authorized hardware) |
+
+## Known gaps from the pilot (tracked)
+
+| Gap (round 2) | Value | Gate | Issue |
+|---|---|---|---|
+| SDK-migration task family | 74.3 (baseline 74.8) | every family ≥ 80 | [#21](https://github.com/fderuiter/fred-flipper-toolkit/issues/21) |
+| Critical failure in the FRED arm | 1 (UART teardown freed ViewPort before joining the worker) | 0 | [#22](https://github.com/fderuiter/fred-flipper-toolkit/issues/22) |
+| Paired improvement | +9.5 | ≥ 10, or ≥ 50% fewer critical/major errors (−53%: met) | [#23](https://github.com/fderuiter/fred-flipper-toolkit/issues/23) |
+| Median token ratio | 1.75× | ≤ 1.5× | [#13](https://github.com/fderuiter/fred-flipper-toolkit/issues/13) |
+
+The one allowed improvement round on the training tasks has been used. Further changes must be measured on held-out variants ([#12](https://github.com/fderuiter/fred-flipper-toolkit/issues/12)).

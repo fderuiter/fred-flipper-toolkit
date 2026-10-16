@@ -1,10 +1,12 @@
 # Changelog
 
-## Unreleased — v0.1.0 preview
+## v0.1.0-preview — 2026-10-16
+
+Release notes: [docs/releases/v0.1.0-preview.md](docs/releases/v0.1.0-preview.md). Handoff for future work: [docs/handoff/next-agent-prompt.md](docs/handoff/next-agent-prompt.md).
 
 Implementation phase started 2026-10-16.
 
-- Compatibility and evidence contracts (#2): `compatibility.json` with separate baseline identities (firmware 1.5.1 / `9e810dc` / f7 / API 88.2, SDK URL and published digest, uFBT 0.2.6, toolchain unknown) and evidence fields; claim registry `skills/flipper-core/references/sources.json` (41 claims with pinned sources, status, consequence and consumers); evidence policy and forms.
+- Compatibility and evidence contracts (#2): `compatibility.json` with separate baseline identities (firmware 1.5.1 / `9e810dc` / f7 / API 88.2, SDK URL and published digest, uFBT 0.2.6, toolchain unknown) and evidence fields; claim registry `skills/flipper-core/references/sources.json` (43 claims with pinned sources, status, consequence and consumers); evidence policy and forms.
 - Four skills (#3): `flipper-core`, `flipper-native`, `flipper-review`, `flipper-verify` with restricted frontmatter, direct-entry loading of shared rules and an explicit broken-installation error.
 - Shared references (#4): engineering rules, compatibility, capability map with BLE stress test, runtime/UI/ownership, storage/parsers, hardware/communications, build/debug/release, corrected assumptions, pinned upstream example index.
 - Offline helpers (#5): `scripts/check_bundle.py` and `scripts/compare_api.py`, with unittest cases including negative and security tests.

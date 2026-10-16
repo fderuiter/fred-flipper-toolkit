@@ -1,6 +1,6 @@
 # Implementation roadmap
 
-Status (2026-10-16): v0.1 preview implemented — #2–#7 and #10 are complete with recorded evidence; #8 (model comparison) and #9 (hardware) remain, plus follow-ups #12–#21. Issue comments record commits and exact check results.
+Status (2026-10-16): v0.1 preview implemented — #2–#7 and #10 are complete with recorded evidence; #8 (model comparison) and #9 (hardware) remain, plus follow-ups #12–#23. Issue comments record commits and exact check results.
 
 Tracker: [#1](https://github.com/fderuiter/fred-flipper-toolkit/issues/1). The [implementation prompt](implementation-prompt.md) gives concrete files, sequence, sources and release gates. The [full report](research/2026-10-16-research-design.md) explains the decisions.
 
@@ -29,8 +29,10 @@ Tracker: [#1](https://github.com/fderuiter/fred-flipper-toolkit/issues/1). The [
 | [#17: Investigate .fap build reproducibility](https://github.com/fderuiter/fred-flipper-toolkit/issues/17) | P3 | — | Section-level root cause; recipe or documented limit |
 | [#18: Qualify FRED in other agent clients](https://github.com/fderuiter/fred-flipper-toolkit/issues/18) | P3 | demand | Per-client activation results |
 | [#19: First maintenance review (due 2026-11-16)](https://github.com/fderuiter/fred-flipper-toolkit/issues/19) | P2 | — | Review checklist with check results |
-| [#21: Address pilot weaknesses: SDK-migration family and teardown ordering](https://github.com/fderuiter/fred-flipper-toolkit/issues/21) | P1 | #12 | Generic guidance changes evaluated on held-out variants |
-| [#20: Cut the v0.1.0-preview release](https://github.com/fderuiter/fred-flipper-toolkit/issues/20) | P1 | #8 decision | Tag, release notes stating exact evidence |
+| [#21: Pilot gap — SDK-migration family 74.3 < 80](https://github.com/fderuiter/fred-flipper-toolkit/issues/21) | P1 | #12 | Migration family ≥ 80 on a held-out paired rerun |
+| [#22: Pilot gap — critical teardown bug in a FRED session](https://github.com/fderuiter/fred-flipper-toolkit/issues/22) | P1 | #12 | Zero treatment critical failures in the next paired run |
+| [#23: Pilot gap — paired improvement +9.5 < +10](https://github.com/fderuiter/fred-flipper-toolkit/issues/23) | P2 | #21, #22 | Held-out paired gain with uncertainty; gate decision on #8 |
+| [#20: Cut the v0.1.0-preview release](https://github.com/fderuiter/fred-flipper-toolkit/issues/20) | P1 | — | Done: tag `v0.1.0-preview`, [release notes](releases/v0.1.0-preview.md) |
 
 ## Sequence and qualification boundaries
 
