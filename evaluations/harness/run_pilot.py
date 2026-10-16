@@ -353,6 +353,13 @@ def report(args) -> dict:
         "critical_major_reduction_ge_50pct": cm_b > 0 and cm_t <= 0.5 * cm_b,
         "token_ratio_le_1_5": ratio is not None and ratio <= 1.5,
     }
+    # Rubric v2 (ADR 0003): the higher token budget applies only with a measured correctness gain.
+    comp = json.loads((EV / "rubric.json").read_text())["gates"]["comparative"]
+    gain = g["gates"]["critical_major_reduction_ge_50pct"] and (t_mean or 0) >= (b_mean or 0)
+    budget = comp["token_ratio_median_max"] if gain else comp.get("token_ratio_median_max_without_condition",
+                                                                    comp["token_ratio_median_max"])
+    g["token_budget"] = budget
+    g["gates"]["token_ratio_within_budget"] = ratio is not None and ratio <= budget
     g["gates"]["comparative_gate_met"] = (g["gates"]["treatment_mean_ge_85"] and g["gates"]["no_task_family_below_80"]
                                           and g["gates"]["no_critical_failures"]
                                           and (g["gates"]["paired_improvement_ge_10"]

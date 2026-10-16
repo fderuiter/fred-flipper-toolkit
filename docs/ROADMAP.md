@@ -22,7 +22,7 @@ Tracker: [#1](https://github.com/fderuiter/fred-flipper-toolkit/issues/1). The [
 | Issue | Priority | Depends on | Completion evidence |
 |---|---|---|---|
 | [#12: Build held-out benchmark fixtures and run held-out validation](https://github.com/fderuiter/fred-flipper-toolkit/issues/12) | P1 | #8 | Held-out fixtures/oracles, reference builds, paired held-out run |
-| [#13: Reduce skill context overhead to the 1.5x token budget](https://github.com/fderuiter/fred-flipper-toolkit/issues/13) | P1 | — | Token cost table; ratio ≤ 1.5× or documented budget revision |
+| [#13: Reduce skill context overhead to the 1.5x token budget](https://github.com/fderuiter/fred-flipper-toolkit/issues/13) | P1 | — | Token cost table; ratio ≤ 1.5× or documented budget revision. Table and trim done (#27); budget revised in rubric v2 ([ADR 0003](adr/0003-token-budget-revision.md)); activation recheck pending |
 | [#14: Pilot harness: let both arms compile and run host tests inside an isolated sandbox](https://github.com/fderuiter/fred-flipper-toolkit/issues/14) | P2 | — | Sandbox proof and paired smoke run. Proof done offline ([record](../evaluations/results/2026-10-16-sandbox-proof/README.md)); smoke run needs approved model spend |
 | [#15: Test the setup wizard on Windows and macOS](https://github.com/fderuiter/fred-flipper-toolkit/issues/15) | P1 | — | Per-OS results; tests pass |
 | [#16: Resolve remaining GPIO electrical unknowns](https://github.com/fderuiter/fred-flipper-toolkit/issues/16) | P2 | — | AN4899, schematic and ESD sources or recorded unavailability |

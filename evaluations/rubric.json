@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
+  "rubric_version": 2,
   "description": "Predeclared per-task scoring (100 points). Fixed before any evaluation run; changes require a new version and invalidate earlier comparisons.",
   "categories": [
     {
@@ -58,7 +59,9 @@
       "critical_failures_max": 0,
       "paired_improvement_min": 10,
       "alternative": "≥50% fewer predeclared critical/major errors without correctness regression",
-      "token_ratio_median_max": 1.5
+      "token_ratio_median_max": 2.0,
+      "token_ratio_condition": "The 2.0x budget applies only when the same run shows >=50% fewer predeclared critical/major errors than baseline and treatment mean >= baseline mean; otherwise the 1.5x budget of rubric version 1 applies.",
+      "token_ratio_median_max_without_condition": 1.5
     }
   },
   "design": {
@@ -71,5 +74,15 @@
     "sessions": 42,
     "order": "randomized per repetition",
     "blinding": "reviewer blinded to arm where practical"
-  }
+  },
+  "revisions": [
+    {
+      "version": 2,
+      "date": "2026-10-16",
+      "change": "comparative.token_ratio_median_max 1.5 -> 2.0, conditional on a measured correctness gain in the same run",
+      "reason": "Documented budget revision allowed by the research design (median treatment tokens <=1.5x baseline unless a documented correctness gain warrants an explicit revision). Pilot rounds 1 and 2 measured 1.79x and 1.75x with 58% and 53% fewer critical+major errors; deduplication projects 1.70x (issue #13). Scoring categories, weights and critical failures are unchanged.",
+      "applies_to": "Runs after 2026-10-16, starting with the held-out pilot (#12). Rounds 1 and 2 stay evaluated under version 1.",
+      "decision": "docs/adr/0003-token-budget-revision.md"
+    }
+  ]
 }
