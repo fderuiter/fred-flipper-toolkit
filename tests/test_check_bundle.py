@@ -261,7 +261,7 @@ class Links(BundleFixture):
         self.assertIn("missing anchor '#no-such-heading'", out)
 
     def test_valid_anchor(self):
-        self.edit(self.skill(), "## Purpose\n", "## Purpose\n\n[q](../flipper-core/references/runtime-ui.md#queues-and-cancellation)\n")
+        self.edit(self.skill(), "## Purpose\n", "## Purpose\n\n[q](../flipper-core/references/runtime-ui.md#ui-architecture)\n")
         code, out = self.check()
         self.assertEqual(code, 0, out)
 
@@ -361,7 +361,7 @@ class Registry(BundleFixture):
         flagged = {line.split(":")[1].strip() for line in out.splitlines()
                    if line.startswith("warning:") and "C-TMR-001" in line}
         self.assertEqual(flagged, set(claim["consumers"]))
-        self.assertIn("flipper-core/references/runtime-ui.md", flagged)
+        self.assertIn("flipper-core/references/engineering-rules.md", flagged)
 
     def test_deprecated_claim_cited(self):
         self.claim("C-TMR-001")["review_state"] = "deprecated"
@@ -378,7 +378,7 @@ class Registry(BundleFixture):
         self.assert_error("does not cite C-JS-001")
 
     def test_citation_must_be_listed(self):
-        self.edit(self.skills / "flipper-core/references/storage-parsers.md", "## Untrusted content", "## Untrusted content\n\nSee [C-JS-001].")
+        self.edit(self.skills / "flipper-core/references/storage-parsers.md", "## Settings", "## Settings\n\nSee [C-JS-001].")
         self.assert_error("cites C-JS-001 but is not listed in its consumers")
 
     def test_consumer_outside_bundle(self):

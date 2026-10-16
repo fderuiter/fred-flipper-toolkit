@@ -3,6 +3,7 @@
 ## Unreleased
 
 - `flipper-native` workflow gains a mandatory teardown self-check (step 8): one row per producer, what it touches, and the stop/join line that must run before those are freed; `flipper-review` outputs include the same table (#22). Not yet evaluated in a paired run.
+- Token budget (#13): `evaluations/harness/measure_reference_load.py` measures which skill files pilot sessions loaded and estimates each file's cost; results in `evaluations/results/2026-10-16-reference-load.md`. Removed text from `runtime-ui.md`, `storage-parsers.md`, `hardware-communications.md` and `evidence-policy.md` that duplicated `engineering-rules.md`; projected ratio 1.75× → 1.70× (no rerun).
 
 ## v0.1.0-preview — 2026-10-16
 

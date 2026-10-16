@@ -11,9 +11,7 @@ Every FRED skill reports what is known, how it is known, and what remains open. 
 | `inferred` | Engineering conclusion from documented/source evidence | "This implies…; not executed" |
 | `unresolved` | Evidence missing or conflicting | "Unknown; blocks …" |
 
-A material claim records: claim ID and wording, source URL and path/function/section, version or commit, date checked, status, practical consequence, and the references/examples that consume it. The registry is [sources.json](sources.json); its schema is in the repository's `docs/architecture.md`. Live (unpinned) sources must be flagged `live` and never presented as commit-pinned.
-
-Review states: `current` (usable), `review-required` (upstream changed or check is old — warn and re-inspect before relying on it), `deprecated` (kept for history, do not cite as guidance), `unsupported` (known wrong or out of scope — remove from guidance and leave a tombstone). Refreshing a date without re-inspection is not a review.
+Material claims live in [sources.json](sources.json) with a pinned source, date, status and consequence; cite their IDs. Present a `live` (unpinned) source as live, never as commit-pinned. A `review-required` claim needs re-inspection before you rely on it; never cite `deprecated` or `unsupported` claims as guidance.
 
 ## Execution evidence fields
 
