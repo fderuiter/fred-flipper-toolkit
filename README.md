@@ -10,7 +10,7 @@ A proposed AI development toolkit for the Flipper Zero ecosystem, primarily for 
 - [Standalone implementation prompt](docs/implementation-prompt.md): concrete handoff for the later coding phase.
 - [Research evidence and source pins](docs/research/README.md): scope, provenance, known limits, and machine-readable repository inventory.
 - [Architecture decision](docs/adr/0001-four-skill-bundle.md): why four cohesive skills and shared references.
-- [Roadmap issues](https://github.com/fderuiter/fred-flipper-toolkit/issues): implementation and qualification work with acceptance criteria.
+- [Roadmap](docs/ROADMAP.md) and [tracking issue #1](https://github.com/fderuiter/fred-flipper-toolkit/issues/1): implementation and qualification work with dependencies and acceptance criteria.
 
 ## Intended first release
 

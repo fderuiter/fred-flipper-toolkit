@@ -440,7 +440,7 @@ Add **24 activation cases**: eight direct/positive task phrasings; eight negativ
 
 ### Comparison and scoring
 
-Use the same named model/version, reasoning setting, tools, tool permissions, task inputs, SDK cache, hardware availability, time/token budget and repository state in both arms. Start fresh sessions; baseline gets ordinary repository facts/build setup but no toolkit text, and treatment gets the four-skill bundle. Do not give answers to one arm via setup scripts. Run three paired repetitions on each of seven tasks (42 total sessions); randomize order, retain transcripts/artifacts and blind the reviewer to arm labels where practical. This is a compact pilot, not statistical proof of general superiority. Retest held-out variants before a stable release.
+Use the same named model/version, reasoning setting, tools, tool permissions, task inputs, SDK cache, hardware availability, time/token budget and repository state in both arms. Start fresh sessions; baseline gets ordinary repository facts/build setup but no toolkit text, and treatment gets the four-skill bundle. Do not give answers to one arm via setup scripts. Prepare fresh task workspaces containing only task-visible inputs and normal project facts. Keep the research report, issue bodies, seeded-defect inventory, expected findings and scoring oracles outside the agent-readable workspace; treatment receives the installed skill/reference payload only. Run hidden checks from the reviewer side. Merely putting answers in a separate folder inside the same readable repository is insufficient isolation. Run three paired repetitions on each of seven tasks (42 total sessions); randomize order, retain transcripts/artifacts and blind the reviewer to arm labels where practical. This is a compact pilot, not statistical proof of general superiority. Retest held-out variants before a stable release.
 
 Per-task score out of 100: correctness/required behavior 30; execution-surface and compatibility accuracy 20; ownership/concurrency/input handling 20; verification/evidence honesty 15; minimality/context/action scope 10; usable documentation/handoff 5. Each task file defines observable assertions and applicability; redistribute an inapplicable item's weight within its category before running, not after seeing scores. Compile/test assertions use actual results; review assertions use fixed seeded defects; feasibility uses source-backed required operations. Critical failures override average scores: invented required API/command, fabricated executed evidence, unsafe lifetime bug in the scored path, unauthorized external action, or destructive handling of unrelated data.
 
@@ -465,7 +465,7 @@ Per-task score out of 100: correctness/required behavior 30; execution-surface a
 
 ### Small reviewable milestones
 
-All milestones below are for the future coding phase. Each can be reviewed locally; no GitHub records are created by this report.
+All milestones below are for the future coding phase. The user subsequently authorized roadmap records: [tracker #1](https://github.com/fderuiter/fred-flipper-toolkit/issues/1) links the implementation/qualification issues. Their creation does not implement these milestones.
 
 | Milestone | Work and acceptance | Depends on | Relative effort/value/uncertainty |
 |---|---|---|---|

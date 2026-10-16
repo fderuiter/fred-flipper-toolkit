@@ -1,0 +1,126 @@
+{
+  "checked_on": "2026-10-16",
+  "tracker": {
+    "number": 1,
+    "url": "https://github.com/fderuiter/fred-flipper-toolkit/issues/1"
+  },
+  "issues": [
+    {
+      "number": 2,
+      "title": "Implement compatibility and claim-evidence registry contracts",
+      "url": "https://github.com/fderuiter/fred-flipper-toolkit/issues/2",
+      "priority": "P0",
+      "phase": "M0 / v0.1",
+      "depends_on": [],
+      "status": "open"
+    },
+    {
+      "number": 3,
+      "title": "Implement the four-skill bundle and direct-entry routing",
+      "url": "https://github.com/fderuiter/fred-flipper-toolkit/issues/3",
+      "priority": "P0",
+      "phase": "M1 / v0.1",
+      "depends_on": [
+        2
+      ],
+      "status": "open"
+    },
+    {
+      "number": 4,
+      "title": "Write bounded source-backed engineering and capability references",
+      "url": "https://github.com/fderuiter/fred-flipper-toolkit/issues/4",
+      "priority": "P0",
+      "phase": "M2 / v0.1",
+      "depends_on": [
+        2,
+        3
+      ],
+      "status": "open"
+    },
+    {
+      "number": 5,
+      "title": "Implement offline bundle-integrity and SDK API comparison helpers",
+      "url": "https://github.com/fderuiter/fred-flipper-toolkit/issues/5",
+      "priority": "P1",
+      "phase": "M3 / v0.1",
+      "depends_on": [
+        2,
+        3,
+        4
+      ],
+      "status": "open"
+    },
+    {
+      "number": 6,
+      "title": "Create seven benchmark tasks, 24 activation cases, and objective oracles",
+      "url": "https://github.com/fderuiter/fred-flipper-toolkit/issues/6",
+      "priority": "P1",
+      "phase": "M4 / v0.1",
+      "depends_on": [
+        3,
+        4,
+        5
+      ],
+      "status": "open"
+    },
+    {
+      "number": 7,
+      "title": "Qualify designated fixtures against official 1.5.1 f7 SDK",
+      "url": "https://github.com/fderuiter/fred-flipper-toolkit/issues/7",
+      "priority": "P1",
+      "phase": "M5 / SDK qualification",
+      "depends_on": [
+        5,
+        6
+      ],
+      "status": "open"
+    },
+    {
+      "number": 8,
+      "title": "Measure toolkit benefit with a controlled paired agent evaluation",
+      "url": "https://github.com/fderuiter/fred-flipper-toolkit/issues/8",
+      "priority": "P1",
+      "phase": "M6 / v0.1 effectiveness",
+      "depends_on": [
+        6,
+        7
+      ],
+      "status": "open"
+    },
+    {
+      "number": 9,
+      "title": "Qualify native UI, settings recovery, and UART behavior on real hardware",
+      "url": "https://github.com/fderuiter/fred-flipper-toolkit/issues/9",
+      "priority": "P1",
+      "phase": "M7 / stable native support",
+      "depends_on": [
+        7
+      ],
+      "status": "open"
+    },
+    {
+      "number": 10,
+      "title": "Operationalize maintenance, contribution, and evidence-based release policy",
+      "url": "https://github.com/fderuiter/fred-flipper-toolkit/issues/10",
+      "priority": "P1",
+      "phase": "v0.1 release governance",
+      "depends_on": [
+        2,
+        3,
+        4
+      ],
+      "status": "open"
+    },
+    {
+      "number": 11,
+      "title": "Resolve evidence gaps before optional JS, fork, simulator, or device-adapter expansion",
+      "url": "https://github.com/fderuiter/fred-flipper-toolkit/issues/11",
+      "priority": "P2",
+      "phase": "Research backlog / expansion-gated",
+      "depends_on": [
+        2
+      ],
+      "status": "open"
+    }
+  ]
+}

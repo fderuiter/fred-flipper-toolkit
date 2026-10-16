@@ -223,6 +223,8 @@
     "sdk_bytes_verified": false,
     "compiled": false,
     "host_application_tests": false,
-    "device_tests": false
+    "device_tests": false,
+    "sdk_index_snapshot_sha256": "6062f36d479b2d5fe8fdc0a9dd6ceeeab15f2050d97df6dd7a7ac51090211fac",
+    "sdk_metadata_evidence": "Official index read; no SDK ZIP downloaded or executed"
   }
 }
