@@ -1,0 +1,11 @@
+# Reviewer-side reference solution for FRED held-out task H01. MIT licensed, original.
+App(
+    appid="fred_stopwatch",
+    name="FRED Stopwatch",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="fred_stopwatch_app",
+    requires=["gui"],
+    stack_size=2 * 1024,
+    sources=["fred_stopwatch.c", "stopwatch_core.c"],
+    fap_category="Tools",
+)

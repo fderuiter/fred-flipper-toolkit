@@ -1,0 +1,10 @@
+# Synthetic benchmark input for a FRED held-out task. Not a distributable app.
+App(
+    appid="door_monitor_eval",
+    name="Door Monitor (eval)",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="door_monitor_app",
+    requires=["gui", "notification", "storage"],
+    stack_size=2 * 1024,
+    fap_category="GPIO",
+)

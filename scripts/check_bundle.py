@@ -760,21 +760,37 @@ def check_evaluations(root: Path, rep: Report) -> None:
         total = sum(c.get("weight", 0) for c in cats if isinstance(c, dict))
         if total != 100:
             rep.error("evaluations/rubric.json", f"category weights sum to {total}, not 100")
-    tasks = sorted((ev / "tasks").glob("*.md")) if (ev / "tasks").is_dir() else []
-    if len(tasks) != 7:
-        rep.error("evaluations/tasks", f"expected 7 task definitions, found {len(tasks)}")
-    # Each task oracle's assertion weights match the rubric category weights.
     rubric_w = {c.get("id"): c.get("weight") for c in (rub or {}).get("categories", [])
                 if isinstance(c, dict)} if isinstance(rub, dict) else {}
+    check_task_set(root, ev, rubric_w, rep, heldout=False)
+    if (ev / "heldout").is_dir():
+        check_task_set(root, ev / "heldout", rubric_w, rep, heldout=True)
+
+
+ORACLE_MARKERS = re.compile(r"[TH]0\d-[AD]\d|expected_findings|seeded defect|oracle", re.I)
+
+
+def check_task_set(root: Path, base: Path, rubric_w: dict, rep: Report, heldout: bool) -> None:
+    """Seven task definitions, each with an oracle whose weights match the rubric,
+    and agent-facing fixtures free of oracle markers. The held-out set
+    (evaluations/heldout/) also needs a fixture folder per task."""
+    where = rel(base / "tasks", root)
+    tasks = sorted((base / "tasks").glob("*.md")) if (base / "tasks").is_dir() else []
+    if len(tasks) != 7:
+        rep.error(where, f"expected 7 task definitions, found {len(tasks)}")
     for t in tasks:
-        op = ev / "oracles" / (t.stem + ".json")
+        op = base / "oracles" / (t.stem + ".json")
         ow = rel(op, root)
         if not op.is_file():
             rep.error(ow, f"missing oracle for task {t.stem}")
             continue
+        if heldout and not (base / "fixtures" / t.stem).is_dir():
+            rep.error(rel(base / "fixtures" / t.stem, root), f"missing fixture folder for task {t.stem}")
         orc = load_json(op, rep, root)
         if not isinstance(orc, dict):
             continue
+        if heldout and orc.get("task") != t.stem:
+            rep.error(ow, f"'task' must be {t.stem!r}")
         sums: dict = {}
         for a in orc.get("assertions", []):
             sums[a.get("category")] = sums.get(a.get("category"), 0) + a.get("weight", 0)
@@ -783,13 +799,12 @@ def check_evaluations(root: Path, rep: Report) -> None:
         if not orc.get("critical"):
             rep.error(ow, "critical failures must be declared")
     # Isolation: agent-facing fixtures must not carry oracle identifiers.
-    fixtures = ev / "fixtures"
-    oracle_markers = re.compile(r"T0\d-D\d|expected_findings|seeded defect|oracle", re.I)
+    fixtures = base / "fixtures"
     if fixtures.is_dir():
         for p in sorted(fixtures.rglob("*")):
             if p.is_file():
                 t = read_text(p, rep, rel(p, root))
-                if t and oracle_markers.search(t):
+                if t and ORACLE_MARKERS.search(t):
                     rep.error(rel(p, root), "agent-facing fixture contains oracle/seeded-defect markers")
 
 

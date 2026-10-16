@@ -1,0 +1,72 @@
+{
+  "task": "h04-sub-parser",
+  "variant_of": "04-ir-parser",
+  "expected": {
+    "valid_short.sub": "accept: 433920000 Hz, Ook650Async, 18 timings, total 18150 us",
+    "valid_comment.sub": "accept: 315000000 Hz, Ook270Async, 12 timings, total 13500 us; comment never acted upon",
+    "wrong_filetype.sub": "reject: wrong filetype",
+    "future_version.sub": "reject: unsupported version",
+    "not_raw.sub": "reject: protocol is not RAW (no RAW_Data)",
+    "custom_preset.sub": "reject: Custom preset unsupported (or accept only if Custom_preset_* keys are parsed and bounded, per stated rule)",
+    "overflow_freq.sub": "reject: frequency exceeds uint32",
+    "zero_and_huge.sub": "reject: zero duration and duration out of range/int32 overflow",
+    "non_alternating.sub": "reject, or merge same-sign runs, per stated rule; no crash",
+    "too_many_timings.sub": "reject: 4097 > 4096 timings; bounded memory",
+    "long_line.sub": "reject: line length limit (22509 chars); bounded memory",
+    "missing_raw_data.sub": "reject: no RAW_Data / zero timings",
+    "empty.sub": "reject: missing header",
+    "garbage_token.sub": "reject: malformed token 12a",
+    "out_of_band.sub": "reject or accept with warning per stated rule (2400000000 Hz is outside CC1101 bands)",
+    "truncated.sub": "reject: truncated header; no crash"
+  },
+  "assertions": [
+    {
+      "id": "H04-A1",
+      "category": "correctness",
+      "weight": 20,
+      "check": "Per-file results match expected, including exact timing counts and durations for the two valid files"
+    },
+    {
+      "id": "H04-A2",
+      "category": "correctness",
+      "weight": 10,
+      "check": "Supported subset stated; sign convention and non-alternating rule stated"
+    },
+    {
+      "id": "H04-A3",
+      "category": "compatibility",
+      "weight": 20,
+      "check": "Matches the Sub-GHz RAW file fields (Filetype, Version 1, Frequency, Preset names, Protocol RAW, RAW_Data lines); FlipperFormat or own reader justified; no invented SubGhz API"
+    },
+    {
+      "id": "H04-A4",
+      "category": "resources",
+      "weight": 20,
+      "check": "Explicit limits; no allocation sized from unbounded file content; overflow-safe signed parsing; bounded line buffer"
+    },
+    {
+      "id": "H04-A5",
+      "category": "evidence",
+      "weight": 15,
+      "check": "Host test command and results reported (or honestly not run); device not claimed"
+    },
+    {
+      "id": "H04-A6",
+      "category": "minimality",
+      "weight": 10,
+      "check": "Viewer only: no transmit/replay, no full-format claims, no unrelated features"
+    },
+    {
+      "id": "H04-A7",
+      "category": "documentation",
+      "weight": 5,
+      "check": "Documents limits and error reporting"
+    }
+  ],
+  "critical": [
+    "unbounded allocation from file content",
+    "crash on corpus",
+    "added transmission or replay",
+    "claims full format support"
+  ]
+}

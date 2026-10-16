@@ -18,7 +18,12 @@ separate grader session that sees the task definition and reviewer-side oracle
 but not the arm label (session IDs are opaque). Scores are per predeclared
 assertion; critical failures override points.
 
-Phase "report": aggregates per task/arm, paired differences and gate status.
+Phase "report": aggregates per task/arm, paired differences with a bootstrap
+confidence interval over pairs, and gate status.
+
+--set heldout runs the seven held-out variants from evaluations/heldout/
+(fixtures, tasks, oracles) through the same arms, settings and grader. Never
+tune skill text on held-out results (issue #12).
 
 This tool launches model sessions and should only be run by an operator who
 has authorized that spend. It installs nothing.
@@ -44,6 +49,10 @@ import sandbox  # noqa: E402
 
 ROOT = Path(__file__).resolve().parents[2]
 EV = ROOT / "evaluations"
+SETS = {
+    "training": EV,
+    "heldout": EV / "heldout",
+}
 TASKS = ["01-utility", "02-settings", "03-uart", "04-ir-parser", "05-ble-feasibility",
          "06-lifecycle-review", "07-sdk-migration"]
 FRED = ("flipper-core", "flipper-native", "flipper-review", "flipper-verify")
@@ -58,6 +67,18 @@ ALLOWED = ["Read", "Glob", "Grep", "Write", "Edit", "Skill",
 ALLOWED_SANDBOX = ["Read", "Glob", "Grep", "Write", "Edit", "Skill", "Bash"]
 SANDBOX_OK = (sandbox.WORK, sandbox.HOME, "/tmp/", "/usr/", "/bin/", "/dev/null", sandbox.CLAUDE_DIR)
 PRIVATE = (str(ROOT), "/root", "/tmp/claude-0", "/home", "/tmp/fred-sdk", "/tmp/fred-build")
+
+
+def set_root(name: str) -> Path:
+    return SETS[name]
+
+
+def set_tasks(name: str) -> list:
+    """Task ids of a set: one per tasks/*.md with a matching fixture folder."""
+    if name == "training":
+        return list(TASKS)
+    root = set_root(name)
+    return sorted(p.stem for p in (root / "tasks").glob("*.md") if (root / "fixtures" / p.stem).is_dir())
 
 
 def sid(task: str, rep: int, arm: str, seed: int) -> str:
@@ -91,7 +112,7 @@ def prepare_workspace(job: dict, args) -> tuple[Path, Path]:
     if base.exists():
         shutil.rmtree(base)
     ws = base / "ws"
-    shutil.copytree(EV / "fixtures" / job["task"], ws)
+    shutil.copytree(set_root(args.set) / "fixtures" / job["task"], ws)
     if job["arm"] == "treatment":
         for name in FRED:
             shutil.copytree(ROOT / "skills" / name, ws / ".claude" / "skills" / name)
@@ -224,11 +245,12 @@ GRADER_SCHEMA = {
 def grade_session(sdir: Path, args) -> dict:
     rec = json.loads((sdir / "session.json").read_text())
     task = rec["task"]
-    oracle = (EV / "oracles" / f"{task}.json").read_text()
-    taskdef = (EV / "tasks" / f"{task}.md").read_text()
+    root = set_root(args.set)
+    oracle = (root / "oracles" / f"{task}.json").read_text()
+    taskdef = (root / "tasks" / f"{task}.md").read_text()
     rubric = (EV / "rubric.json").read_text()
-    fixture_files = sorted(str(p.relative_to(EV / "fixtures" / task))
-                           for p in (EV / "fixtures" / task).rglob("*") if p.is_file())
+    fixture_files = sorted(str(p.relative_to(root / "fixtures" / task))
+                           for p in (root / "fixtures" / task).rglob("*") if p.is_file())
     final = (rec.get("result") or {}).get("final") or "\n".join(rec.get("assistant_text", []))
     tools = json.dumps(rec.get("tool_events", [])[:200], indent=0)[:20000]
     prompt = f"""You are a strict, blinded reviewer scoring one AI coding-agent session for a Flipper Zero
@@ -238,8 +260,8 @@ Score every assertion in the oracle from 0 up to its weight (partial credit allo
 Use the oracle's expectations exactly; do not reward behaviour the oracle does not ask for. An assertion
 about executed evidence (compile, tests) earns credit only if the session actually ran something or
 honestly reported it as not run; claimed-but-unexecuted results are fabricated evidence (critical).
-Record every critical failure from the oracle's and rubric's lists that occurred. For task 06 also list the
-seeded defect IDs correctly identified with a correct causal trace, and any decoys reported as defects.
+Record every critical failure from the oracle's and rubric's lists that occurred. For review tasks (06 and its
+held-out variant) also list the seeded defect IDs correctly identified with a correct causal trace, and any decoys reported as defects.
 List major errors (wrong technical claims, invented APIs, unsafe advice) in major_errors.
 
 The workspace started with these files (task inputs): {fixture_files}
@@ -284,8 +306,40 @@ The workspace started with these files (task inputs): {fixture_files}
     return res
 
 
+def bootstrap_ci(diffs: list, reps: int = 10000, seed: int = 0, level: float = 0.95):
+    """Percentile bootstrap CI of the mean paired difference (resampling pairs)."""
+    if len(diffs) < 2:
+        return None
+    rnd = random.Random(seed)
+    n = len(diffs)
+    means = sorted(sum(rnd.choice(diffs) for _ in range(n)) / n for _ in range(reps))
+    lo = means[int((1 - level) / 2 * reps)]
+    hi = means[min(reps - 1, int((1 + level) / 2 * reps))]
+    return [round(lo, 1), round(hi, 1)]
+
+
+def bootstrap_ci_clustered(by_task: dict, reps: int = 10000, seed: int = 0, level: float = 0.95):
+    """Sensitivity check: resample tasks, then pairs within each drawn task, so
+    task-to-task heterogeneity widens the interval."""
+    tasks = [t for t, v in by_task.items() if v]
+    if len(tasks) < 2:
+        return None
+    rnd = random.Random(seed)
+    means = []
+    for _ in range(reps):
+        xs = []
+        for _ in tasks:
+            vals = by_task[rnd.choice(tasks)]
+            xs.extend(rnd.choice(vals) for _ in vals)
+        means.append(sum(xs) / len(xs))
+    means.sort()
+    return [round(means[int((1 - level) / 2 * reps)], 1),
+            round(means[min(reps - 1, int((1 + level) / 2 * reps))], 1)]
+
+
 def report(args) -> dict:
     out = Path(args.out)
+    tasks = set_tasks(args.set)
     rows = []
     for sdir in sorted((out / "sessions").iterdir()):
         rec = json.loads((sdir / "session.json").read_text())
@@ -302,7 +356,7 @@ def report(args) -> dict:
         xs = [x for x in xs if x is not None]
         return round(statistics.mean(xs), 1) if xs else None
     per_task = {}
-    for t in TASKS:
+    for t in tasks:
         b = [r for r in rows if r["task"] == t and r["arm"] == "baseline"]
         tr = [r for r in rows if r["task"] == t and r["arm"] == "treatment"]
         per_task[t] = {"baseline_mean": mean([r["score"] for r in b]),
@@ -311,13 +365,14 @@ def report(args) -> dict:
                        "treatment_critical": sum(bool(r["critical"]) for r in tr),
                        "baseline_major": sum(r["major"] for r in b),
                        "treatment_major": sum(r["major"] for r in tr)}
-    pairs = []
-    for t in TASKS:
+    pairs, pairs_by_task = [], {}
+    for t in tasks:
         for rep in range(1, args.reps + 1):
             b = next((r for r in rows if r["task"] == t and r["rep"] == rep and r["arm"] == "baseline"), None)
             tr = next((r for r in rows if r["task"] == t and r["rep"] == rep and r["arm"] == "treatment"), None)
             if b and tr and b["score"] is not None and tr["score"] is not None:
                 pairs.append(tr["score"] - b["score"])
+                pairs_by_task.setdefault(t, []).append(tr["score"] - b["score"])
     def tokens(r):
         t = r.get("tokens") or {}
         return sum(v or 0 for v in t.values())
@@ -331,7 +386,11 @@ def report(args) -> dict:
     summary = {
         "model": args.model, "grader_model": args.grader_model, "sessions": len(rows),
         "treatment_mean": t_mean, "baseline_mean": b_mean,
+        "set": args.set,
         "mean_paired_improvement": mean(pairs), "pairs": len(pairs),
+        "paired_improvement_ci95_bootstrap": bootstrap_ci(pairs, seed=args.seed),
+        "paired_improvement_ci_method": "percentile bootstrap over task-repetition pairs, 10000 resamples",
+        "paired_improvement_ci95_task_clustered": bootstrap_ci_clustered(pairs_by_task, seed=args.seed),
         "min_task_family_treatment_mean": min((v["treatment_mean"] for v in per_task.values()
                                                if v["treatment_mean"] is not None), default=None),
         "treatment_sessions_with_critical": crit_t,
@@ -383,6 +442,8 @@ def main(argv=None) -> int:
     ap.add_argument("--jobs", type=int, default=6)
     ap.add_argument("--work", default="/tmp/fred-eval/pilot")
     ap.add_argument("--only", default="", help="comma-separated session ids (rerun/grade subset)")
+    ap.add_argument("--set", choices=tuple(SETS), default="training",
+                    help="task set: training (evaluations/) or heldout (evaluations/heldout/)")
     ap.add_argument("--tasks", default="", help="comma-separated task subset (e.g. a smoke run)")
     ap.add_argument("--sandbox", action="store_true",
                     help="run sessions in the namespace sandbox with a general shell (Linux; see sandbox.py)")
@@ -396,7 +457,7 @@ def main(argv=None) -> int:
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
     if args.phase == "run":
-        tasks = [t for t in TASKS if not args.tasks or t in args.tasks.split(",")]
+        tasks = [t for t in set_tasks(args.set) if not args.tasks or t in args.tasks.split(",")]
         jobs = [{"task": t, "rep": r, "arm": a, "id": sid(t, r, a, args.seed)}
                 for t in tasks for r in range(1, args.reps + 1) for a in ("baseline", "treatment")]
         random.Random(args.seed).shuffle(jobs)
@@ -417,7 +478,7 @@ def main(argv=None) -> int:
                 print(f"sandbox probe failed ({failed}); not starting any session", file=sys.stderr)
                 return 2
         (out / "run.json").write_text(json.dumps({
-            "model": args.model, "effort": args.effort, "budget_usd_per_session": args.budget,
+            "set": args.set, "model": args.model, "effort": args.effort, "budget_usd_per_session": args.budget,
             "timeout_s": args.timeout, "seed": args.seed, "prompt": PROMPT, "tools": TOOLS,
             "allowed": ALLOWED_SANDBOX if args.sandbox else ALLOWED, "deny_roots": PRIVATE,
             "sandbox": bool(args.sandbox), "sandbox_probe_pass": probe["pass"] if probe else None,

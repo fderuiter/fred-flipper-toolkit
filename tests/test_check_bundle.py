@@ -476,6 +476,31 @@ class RepositoryRecords(unittest.TestCase):
         code, out = self.check()
         self.assertIn("do not match rubric", out)
 
+    def test_heldout_fixture_must_not_leak_oracle(self):
+        p = self.root / "evaluations/heldout/fixtures/h06-dispatcher-review/door_monitor.c"
+        p.write_text(p.read_text(encoding="utf-8") + "\n// H06-D2 flush in callback\n", encoding="utf-8")
+        code, out = self.check()
+        self.assertEqual(code, 1, out)
+        self.assertIn("h06-dispatcher-review/door_monitor.c", out)
+        self.assertIn("contains oracle/seeded-defect markers", out)
+
+    def test_heldout_oracle_weights_match_rubric(self):
+        data = self.load("evaluations/heldout/oracles/h07-variable-migration.json")
+        data["assertions"][0]["weight"] -= 5
+        self.dump("evaluations/heldout/oracles/h07-variable-migration.json", data)
+        code, out = self.check()
+        self.assertIn("h07-variable-migration.json", out)
+        self.assertIn("do not match rubric", out)
+
+    def test_heldout_task_needs_fixture_and_matching_id(self):
+        shutil.rmtree(self.root / "evaluations/heldout/fixtures/h05-wifi-feasibility")
+        data = self.load("evaluations/heldout/oracles/h01-stopwatch.json")
+        data["task"] = "01-utility"
+        self.dump("evaluations/heldout/oracles/h01-stopwatch.json", data)
+        code, out = self.check()
+        self.assertIn("missing fixture folder for task h05-wifi-feasibility", out)
+        self.assertIn("'task' must be 'h01-stopwatch'", out)
+
     def test_repository_link_checked(self):
         readme = self.root / "README.md"
         readme.write_text(readme.read_text(encoding="utf-8") + "\n[gone](docs/missing.md)\n", encoding="utf-8")

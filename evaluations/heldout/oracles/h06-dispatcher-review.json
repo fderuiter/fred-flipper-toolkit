@@ -1,0 +1,103 @@
+{
+  "task": "h06-dispatcher-review",
+  "variant_of": "06-lifecycle-review",
+  "seeded_defects": [
+    {
+      "id": "H06-D1",
+      "location": "door_app_free",
+      "defect": "view_dispatcher_free is called before view_dispatcher_remove_view; the removes dereference the freed dispatcher (use after free on exit)",
+      "fix": "remove every view while the dispatcher is alive, then view_dispatcher_free, then free the modules"
+    },
+    {
+      "id": "H06-D2",
+      "location": "door_timer_callback",
+      "defect": "furi_timer_flush is called from the timer callback, which runs on the timer daemon; flush pends work on that same daemon and waits for it, so the daemon waits on itself and the app (and every other timer) freezes when auto-disarm triggers (C-TMR-002 mechanism)",
+      "fix": "post a custom event and stop the timer from the dispatcher thread (scene on_exit); never flush or free a timer from its own callback"
+    },
+    {
+      "id": "H06-D3",
+      "location": "door_irq_callback",
+      "defect": "FURI_LOG_I in a GPIO interrupt callback; logging takes the log mutex and performs blocking output, which is not allowed in interrupt context (furi_check failure/crash, or at best a dropped message) when the door opens",
+      "fix": "no logging in the ISR; count or set a thread flag and log from the worker"
+    },
+    {
+      "id": "H06-D4",
+      "location": "door_load_presets",
+      "defect": "count read from the SD file is unbounded and indexes the fixed presets[8] array; count > 8 overflows into the rest of DoorApp (and preset_count is stored unvalidated); record contents are not range-checked",
+      "fix": "require 1 <= count <= MAX_PRESETS, read into a temporary, validate each record, and fall back to defaults on any mismatch"
+    },
+    {
+      "id": "H06-D5",
+      "location": "door_app_free / door_worker",
+      "defect": "the worker is never signalled or joined: furi_thread_free is called on a running thread (furi_check failure on exit), and a blink run could still use the notification record after it is closed",
+      "fix": "add a stop flag, set it, furi_thread_join, then furi_thread_free, all before closing the notification record; make blink delays interruptible"
+    },
+    {
+      "id": "H06-D6",
+      "location": "door_monitor_refresh",
+      "defect": "text_box_set_text receives a pointer to a local stack buffer; TextBox keeps the pointer and reads it when drawing, after the function returned (dangling pointer, garbage or crash)",
+      "fix": "keep the text buffer in DoorApp (or a FuriString owned by the app) for as long as the TextBox may draw it"
+    }
+  ],
+  "decoys": [
+    "malloc of DoorApp in door_app_alloc (thread context) is normal",
+    "SceneManager with two scenes is acceptable",
+    "view_dispatcher_run blocking the app thread is the intended design",
+    "FURI_LOG_I in scene on_enter (dispatcher thread) is fine",
+    "furi_delay_ms or furi_thread_flags_wait in the worker thread is acceptable",
+    "furi_thread_flags_set from the interrupt callback is ISR-safe",
+    "volatile open_count incremented only by the ISR and read for display is acceptable",
+    "furi_timer_stop in scene on_exit (dispatcher thread) is correct"
+  ],
+  "additional_valid_findings": [
+    "timer keeps sending Disarm every tick after the limit (>= instead of ==) until the scene exits",
+    "view_dispatcher_send_custom_event from the timer callback can block the timer daemon if the event queue is full",
+    "armed_seconds written by the timer daemon and read by the dispatcher thread without a lock (benign for a 32-bit display value but worth noting)",
+    "storage_file_close called even when open failed (acceptable per API but worth noting)",
+    "blink_count up to 255 x 200 ms makes exit slow unless the delay is interruptible"
+  ],
+  "pass_threshold": "at least 5 of 6 seeded defects with correct causal trace; zero decoys flagged as defects",
+  "assertions": [
+    {
+      "id": "H06-A1",
+      "category": "correctness",
+      "weight": 30,
+      "check": "Seeded defects found with correct trace: 30 * found/6, zero if fewer than 4"
+    },
+    {
+      "id": "H06-A2",
+      "category": "compatibility",
+      "weight": 20,
+      "check": "Fixes use real exported APIs; no false 'malloc forbidden' or 'SceneManager required' claims"
+    },
+    {
+      "id": "H06-A3",
+      "category": "resources",
+      "weight": 20,
+      "check": "Proposed teardown order establishes quiescence without deadlock: interrupt removed, timer stopped/freed from thread context, worker stopped and joined before records close, views removed before dispatcher free"
+    },
+    {
+      "id": "H06-A4",
+      "category": "evidence",
+      "weight": 15,
+      "check": "Evidence level per finding; scope statement; no reproduced-crash claims without execution"
+    },
+    {
+      "id": "H06-A5",
+      "category": "minimality",
+      "weight": 10,
+      "check": "Review-only: no file edits; no decoys flagged"
+    },
+    {
+      "id": "H06-A6",
+      "category": "documentation",
+      "weight": 5,
+      "check": "Severity-ranked, actionable output that maps findings to the three reported symptoms"
+    }
+  ],
+  "critical": [
+    "invented API in fix",
+    "edits files",
+    "malloc-forbidden or furi_alloc finding"
+  ]
+}

@@ -10,7 +10,9 @@ echo "WORK=${WORK:-/tmp/fred-sdk} UFBT_HOME=$UFBT_HOME PYTHONHASHSEED=$PYTHONHAS
 R=$(cd "$(dirname "$0")/.." && pwd)
 OUT=${1:?output directory}
 rm -rf ${WORK:-/tmp/fred-sdk}/apps "$OUT"; mkdir -p ${WORK:-/tmp/fred-sdk}/apps "$OUT"
-for spec in reference/01-utility:fred_tally reference/02-settings:fred_interval_timer reference/03-uart:fred_soil_uart reference/04-ir-parser:fred_ir_viewer reference/06-lifecycle-fixed:uart_logger_fixed fixtures/06-lifecycle-review:uart_logger_eval; do
+for spec in reference/01-utility:fred_tally reference/02-settings:fred_interval_timer reference/03-uart:fred_soil_uart reference/04-ir-parser:fred_ir_viewer reference/06-lifecycle-fixed:uart_logger_fixed fixtures/06-lifecycle-review:uart_logger_eval \
+            heldout/reference/h01-stopwatch:fred_stopwatch heldout/reference/h06-dispatcher-fixed:door_monitor_fixed \
+            heldout/fixtures/h06-dispatcher-review:door_monitor_eval; do
   src=${spec%%:*}; id=${spec##*:}
   cp -R "$R/$src" "${WORK:-/tmp/fred-sdk}/apps/$id"
   cd "${WORK:-/tmp/fred-sdk}/apps/$id"

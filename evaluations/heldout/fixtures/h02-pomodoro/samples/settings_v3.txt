@@ -1,0 +1,7 @@
+Filetype: Pomodoro Settings
+Version: 3
+Work: 40
+ShortBreak: 8
+LongBreak: 30
+Cycles: 3
+Sound: false

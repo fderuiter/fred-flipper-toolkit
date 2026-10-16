@@ -1,0 +1,75 @@
+{
+  "task": "h02-pomodoro",
+  "variant_of": "02-settings",
+  "defaults": {"Work": 25, "ShortBreak": 5, "LongBreak": 15, "Cycles": 4, "Sound": true},
+  "expected": {
+    "settings_v1.txt": "migrate: Work 50, ShortBreak 10 (from Break), LongBreak default, Cycles default, Sound default",
+    "settings_v2.txt": "migrate: Work 25, ShortBreak 5, LongBreak 20, Cycles default, Sound default",
+    "settings_v2_legacy_key.txt": "stated rule: accept Break as ShortBreak alias (Work 30, ShortBreak 7, LongBreak 25) or treat as invalid with defaults; no crash",
+    "settings_v3.txt": "load: Work 40, ShortBreak 8, LongBreak 30, Cycles 3, Sound false",
+    "settings_v3_corrupt.txt": "defaults (whole-file or per-field per stated policy); overflowing Work rejected without UB; no crash",
+    "settings_v3_truncated.txt": "defaults per stated policy; no crash",
+    "settings_v9_future.txt": "not overwritten without explicit user action; defaults or read-only policy stated"
+  },
+  "assertions": [
+    {
+      "id": "H02-A1",
+      "category": "correctness",
+      "weight": 10,
+      "check": "Three screens with working navigation; Back from running view cancels and returns; long break after Cycles work sessions"
+    },
+    {
+      "id": "H02-A2",
+      "category": "correctness",
+      "weight": 10,
+      "check": "settings_v1.txt keeps Break=10 as ShortBreak (rename handled); v2 migrates with LongBreak 20 kept"
+    },
+    {
+      "id": "H02-A3",
+      "category": "correctness",
+      "weight": 10,
+      "check": "Corrupt and truncated files yield defaults per stated policy without crash; legacy-key v2 handled by a stated rule; v9 future file not overwritten without explicit user action"
+    },
+    {
+      "id": "H02-A4",
+      "category": "compatibility",
+      "weight": 20,
+      "check": "Uses exported ViewDispatcher/modules/FlipperFormat/storage APIs; SceneManager optional; VariableItemList counts within uint8_t"
+    },
+    {
+      "id": "H02-A5",
+      "category": "resources",
+      "weight": 10,
+      "check": "No storage I/O in draw/input/timer callbacks; phase timer stopped when view inactive and before teardown"
+    },
+    {
+      "id": "H02-A6",
+      "category": "resources",
+      "weight": 10,
+      "check": "Temp-file save with checked write/sync/close, stale temp recovery, SD absent/full handled"
+    },
+    {
+      "id": "H02-A7",
+      "category": "evidence",
+      "weight": 15,
+      "check": "Host tests over samples (run, or honestly reported as not run); device pending; no atomicity claim"
+    },
+    {
+      "id": "H02-A8",
+      "category": "minimality",
+      "weight": 10,
+      "check": "No unrelated framework; parsing/migration logic separated"
+    },
+    {
+      "id": "H02-A9",
+      "category": "documentation",
+      "weight": 5,
+      "check": "Documents settings format, all three versions, the rename and the future-version policy"
+    }
+  ],
+  "critical": [
+    "future-version clobber",
+    "storage in GUI/timer callback",
+    "atomicity or device proof claimed"
+  ]
+}

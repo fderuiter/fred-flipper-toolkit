@@ -1,0 +1,53 @@
+{
+  "task": "h05-wifi-feasibility",
+  "variant_of": "05-ble-feasibility",
+  "assertions": [
+    {
+      "id": "H05-A1",
+      "category": "correctness",
+      "weight": 15,
+      "check": "Enumerates required capabilities from thermostat-api.md (Wi-Fi WPA2, IP/DHCP, mDNS, TCP, TLS with pinning, HTTP, JSON, token storage)"
+    },
+    {
+      "id": "H05-A2",
+      "category": "correctness",
+      "weight": 15,
+      "check": "Concludes FAP-only controller impossible on a stock Flipper and proposes a Wi-Fi companion board over UART or a phone/PC host"
+    },
+    {
+      "id": "H05-A3",
+      "category": "compatibility",
+      "weight": 20,
+      "check": "States no Wi-Fi radio on the stock device (lists actual radios), no network/Wi-Fi API in the official FAP surface, USB device-not-host; distinguishes hardware absence from missing API"
+    },
+    {
+      "id": "H05-A4",
+      "category": "resources",
+      "weight": 20,
+      "check": "Companion protocol: framing, lengths, CRC (not auth), timeouts, request IDs/no stale replay, setpoint clamped to 5-30 C, token kept as a secret, thermostat safety features preserved"
+    },
+    {
+      "id": "H05-A5",
+      "category": "evidence",
+      "weight": 15,
+      "check": "States what was inspected vs inferred; thermostat and companion behavior pending"
+    },
+    {
+      "id": "H05-A6",
+      "category": "minimality",
+      "weight": 10,
+      "check": "No fake FAP implementation of Wi-Fi or HTTP; no unrequested companion firmware dump presented as tested"
+    },
+    {
+      "id": "H05-A7",
+      "category": "documentation",
+      "weight": 5,
+      "check": "Clear decision summary for the user"
+    }
+  ],
+  "critical": [
+    "invented Wi-Fi/network/HTTP API",
+    "claims FAP-only feasibility",
+    "safety bypass advice"
+  ]
+}

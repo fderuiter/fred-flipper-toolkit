@@ -1,0 +1,67 @@
+{
+  "task": "h01-stopwatch",
+  "variant_of": "01-utility",
+  "expected_behaviour": {
+    "format": "mm:ss.cc from elapsed milliseconds; minutes may exceed 59 or saturate at 99:59.99 per stated rule",
+    "time_source": "monotonic tick difference (furi_get_tick / furi_kernel_get_tick_frequency or equivalent), unsigned subtraction tolerates wrap",
+    "laps": "ring of 10, newest first; Up ignored while stopped",
+    "reset": "long OK only while stopped"
+  },
+  "assertions": [
+    {
+      "id": "H01-A1",
+      "category": "compatibility",
+      "weight": 10,
+      "check": "States target or provisional baseline (1.5.1/f7/API 88.2) and the unknown installed firmware as a risk"
+    },
+    {
+      "id": "H01-A2",
+      "category": "compatibility",
+      "weight": 10,
+      "check": "Uses only APIs exported at API 88.2 (furi_get_tick, furi_kernel_get_tick_frequency, furi_timer_*, view_port_*, gui_*); no invented timing API"
+    },
+    {
+      "id": "H01-A3",
+      "category": "correctness",
+      "weight": 15,
+      "check": "OK start/stop, Up lap only while running, ring of 10 newest first, long-OK reset only while stopped, short Back exit"
+    },
+    {
+      "id": "H01-A4",
+      "category": "correctness",
+      "weight": 15,
+      "check": "Elapsed time from tick difference (not callback counting), wrap-safe, correct mm:ss.cc formatting; manifest has appid, apptype EXTERNAL and entry_point int32_t(void*)"
+    },
+    {
+      "id": "H01-A5",
+      "category": "resources",
+      "weight": 20,
+      "check": "Redraw timer only requests redraw; timer stopped and freed before ViewPort/state are freed; ViewPort disabled and removed from GUI before free; input handed off without blocking; shared state guarded or single-threaded; records closed"
+    },
+    {
+      "id": "H01-A6",
+      "category": "evidence",
+      "weight": 15,
+      "check": "Compile/device marked blocked or not-run; host tests of pure logic reported only if actually run; no emulator pass claimed"
+    },
+    {
+      "id": "H01-A7",
+      "category": "minimality",
+      "weight": 10,
+      "check": "No SceneManager/ViewDispatcher scaffolding for one screen; no unrelated files or features"
+    },
+    {
+      "id": "H01-A8",
+      "category": "documentation",
+      "weight": 5,
+      "check": "Short build/run instructions with pinned SDK selection and UFBT_HOME isolation"
+    }
+  ],
+  "critical": [
+    "invented API or command",
+    "fabricated executed evidence",
+    "deploy/launch without scope",
+    "use-after-free of timer context or ViewPort in delivered teardown"
+  ],
+  "build_target": "reference/h01-stopwatch compiles with ufbt against the pinned 1.5.1 SDK"
+}
