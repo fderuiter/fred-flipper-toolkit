@@ -67,6 +67,8 @@ Severity-ranked findings (critical, major, minor), each with:
 - evidence level: source trace, reproduced, or hypothesis;
 - specific fix and the test that would show it.
 
+Include a teardown table whenever the code has producers: each producer, what it touches, and whether it is stopped (and joined) before those are freed. A failing row is a finding.
+
 Also state the inspected and uninspected scope and residual uncertainty. "No findings" requires that scope statement.
 
 ## Validation
