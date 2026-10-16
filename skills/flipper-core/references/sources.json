@@ -1193,7 +1193,7 @@
       "consumers": [
         "flipper-core/references/build-debug-release.md"
       ],
-      "notes": "Replayed with Python 3.13 and matched to the 2026-10-16 SDK qualification hashes; not yet confirmed by an SDK build with a fixed seed. Record in evaluations/results/2026-10-16-build-reproducibility."
+      "notes": "Replayed with Python 3.13 and matched to the 2026-10-16 SDK qualification hashes; confirmed with SDK 1.5.1 and toolchain 39: seed 0 gave one hash over five clean builds, seed 1 reversed the compile order. Record in evaluations/results/2026-10-16-build-reproducibility."
     },
     {
       "id": "C-BUILD-007",
@@ -1213,7 +1213,7 @@
       "consumers": [
         "flipper-core/references/build-debug-release.md"
       ],
-      "notes": "Mechanism reproduced with host gcc 13.3/binutils 2.42 (only .gnu_debuglink differed); not yet observed with toolchain 39. Record in evaluations/results/2026-10-16-build-reproducibility."
+      "notes": "Mechanism reproduced with host gcc 13.3/binutils 2.42 and confirmed with toolchain 39: across two app folders only .gnu_debuglink differed for all six FRED fixtures. Record in evaluations/results/2026-10-16-build-reproducibility."
     },
     {
       "id": "C-FAP-004",

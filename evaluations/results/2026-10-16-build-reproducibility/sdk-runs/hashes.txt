@@ -1,0 +1,54 @@
+# Output of evaluations/harness/build_fixtures.sh: runs 1-4 (seed 0, /tmp/fred-sdk), run 5 (seed 0, repeat), other path (seed 0, /tmp/fred-sdk-other), seed 1 control.
+== run 1
+WORK=/tmp/fred-sdk UFBT_HOME=/root/.fred/sdk-1.5.1-f7/ufbt-home PYTHONHASHSEED=0
+fred_tally build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=373ac9af1eb513518908386ae41959070ede2508b766fc72bce9fe7cd9ac8372
+fred_interval_timer build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=7fd880c10772822c616d0bfb9e3d0e7ea378f6a33599f74d684239ea2b882921
+fred_soil_uart build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=7e7d87e2cb429231b640a2105f765f84a0fd2a09a2d0d20109bfef5f6219e441
+fred_ir_viewer build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=923076e1275f74a1edb767c4b561da6300a953fc23361c5337721be7c193e798
+uart_logger_fixed build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=91e9bd36585b1f114df94eded410ca5aa6b3cd4b8f46ecfca287652f6252446d
+uart_logger_eval build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=c377acaedcc3830ff0311fff4390488fd29c8cb62b6fefdbe24685ddab2c3f9a
+== run 2
+WORK=/tmp/fred-sdk UFBT_HOME=/root/.fred/sdk-1.5.1-f7/ufbt-home PYTHONHASHSEED=0
+fred_tally build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=373ac9af1eb513518908386ae41959070ede2508b766fc72bce9fe7cd9ac8372
+fred_interval_timer build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=7fd880c10772822c616d0bfb9e3d0e7ea378f6a33599f74d684239ea2b882921
+fred_soil_uart build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=7e7d87e2cb429231b640a2105f765f84a0fd2a09a2d0d20109bfef5f6219e441
+fred_ir_viewer build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=923076e1275f74a1edb767c4b561da6300a953fc23361c5337721be7c193e798
+uart_logger_fixed build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=91e9bd36585b1f114df94eded410ca5aa6b3cd4b8f46ecfca287652f6252446d
+uart_logger_eval build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=c377acaedcc3830ff0311fff4390488fd29c8cb62b6fefdbe24685ddab2c3f9a
+== run 3
+WORK=/tmp/fred-sdk UFBT_HOME=/root/.fred/sdk-1.5.1-f7/ufbt-home PYTHONHASHSEED=0
+fred_tally build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=373ac9af1eb513518908386ae41959070ede2508b766fc72bce9fe7cd9ac8372
+fred_interval_timer build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=7fd880c10772822c616d0bfb9e3d0e7ea378f6a33599f74d684239ea2b882921
+fred_soil_uart build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=7e7d87e2cb429231b640a2105f765f84a0fd2a09a2d0d20109bfef5f6219e441
+fred_ir_viewer build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=923076e1275f74a1edb767c4b561da6300a953fc23361c5337721be7c193e798
+uart_logger_fixed build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=91e9bd36585b1f114df94eded410ca5aa6b3cd4b8f46ecfca287652f6252446d
+uart_logger_eval build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=c377acaedcc3830ff0311fff4390488fd29c8cb62b6fefdbe24685ddab2c3f9a
+== run 4
+WORK=/tmp/fred-sdk UFBT_HOME=/root/.fred/sdk-1.5.1-f7/ufbt-home PYTHONHASHSEED=0
+fred_tally build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=373ac9af1eb513518908386ae41959070ede2508b766fc72bce9fe7cd9ac8372
+fred_interval_timer build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=7fd880c10772822c616d0bfb9e3d0e7ea378f6a33599f74d684239ea2b882921
+fred_soil_uart build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=7e7d87e2cb429231b640a2105f765f84a0fd2a09a2d0d20109bfef5f6219e441
+fred_ir_viewer build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=923076e1275f74a1edb767c4b561da6300a953fc23361c5337721be7c193e798
+uart_logger_fixed build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=91e9bd36585b1f114df94eded410ca5aa6b3cd4b8f46ecfca287652f6252446d
+uart_logger_eval build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=c377acaedcc3830ff0311fff4390488fd29c8cb62b6fefdbe24685ddab2c3f9a
+WORK=/tmp/fred-sdk UFBT_HOME=/root/.fred/sdk-1.5.1-f7/ufbt-home PYTHONHASHSEED=0
+fred_tally build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=373ac9af1eb513518908386ae41959070ede2508b766fc72bce9fe7cd9ac8372
+fred_interval_timer build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=7fd880c10772822c616d0bfb9e3d0e7ea378f6a33599f74d684239ea2b882921
+fred_soil_uart build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=7e7d87e2cb429231b640a2105f765f84a0fd2a09a2d0d20109bfef5f6219e441
+fred_ir_viewer build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=923076e1275f74a1edb767c4b561da6300a953fc23361c5337721be7c193e798
+uart_logger_fixed build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=91e9bd36585b1f114df94eded410ca5aa6b3cd4b8f46ecfca287652f6252446d
+uart_logger_eval build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=c377acaedcc3830ff0311fff4390488fd29c8cb62b6fefdbe24685ddab2c3f9a
+WORK=/tmp/fred-sdk-other UFBT_HOME=/root/.fred/sdk-1.5.1-f7/ufbt-home PYTHONHASHSEED=0
+fred_tally build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=487153f71071711bc9c754c27c9c7290b4114f2ebd855ec0f66da712a06f3317
+fred_interval_timer build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=2ffa78bc7e01524f42752663c4056b26afc2387f9d75e179521ae41f21c9d8db
+fred_soil_uart build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=6cc0b6bd1d974b08af745da200d5b0c1a7e89dad580755efbc2a4cfe0668169a
+fred_ir_viewer build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=f5c940a70d19e87362224eacbb163f1e6b2c963ef54f3657b2566416435fb1bf
+uart_logger_fixed build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=90f03b7a22bced1a1cbfc801e2a8660774479fc49ed12287e2bf4eae0b209d7f
+uart_logger_eval build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=07222823cdbf1b0bca0b3ff30785ea7286bbad2c87ab5c32972dc5b7e18ee389
+WORK=/tmp/fred-sdk UFBT_HOME=/root/.fred/sdk-1.5.1-f7/ufbt-home PYTHONHASHSEED=1
+fred_tally build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=373ac9af1eb513518908386ae41959070ede2508b766fc72bce9fe7cd9ac8372
+fred_interval_timer build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=7fd880c10772822c616d0bfb9e3d0e7ea378f6a33599f74d684239ea2b882921
+fred_soil_uart build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=1f0004d3752ef49108f4aca6fc135ee9dd425a7ef6460679c98cdcb0397c8c91
+fred_ir_viewer build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=0e6ba9e9de27534db83eb110fa1546a9bc6d63153e963ad3d76de13589b78253
+uart_logger_fixed build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=91e9bd36585b1f114df94eded410ca5aa6b3cd4b8f46ecfca287652f6252446d
+uart_logger_eval build=0 lint=0 warnings=0 [Target: 7, API: 88.2] sha256=c377acaedcc3830ff0311fff4390488fd29c8cb62b6fefdbe24685ddab2c3f9a

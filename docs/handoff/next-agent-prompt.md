@@ -75,7 +75,7 @@ Fetch each issue first; acceptance criteria live there.
 7. **#15: wizard on Windows and macOS.** It has only been verified on Ubuntu 24.04 / Python 3.13.
 8. **#9: device qualification.** Needs a Flipper Zero on official 1.5.1 and a 3.3 V USB-UART adapter. Follow `evaluations/device/README.md` exactly and record observations.
 9. **#19: monthly maintenance review**, due 2026-11-16, recurring.
-10. **#16** GPIO unknowns, **#17** build reproducibility, **#18** other clients (only on demand).
+10. **#16** GPIO unknowns and **#18** other clients (only on demand).
 
 ## 5. How to run things
 
