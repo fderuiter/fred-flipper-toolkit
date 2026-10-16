@@ -1,0 +1,1 @@
+print(typeof parseInt, typeof Math, typeof Number, typeof String, typeof Array, typeof Object, typeof Object.create, typeof ArrayBuffer, typeof Uint8Array, typeof DataView, typeof Promise, typeof Date, typeof Error);

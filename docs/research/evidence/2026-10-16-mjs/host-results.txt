@@ -1,0 +1,319 @@
+### 01_closure.js
+EXEC ERROR (2): [n] is not defined
+STACK: 	at 01_closure.js:1
+	at 01_closure.js:1
+
+[exit 1]
+### 02_try.js
+EXEC ERROR (1): [try] is not implemented
+[exit 1]
+### 03_throw.js
+EXEC ERROR (1): [throw] is not implemented
+[exit 1]
+### 04_letconst.js
+letconst 3 2 
+inner 10 
+outer 3 
+[exit 0]
+### 05_const_reassign.js
+const reassigned 2 
+[exit 0]
+### 06_arrow.js
+EXEC ERROR (1): parse error at line 1: [> x * 2; p]
+[exit 1]
+### 07_template.js
+EXEC ERROR (1): parse error at line 1: [`n=${n}`);]
+[exit 1]
+### 08_array_methods.js
+push 4 4 
+typeof map undefined typeof forEach undefined typeof indexOf undefined typeof join undefined 
+[exit 0]
+### 09_map_call.js
+EXEC ERROR (3): calling non-callable
+STACK: 	at 09_map_call.js:1
+
+[exit 1]
+### 10_splice.js
+splice err conversion from object to string is not supported err conversion from object to string is not supported 2 
+EXEC ERROR (3): conversion from object to string is not supported
+STACK: 	at 10_splice.js:1
+
+[exit 1]
+### 11_string.js
+indexOf 2 slice b,c ,b upper A,B,C len 5 at 97 charCodeAt 97 idx b 
+EXEC ERROR (3): type error
+STACK: 	at 11_string.js:1
+
+[exit 1]
+### 12_split.js
+EXEC ERROR (3): type error
+STACK: 	at 12_split.js:1
+
+[exit 1]
+### 13_json.js
+EXEC ERROR (2): [JSON] is not defined
+STACK: 	at 13_json.js:1
+
+[exit 1]
+### 14_json_call.js
+EXEC ERROR (2): [JSON] is not defined
+STACK: 	at 14_json_call.js:1
+
+[exit 1]
+### 15_typeof.js
+undefined null number string object array foreign_ptr function boolean true true 
+[exit 0]
+### 16_math.js
+7/2 3.500000 7%3 1 0.1+0.2 0.300000 2^31 2147483648 1e10 10000000000 big* 123456789000 (1.5).toString 1.5 (255).toString(16) ff 1/0 -nan -1/0 -nan 0/0 -nan isNaN true int bits 5 7 shift 2147483648 
+[exit 0]
+### 17_parseInt.js
+EXEC ERROR (2): [parseInt] is not defined
+STACK: 	at 17_parseInt.js:1
+
+[exit 1]
+### 18_concat.js
+len 4000 
+EXEC ERROR (3): implicit type conversion is prohibited
+STACK: 	at 18_concat.js:1
+
+[exit 1]
+### 19_recursion.js
+Terminated
+[exit 124]
+### 20_class.js
+EXEC ERROR (2): [class] is not defined
+STACK: 	at 20_class.js:1
+
+[exit 1]
+### 21_new.js
+EXEC ERROR (1): parse error at line 1: [new P();
+]
+[exit 1]
+### 22_switch.js
+EXEC ERROR (1): [switch] is not implemented
+[exit 1]
+### 23_dowhile.js
+EXEC ERROR (1): [do] is not implemented
+[exit 1]
+### 24_forin_obj.js
+key b 2 
+key a 1 
+idx 1 
+idx 0 
+[exit 0]
+### 25_forof.js
+EXEC ERROR (1): parse error at line 1: [[1,2]) pri]
+[exit 1]
+### 26_async.js
+EXEC ERROR (2): [async] is not defined
+STACK: 	at 26_async.js:1
+
+[exit 1]
+### 27_this_method.js
+method this 3 
+proto hi x 
+[exit 0]
+### 28_delete.js
+EXEC ERROR (1): [delete] is not implemented
+[exit 1]
+### 29_ternary_logic.js
+EXEC ERROR (6): Use ===, not ==
+STACK: 	at 29_ternary_logic.js:1
+
+[exit 1]
+### 30_default_arg.js
+missing arg undefined 
+function 
+[exit 0]
+### 31_destructuring.js
+EXEC ERROR (1): parse error at line 1: [{a} = {a:1]
+[exit 1]
+### 32_spread.js
+EXEC ERROR (1): parse error at line 1: [...[1]];
+]
+[exit 1]
+### 33_closure_loop.js
+EXEC ERROR (2): [i] is not defined
+STACK: 	at 33_closure_loop.js:1
+	at 33_closure_loop.js:1
+
+[exit 1]
+### 34_nested_fn_decl.js
+nested 42 
+EXEC ERROR (2): [later] is not defined
+STACK: 	at 34_nested_fn_decl.js:1
+
+[exit 1]
+### 35_die.js
+EXEC ERROR (3): custom error
+STACK: 	at 35_die.js:1
+
+[exit 1]
+### 36_regex.js
+EXEC ERROR (1): parse error at line 1: [/a/;
+]
+[exit 1]
+### 37_obj_keys.js
+undefined 
+[exit 0]
+### 38_string_compare.js
+false true 1 
+[exit 0]
+### 39_while_break.js
+while 6 
+[exit 0]
+### 40_float_print.js
+0.333333 2.500000 -0.500000 -9223372036854775808 3 100 
+[exit 0]
+### 41_arr_oob.js
+undefined 1 
+4 undefined 
+[exit 0]
+### 42_undefined_var.js
+EXEC ERROR (2): [notDefined] is not defined
+STACK: 	at 42_undefined_var.js:1
+
+[exit 1]
+### 43_call_undef.js
+EXEC ERROR (3): calling non-callable
+STACK: 	at 43_call_undef.js:1
+
+[exit 1]
+### 44_array_literal_print.js
+err conversion from object to string is not supported err conversion from object to string is not supported 
+EXEC ERROR (3): conversion from object to string is not supported
+STACK: 	at 44_array_literal_print.js:1
+
+[exit 1]
+### 45_semicolonless.js
+EXEC ERROR (1): parse error at line 2: [let b = 2
+]
+[exit 1]
+### 46_comments.js
+comments ok 
+[exit 0]
+### 47_typeof_undeclared.js
+EXEC ERROR (2): [zzz] is not defined
+STACK: 	at 47_typeof_undeclared.js:1
+
+[exit 1]
+### 48_eq_obj.js
+true false 
+[exit 0]
+### 49_gc_heavy.js
+EXEC ERROR (3): implicit type conversion is prohibited
+STACK: 	at 49_gc_heavy.js:1
+
+[exit 1]
+### 50_func_expr_named.js
+fact 3628800 
+[exit 0]
+### 10b_splice.js
+splice 2 2 3 2 1 4 
+[exit 0, .005520573s]
+### 11b_string.js
+EXEC ERROR (3): type error
+STACK: 	at 11b_string.js:1
+
+[exit 1, .005704293s]
+### 17b_globals.js
+EXEC ERROR (2): [Math] is not defined
+STACK: 	at 17b_globals.js:1
+
+[exit 1, .004996447s]
+### 17c_promise.js
+EXEC ERROR (2): [Promise] is not defined
+STACK: 	at 17c_promise.js:1
+
+[exit 1, .005474520s]
+### 18b_numstr.js
+EXEC ERROR (3): implicit type conversion is prohibited
+STACK: 	at 18b_numstr.js:1
+
+[exit 1, .005820708s]
+### 18c_strnum.js
+EXEC ERROR (3): implicit type conversion is prohibited
+STACK: 	at 18c_strnum.js:1
+
+[exit 1, .005642122s]
+### 18d_tostr.js
+EXEC ERROR (3): implicit type conversion is prohibited
+STACK: 	at 18d_tostr.js:1
+
+[exit 1, .005867842s]
+### 19a_r100.js
+r100 100 
+[exit 0, .005478390s]
+### 19b_r1000.js
+r1000 1000 
+[exit 0, .071396871s]
+### 49b_gc_heavy.js
+[exit 124, 60.004967774s]
+### 51_global_capture.js
+global from fn 3 
+[exit 0, .005835787s]
+### 52_closure_param.js
+EXEC ERROR (2): [x] is not defined
+STACK: 	at 52_closure_param.js:1
+	at 52_closure_param.js:1
+
+[exit 1, .005232755s]
+### 53_callback.js
+cb via global 6 
+[exit 0, .005508171s]
+### 54_eqeq.js
+EXEC ERROR (6): Use ===, not ==
+STACK: 	at 54_eqeq.js:1
+
+[exit 1, .005617838s]
+### 55_ne.js
+EXEC ERROR (6): Use !==, not !=
+STACK: 	at 55_ne.js:1
+
+[exit 1, .005436559s]
+### 56_print_obj.js
+err conversion from object to string is not supported 
+EXEC ERROR (3): conversion from object to string is not supported
+STACK: 	at 56_print_obj.js:1
+
+[exit 1, .007756512s]
+### 57_bigloop.js
+loop 4999950000 
+[exit 0, .110396784s]
+### 18e_tostr.js
+01234 
+[exit 0, .005399753s]
+### 18f_strminus.js
+EXEC ERROR (3): implicit type conversion is prohibited
+STACK: 	at 18f_strminus.js:1
+
+[exit 1, .005066529s]
+### 11c_unknownprop.js
+EXEC ERROR (3): type error
+STACK: 	at 11c_unknownprop.js:1
+
+[exit 1, .006278494s]
+### 11d_strconcat.js
+abcde 5 
+[exit 0, .006154023s]
+### 49c_n100.js
+objs 100 99 
+[exit 0, .007496596s]
+### 49c_n500.js
+objs 500 499 
+[exit 0, .039776096s]
+### 49c_n1000.js
+objs 1000 999 
+[exit 0, .192476647s]
+### 49c_n2000.js
+objs 2000 1999 
+[exit 0, 1.397662576s]
+### 49d_arr_nums.js
+nums 5000 
+[exit 0, 1.917805141s]
+### 49e_strs.js
+strs 2000 v1999 
+[exit 0, .276105276s]
+### 19c_r10000.js
+r10000 10000 
+[exit 0, 66.248882511s]

@@ -21,7 +21,7 @@ Common claims about Flipper development that are wrong or incomplete at the base
 | All manifest fields mandatory | `appid` and `apptype` required generically; entry and catalog rules add more | [C-FAP-002] | Separate schema, runnable and catalog validity |
 | `ufbt lint` is static analysis / `ufbt test` exists | Lint checks formatting; no test target | [C-BUILD-001] | Report lint as formatting only |
 | FAP can be a BLE central | GAP peripheral; no exported client workflow | [C-BLE-001] [C-BLE-002] | Host or companion MCU |
-| Flipper JS is Node/browser JS | mJS-derived subset with firmware modules | [C-JS-001] | Check module availability on the pinned fork |
+| Flipper JS is Node/browser JS | Vendored mJS core: no closures over outer locals, no try/catch, no JSON, no arrow functions or classes, no `Array.map`; `==` and implicit conversions are errors (host build of the pinned core) | [C-JS-001] | Write plain ES5-style code with `===`, explicit `toString()` and globals; check module availability on the pinned fork |
 | Emulator proves behavior | No comprehensive emulator; official unit tests run on-device | [C-EMU-001] [C-TEST-001] | Host tests + device tests, reported separately |
 | A header in the firmware tree means FAP access | Needs export/library, implementation and build | [C-FAP-003] | Check `api_symbols.csv` and `fap_libs` |
 | Fork APIs work on official firmware | Separate lineages with different exports | [C-FORK-001] | Tag examples by lineage; rebuild |

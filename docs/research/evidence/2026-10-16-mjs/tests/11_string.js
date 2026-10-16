@@ -1,0 +1,1 @@
+let s = "a,b,c"; print("indexOf", s.indexOf("b"), "slice", s.slice(2), s.slice(1,3), "upper", s.toUpperCase(), "len", s.length, "at", s.at(0), "charCodeAt", s.charCodeAt(0), "idx", s[2]); print("typeof split", typeof s.split, "typeof substring", typeof s.substring, "typeof trim", typeof s.trim, "typeof replace", typeof s.replace);

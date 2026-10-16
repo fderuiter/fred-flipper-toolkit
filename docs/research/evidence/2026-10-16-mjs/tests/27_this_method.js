@@ -1,0 +1,1 @@
+let o = { v: 3, get: function(){ return this.v; } }; print("method this", o.get()); let proto = {hi: function(){ return "hi " + this.n; }}; let ch = Object.create(proto); ch.n = "x"; print("proto", ch.hi());

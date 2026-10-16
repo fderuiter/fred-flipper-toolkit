@@ -862,24 +862,24 @@
     },
     {
       "id": "C-JS-001",
-      "claim": "Flipper JavaScript runs on a modified mJS with firmware modules; upstream mJS is a restricted ES6 subset; it is not Node or a browser. Exact fork language features are not yet verified.",
+      "claim": "Flipper JavaScript runs on a vendored, modified mJS core with firmware modules (JS SDK 1.0). A host build of the pinned core shows: no closures over outer locals, no try/catch/throw, no JSON, no arrow functions, classes, template literals, async or Promise, no Array map/forEach/join, == rejected and implicit number/string conversion prohibited; let/const work. It is not Node or browser JavaScript.",
       "sources": [
         {
-          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/documentation/js/js_about.md",
-          "locator": "JS overview",
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/tree/9e810dc399e027e48ce07751df72168abbb19065/lib/mjs",
+          "locator": "mjs_parser.c parse_statement; mjs_builtin.c (JSON commented out); mjs_exec.c",
           "pin": "fw"
         },
         {
-          "url": "https://github.com/cesanta/mjs#restrictions",
-          "locator": "Restrictions",
-          "live": true
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/tree/9e810dc399e027e48ce07751df72168abbb19065/applications/system/js_app",
+          "locator": "modules/, packages/fz-sdk, js_modules.h JS_SDK_MAJOR/MINOR",
+          "pin": "fw"
         }
       ],
       "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
       "checked_on": "2026-10-16",
-      "status": "documented",
+      "status": "source-confirmed",
       "review_state": "current",
-      "consequence": "JS guidance is feasibility-level; verify modules on the pinned fork.",
+      "consequence": "JS guidance is feasibility-only; never assume closures, exceptions, JSON or array higher-order functions; module behavior on device is untested.",
       "consumers": [
         "flipper-core/references/assumptions.md",
         "flipper-core/references/capability-map.md",
@@ -887,7 +887,8 @@
       ],
       "research_ids": [
         "S23"
-      ]
+      ],
+      "notes": "Host evidence: docs/research/evidence/2026-10-16-mjs (core interpreter only, not device behavior)."
     },
     {
       "id": "C-TEST-001",
