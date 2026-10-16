@@ -1,0 +1,75 @@
+{
+  "task": "07-sdk-migration",
+  "rep": 1,
+  "arm": "baseline",
+  "id": "5724baf8c2",
+  "rc": 0,
+  "skills_invoked": [],
+  "private_paths": [],
+  "outside_workspace_paths": [],
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0911326,
+    "num_turns": 7,
+    "duration_ms": 24584,
+    "tokens": {
+      "input_tokens": 10,
+      "output_tokens": 2172,
+      "cache_read_input_tokens": 85846,
+      "cache_creation_input_tokens": 15202
+    },
+    "final": "I updated `meter.c` for SDK 89.0, but I haven't compiled it. I have no Flipper toolchain here. I only compared it against the two API tables. A first Python-script attempt at the edit was denied by the sandbox, so I made the changes with the edit tool instead.\n\n**What would have broken, and what I changed**\n\n1. **`furi_hal_adc_configure` has a new parameter.** The old signature was `(handle)`. The new one is `(handle, FuriHalAdcScale)`, so the old call would fail to compile. I now call `furi_hal_adc_configure(meter.adc, FuriHalAdcScale2048)`. The tables don't list enum values, so `FuriHalAdcScale2048` is my guess at the old default. Please check it against the real header. Pick the scale that matches your intended voltage range.\n2. **`meter_legacy_format` is no longer in the SDK.** It went from `+` to `-` in 89.0, so the app would fail to link. I replaced it with `snprintf(text, sizeof(text), \"%.3f V\", (double)meter.volts)` and removed the manual prototype. The output format is my own choice, because I couldn't see what the old function produced.\n3. **`cfw_meter_set_backlight_boost` isn't in either table.** It comes from `meter_extra.h`, which was copied from a community firmware fork. It isn't part of the official SDK in 88.2 or 89.0, so the app would fail to link, or crash, on official firmware. I removed the call and the `#include \"meter_extra.h\"`. That means the backlight boost no longer happens. I left `meter_extra.h` in the folder, but nothing uses it now. If you need the boost, it has to be reimplemented with an official API or kept behind a fork-only build flag.\n\n**Not affected**\n- The timer calls (`furi_timer_alloc`, `furi_timer_start`, `furi_timer_free`) and the other ADC calls are unchanged.\n- `meter_default_precision` is also unchanged, and the app doesn't use it.\n- `internal_adc_calibrate` is private in both versions, and the app doesn't call it.\n- `furi_hal_adc_set_averaging` is new. It's optional, and I didn't add it.\n\nThe ADC scale choice is the one thing to confirm before you ship."
+  },
+  "tool_events": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/5724baf8c2/ws/PROJECT.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot/5724baf8c2/ws; ls -la; cat api_old.csv; echo ----; cat api_new.csv; echo ----; cat meter.c; echo ----; cat meter_extra.h"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot/5724baf8c2/ws; python3 - <<'E'\ns=open('meter.c').read()\ns=s.replace('#include <gui/gui.h>\\n#include \"meter_extra.h\"\\n\\nint meter_legacy_format(char* out, size_t size, float volts);\\n','#include <gui/gui.h>\\n#include <stdio.h>\\n')\ns=s.replace('furi_hal_adc_configure(meter.adc);\\n    cfw_meter_set_backlight_boost(2);\\n','furi_hal_adc_configure(meter.adc, FuriHalAdcScale2048);\u2026"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot/5724baf8c2/ws/meter.c",
+        "old_string": "#include \"meter_extra.h\"\n\nint meter_legacy_format(char* out, size_t size, float volts);\n",
+        "new_string": "#include <stdio.h>\n"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot/5724baf8c2/ws/meter.c",
+        "old_string": "    furi_hal_adc_configure(meter.adc);\n    cfw_meter_set_backlight_boost(2);\n",
+        "new_string": "    furi_hal_adc_configure(meter.adc, FuriHalAdcScale2048);\n"
+      }
+    },
+    {
+      "tool": "Edit",
+      "input": {
+        "replace_all": false,
+        "file_path": "/tmp/fred-eval/pilot/5724baf8c2/ws/meter.c",
+        "old_string": "    meter_legacy_format(text, sizeof(text), meter.volts);",
+        "new_string": "    snprintf(text, sizeof(text), \"%.3f V\", (double)meter.volts);"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I'll use the Edit tool instead.",
+    "I updated `meter.c` for SDK 89.0, but I haven't compiled it. I have no Flipper toolchain here. I only compared it against the two API tables. A first Python-script attempt at the edit was denied by the sandbox, so I made the changes with the edit tool instead.\n\n**What would have broken, and what I changed**\n\n1. **`furi_hal_adc_configure` has a new parameter.** The old signature was `(handle)`. The new one is `(handle, FuriHalAdcScale)`, so the old call would fail to compile. I now call `furi_hal_adc_configure(meter.adc, FuriHalAdcScale2048)`. The tables don't list enum values, so `FuriHalAdcScale2048` is my guess at the old default. Please check it against the real header. Pick the scale that matches your intended voltage range.\n2. **`meter_legacy_format` is no longer in the SDK.** It went from `+` to `-` in 89.0, so the app would fail to link. I replaced it with `snprintf(text, sizeof(text), \"%.3f V\", (double)meter.volts)` and removed the manual prototype. The output format is my own choice, because I couldn't see what the old function produced.\n3. **`cfw_meter_set_backlight_boost` isn't in either table.** It comes from `meter_extra.h`, which was copied from a community firmware fork. It isn't part of the official SDK in 88.2 or 89.0, so the app would fail to link, or crash, on official firmware. I removed the call and the `#include \"meter_extra.h\"`. That means the backlight boost no longer happens. I left `meter_extra.h` in the folder, but nothing uses it now. If you need the boost, it has to be reimplemented with an official API or kept behind a fork-only build flag.\n\n**Not affected**\n- The timer calls (`furi_timer_alloc`, `furi_timer_start`, `furi_timer_free`) and the other ADC calls are unchanged.\n- `meter_default_precision` is also unchanged, and the app doesn't use it.\n- `internal_adc_calibrate` is private in both versions, and the app doesn't call it.\n- `furi_hal_adc_set_averaging` is new. It's optional, and I didn't add it.\n\nThe ADC scale choice is the one thing to confirm before you ship."
+  ]
+}

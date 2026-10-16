@@ -1,0 +1,16 @@
+App(
+    appid="interval_timer",
+    name="Interval Timer",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="interval_timer_app",
+    stack_size=2 * 1024,
+    requires=[
+        "gui",
+        "storage",
+        "notification",
+        "dialogs",
+    ],
+    fap_category="Tools",
+    fap_version="1.1",
+    fap_description="Work/rest interval timer with persistent settings",
+)

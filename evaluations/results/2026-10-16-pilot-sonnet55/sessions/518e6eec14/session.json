@@ -1,0 +1,69 @@
+{
+  "task": "05-ble-feasibility",
+  "rep": 3,
+  "arm": "treatment",
+  "id": "518e6eec14",
+  "rc": 0,
+  "skills_invoked": [
+    "flipper-core"
+  ],
+  "private_paths": [],
+  "outside_workspace_paths": [],
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.15478640000000002,
+    "num_turns": 8,
+    "duration_ms": 35944,
+    "tokens": {
+      "input_tokens": 14,
+      "output_tokens": 3227,
+      "cache_read_input_tokens": 136604,
+      "cache_creation_input_tokens": 27207
+    },
+    "final": "I didn't write the FAP. A stock Flipper on official firmware 1.5.1 can't control this kettle on its own, so any code would have called functions the firmware doesn't provide. I haven't built anything or tried it on a device. The Flipper-side finding rests on the project's pinned source notes for 1.5.1 (read, not tested), and I didn't re-check the firmware source myself.\n\n**Why it doesn't work:** the kettle is a BLE peripheral, so the Flipper has to act as the BLE central. That means scanning, connecting, finding service `ff00`, writing `ff01`, enabling notifications on `ff02` and bonding. On 1.5.1 the Flipper's Bluetooth is set up as a peripheral only. None of the scan, connect, service-discovery or write-to-device calls are available to a FAP. The Bluetooth functions it does have only let it act as a server, and a custom server doesn't change that. This is a limit of the public API, not of the radio chip.\n\n**What I'd suggest:** keep the Flipper as the remote, but add a small BLE-capable board (for example an ESP32 or nRF52) on its GPIO header. The Flipper app handles the on/off and 40\u2013100 \u00b0C screen and talks to the board over UART. The board handles the Bluetooth side. That keeps \"no phone\". The other routes are a computer doing the Bluetooth, or a custom-firmware project, which isn't a FAP.\n\nBefore I can build anything I need three things from you:\n- **Route:** which of those options you want, and which board you own if it's the add-on board.\n- **Checksum:** `kettle-protocol.md` doesn't say how the frame's last byte is calculated.\n- **Pairing:** the notes don't say what the first-time bonding needs, such as a passkey or just-works.\n\nThe full write-up is in `/tmp/fred-eval/pilot/518e6eec14/ws/compatibility-card.md`."
+  },
+  "tool_events": [
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/518e6eec14/ws/PROJECT.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot/518e6eec14/ws; ls -la; cat kettle-protocol.md"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot/518e6eec14/ws; find .claude -type f | head -20"
+      }
+    },
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Bash",
+      "input": {
+        "command": "cd /tmp/fred-eval/pilot/518e6eec14/ws/.claude/skills/flipper-core; cat references/engineering-rules.md references/evidence-policy.md references/compatibility.md references/capability-map.md assets/compatibility-card.md; grep -n -i -B2 -A8 \"ble\\|central\" references/sources.json | head -120"
+      }
+    },
+    {
+      "tool": "Write",
+      "input": {
+        "file_path": "/tmp/fred-eval/pilot/518e6eec14/ws/compatibility-card.md",
+        "content": "# Kettle remote: feasibility decision\n\n**Result: not feasible as a stock-Flipper, FAP-only app on official firmware 1.5.1. I did not write the FAP.** Any code would have had to call BLE central/GATT-client functions that the firmware does not export.\n\n## Compatibility card\n\n| Field | Value | Status | Consequence if unknown |\n|---|---|---|---|\n| User outcome | Turn the AcmeBrew K2 on and set its te\u2026"
+      }
+    }
+  ],
+  "assistant_text": [
+    "This is a feasibility question first, so I'll load the feasibility skill.",
+    "I didn't write the FAP. A stock Flipper on official firmware 1.5.1 can't control this kettle on its own, so any code would have called functions the firmware doesn't provide. I haven't built anything or tried it on a device. The Flipper-side finding rests on the project's pinned source notes for 1.5.1 (read, not tested), and I didn't re-check the firmware source myself.\n\n**Why it doesn't work:** the kettle is a BLE peripheral, so the Flipper has to act as the BLE central. That means scanning, connecting, finding service `ff00`, writing `ff01`, enabling notifications on `ff02` and bonding. On 1.5.1 the Flipper's Bluetooth is set up as a peripheral only. None of the scan, connect, service-discovery or write-to-device calls are available to a FAP. The Bluetooth functions it does have only let it act as a server, and a custom server doesn't change that. This is a limit of the public API, not of the radio chip.\n\n**What I'd suggest:** keep the Flipper as the remote, but add a small BLE-capable board (for example an ESP32 or nRF52) on its GPIO header. The Flipper app handles the on/off and 40\u2013100 \u00b0C screen and talks to the board over UART. The board handles the Bluetooth side. That keeps \"no phone\". The other routes are a computer doing the Bluetooth, or a custom-firmware project, which isn't a FAP.\n\nBefore I can build anything I need three things from you:\n- **Route:** which of those options you want, and which board you own if it's the add-on board.\n- **Checksum:** `kettle-protocol.md` doesn't say how the frame's last byte is calculated.\n- **Pairing:** the notes don't say what the first-time bonding needs, such as a passkey or just-works.\n\nThe full write-up is in `/tmp/fred-eval/pilot/518e6eec14/ws/compatibility-card.md`."
+  ]
+}
