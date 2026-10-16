@@ -1192,7 +1192,8 @@
       "consequence": "A matching major does not mean an app loads: check every import against the target's api_symbols.csv. A newer-minor app loads only if it uses no newer symbols.",
       "consumers": [
         "flipper-core/references/build-debug-release.md",
-        "flipper-core/references/compatibility.md"
+        "flipper-core/references/compatibility.md",
+        "flipper-verify/SKILL.md"
       ]
     },
     {

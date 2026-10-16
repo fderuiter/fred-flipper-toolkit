@@ -45,7 +45,7 @@ Also needed: target compatibility card, project source and build hooks, whether 
 3. Establish identities: bootstrap, SDK URL/SHA-256/API, toolchain, firmware commit.
 4. Inspect manifest, imports and assets.
 5. Run authorized checks (format, build, host tests) and keep exact commands, versions, exit codes and logs.
-6. For migration, compare API tables, map changes to call sites, and report source, binary/import and behavior impact separately; rebuild on the target.
+6. For migration, compare API tables, map changes to call sites, fill the impact table and rebuild plan below, then rebuild on the target.
 7. Write a separate device test plan; never fill it from compile or mock results.
 8. Prepare artifacts and evidence without publishing.
 
@@ -65,6 +65,16 @@ Decision points: if setup would download a toolchain or SDK, state the exact sou
 - Artifact hashes and the exact compatibility actually tested.
 - Pending device cases, listed explicitly.
 - Release checklist and support notes when requested.
+
+For any SDK or firmware migration, both of these are required outputs, even when no build was run:
+
+| Impact | Evidence | Action |
+|---|---|---|
+| Source | changed or removed signatures and macros mapped to call sites | code edits; compile errors expected |
+| Binary/import | old and new API major; every import checked against the target `api_symbols.csv` | rebuild; an old FAP is rejected on a major change, and a removed or unexported import fails at load even when the major matches [C-FAP-004] |
+| Behavior | changed semantics, timing or defaults | device cases; `not-run` without hardware |
+
+Rebuild plan: target SDK identity (channel or URL, SHA-256, API version), the exact `ufbt` build command, the import check (official build and loader, with `compare_api.py` as a cross-check), and the device cases it leaves pending.
 
 Done when every evidence field has a status with a reason and nothing unexecuted is described as passed.
 
