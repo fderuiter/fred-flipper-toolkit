@@ -25,7 +25,8 @@ static int feed_capture(const char* path, SoilParser* p, Sink* s) {
         if(line[0] == '#') continue;
         uint8_t bytes[256];
         size_t n = 0;
-        for(char* tok = strtok(line, " \r\n"); tok && n < sizeof(bytes); tok = strtok(NULL, " \r\n"))
+        for(char* tok = strtok(line, " \r\n"); tok && n < sizeof(bytes);
+            tok = strtok(NULL, " \r\n"))
             bytes[n++] = (uint8_t)strtoul(tok, NULL, 16);
         soil_parser_feed(p, bytes, n, on_reading, s);
     }
@@ -53,8 +54,11 @@ int main(int argc, char** argv) {
     int ok = s.n == 4 && p.stats.bad_crc == 0 && p.stats.bad_length == 0;
     for(size_t i = 0; ok && i < 4; i++)
         ok = s.r[i].moisture == 300 + i && s.r[i].temp_decicelsius == (int16_t)(225 + i);
-    printf("%s burst: %zu readings, errors=%u\n", ok ? "PASS" : "FAIL", s.n,
-           (unsigned)(p.stats.bad_crc + p.stats.bad_length));
+    printf(
+        "%s burst: %zu readings, errors=%u\n",
+        ok ? "PASS" : "FAIL",
+        s.n,
+        (unsigned)(p.stats.bad_crc + p.stats.bad_length));
     failures += !ok;
 
     soil_parser_reset(&p);
@@ -63,8 +67,12 @@ int main(int argc, char** argv) {
     if(feed_capture(path, &p, &s) != 0) return 2;
     uint32_t errors = p.stats.bad_crc + p.stats.bad_length + p.stats.bad_payload;
     ok = s.n == 1 && s.r[0].moisture == 300 && s.r[0].temp_decicelsius == -15 && errors >= 2;
-    printf("%s noise: %zu reading(s), bad_length=%u bad_crc=%u\n", ok ? "PASS" : "FAIL", s.n,
-           (unsigned)p.stats.bad_length, (unsigned)p.stats.bad_crc);
+    printf(
+        "%s noise: %zu reading(s), bad_length=%u bad_crc=%u\n",
+        ok ? "PASS" : "FAIL",
+        s.n,
+        (unsigned)p.stats.bad_length,
+        (unsigned)p.stats.bad_crc);
     failures += !ok;
 
     /* Fuzz: random bytes never crash or exceed buffers (ASan/UBSan). */
@@ -75,8 +83,10 @@ int main(int argc, char** argv) {
         if((i % 7) == 0) b = SOIL_SYNC;
         soil_parser_feed(&p, &b, 1, NULL, NULL);
     }
-    printf("PASS random stream: 200000 bytes, frames_ok=%u resyncs=%u\n", (unsigned)p.stats.frames_ok,
-           (unsigned)p.stats.resyncs);
+    printf(
+        "PASS random stream: 200000 bytes, frames_ok=%u resyncs=%u\n",
+        (unsigned)p.stats.frames_ok,
+        (unsigned)p.stats.resyncs);
 
     printf("%d failure(s)\n", failures);
     return failures ? 1 : 0;

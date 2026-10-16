@@ -32,12 +32,15 @@
       "url": "https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip",
       "index_url": "https://update.flipperzero.one/firmware/directory.json",
       "published_sha256": "dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe",
-      "bytes_verified": false,
-      "observed_sha256": null,
-      "status": "documented",
+      "bytes_verified": true,
+      "observed_sha256": "dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe",
+      "status": "source-confirmed",
       "checked_on": "2026-10-16",
       "claim": "C-BASE-003",
-      "consequence": "SDK identity is index metadata only. During implementation the index host was not reachable from the build session (egress proxy refused update.flipperzero.one), so bytes remain unverified (issue #7)."
+      "consequence": "Downloaded archive bytes match the published digest; its api_symbols.csv is byte-identical to the pinned firmware table (API 88.2).",
+      "size_bytes": 19604363,
+      "index_snapshot_sha256": "6062f36d479b2d5fe8fdc0a9dd6ceeeab15f2050d97df6dd7a7ac51090211fac",
+      "sdk_api_table_sha256": "5c9505984a19be218c19400d43ab9c7056996d003e69809945d9db03e95c04bb"
     },
     "ufbt_bootstrap": {
       "version": "0.2.6",
@@ -45,14 +48,19 @@
       "status": "documented",
       "checked_on": "2026-10-16",
       "claim": "C-BASE-004",
-      "notes": "Bootstrap alone does not pin the build: the SDK carries much of the build machinery, and first run defaults to the moving release channel."
+      "notes": "Wheel digest matches PyPI. Bootstrap alone does not pin the build: the SDK carries much of the build machinery, and first run defaults to the moving release channel. 'ufbt update --local' also requires --hw-target=f7.",
+      "wheel_sha256": "ee3b5788b4034694aea594fd44777eab4049968d94c5f39ad93df8b05d8c8849"
     },
     "toolchain": {
-      "compiler": "unknown",
-      "binutils": "unknown",
-      "status": "unresolved",
+      "version": "flipper-39",
+      "compiler": "arm-none-eabi-gcc (GCC) 12.3.1 20230626",
+      "binutils": "GNU ld (GNU Binutils) 2.40.0.20230627",
+      "archive_url": "https://update.flipperzero.one/builds/toolchain/gcc-arm-none-eabi-12.3-x86_64-linux-flipper-39.tar.gz",
+      "observed_archive_sha256": "c044c59233f66f6efcf854affe2d5e09dbad04d68709d513bc760b1d98895853",
+      "status": "documented",
       "checked_on": "2026-10-16",
-      "consequence": "No compiled-support claim is possible until a trusted toolchain is installed under isolated UFBT_HOME and its versions recorded (issue #7)."
+      "claim": "C-BUILD-005",
+      "notes": "Installed by uFBT on first build; the publisher offers no checksum file, so the archive hash is observed only. A non-official toolchain changed the generated API (C-BUILD-004)."
     },
     "catalog": {
       "commit": "5309fa2b142cb3bcc78098ddb1d1e3c7908fce47",
@@ -81,16 +89,19 @@
       "evidence": "skills/flipper-core/references/sources.json"
     },
     "static_checks": {
-      "status": "blocked",
-      "reason": "ufbt lint for benchmark fixtures needs the SDK/toolchain, which is not installed and could not be fetched in this session."
+      "status": "pass",
+      "reason": "Designated fixtures: 0 compiler warnings with the official toolchain and ufbt lint (formatting/naming only) passes after ufbt format.",
+      "evidence": "evaluations/results/2026-10-16-sdk-qualification/README.md"
     },
     "compiled": {
-      "status": "blocked",
-      "reason": "No prepared trusted toolchain; SDK download host unreachable from the session; installation not authorized (issue #7)."
+      "status": "pass",
+      "reason": "Six designated fixtures built with uFBT 0.2.6 against the verified 1.5.1 f7 SDK and toolchain 39; APPCHK Target 7, API 88.2; no unresolved imports. Bit-for-bit reproducibility not established for multi-source apps.",
+      "evidence": "evaluations/results/2026-10-16-sdk-qualification/README.md"
     },
     "host_tests": {
-      "status": "not-run",
-      "reason": "Benchmark fixtures define inputs and corpora; reference host tests for fixture logic are part of SDK qualification (issue #7). FRED's own helper tests are recorded separately in docs/evaluation.md."
+      "status": "pass",
+      "reason": "Reference logic for tasks 02/03/04 passes on the fixture inputs under gcc 13.3 (ASan/UBSan) and clang 18.1 at -O0/-O2 on Ubuntu 24.04 x86_64.",
+      "evidence": "evaluations/results/2026-10-16-sdk-qualification/README.md"
     },
     "device_behavior": {
       "status": "not-run",
@@ -100,8 +111,8 @@
   "surfaces": [
     {
       "id": "external-native-fap",
-      "support": "researched",
-      "notes": "Implementation guidance traced to pinned source; not compiled or device-tested."
+      "support": "host-tested",
+      "notes": "Guidance traced to pinned source; designated reference fixtures compiled against the verified 1.5.1 SDK with the official toolchain and their extracted logic host-tested. No device behavior verified (issue #9)."
     },
     {
       "id": "built-in-app",

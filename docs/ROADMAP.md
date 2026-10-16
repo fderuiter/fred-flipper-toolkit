@@ -1,6 +1,6 @@
 # Implementation roadmap
 
-Status (2026-10-16): v0.1 preview implemented — #2–#6 and #10 have their locally achievable work committed and offline checks passing; #7 (SDK), #8 (model comparison) and #9 (hardware) are pending external setup. Issue comments record commits and exact check results.
+Status (2026-10-16): v0.1 preview implemented — #2–#7 and #10 are complete with recorded evidence; #8 (model comparison) and #9 (hardware) remain. Issue comments record commits and exact check results.
 
 Tracker: [#1](https://github.com/fderuiter/fred-flipper-toolkit/issues/1). The [implementation prompt](implementation-prompt.md) gives concrete files, sequence, sources and release gates. The [full report](research/2026-10-16-research-design.md) explains the decisions.
 

@@ -1,0 +1,11 @@
+scons: Entering directory `<build>/ufbt-home/current/scripts/ufbt'
+	CC	<build>/apps/fred_tally/fred_tally.c
+	CDB	<build>/apps/fred_tally/.vscode/compile_commands.json
+	LINK	<build>/ufbt-home/build/fred_tally_d.elf
+	APPMETA	<build>/ufbt-home/build/fred_tally.fap
+	INSTALL	<build>/apps/fred_tally/dist/debug/fred_tally_d.elf
+	FAP	<build>/ufbt-home/build/fred_tally.fap
+	FASTFAP	<build>/ufbt-home/build/fred_tally.fap
+	INSTALL	<build>/apps/fred_tally/dist/fred_tally.fap
+	APPCHK	<build>/ufbt-home/build/fred_tally.fap
+		Target: 7, API: 88.2

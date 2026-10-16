@@ -9,7 +9,7 @@
 typedef struct {
     const char* file;
     IrError expect;
-    uint32_t signals;      /* checked only when expect == IrOk */
+    uint32_t signals; /* checked only when expect == IrOk */
     uint32_t first_timings;
 } Case;
 
@@ -59,8 +59,12 @@ int main(int argc, char** argv) {
                  (cases[i].first_timings == 0 ||
                   remote.signals[0].timing_count == cases[i].first_timings);
         }
-        printf("%s %-28s -> %s (line %u)\n", ok ? "PASS" : "FAIL", cases[i].file,
-               ir_error_name(r.code), (unsigned)r.line);
+        printf(
+            "%s %-28s -> %s (line %u)\n",
+            ok ? "PASS" : "FAIL",
+            cases[i].file,
+            ir_error_name(r.code),
+            (unsigned)r.line);
         failures += !ok;
         free(data);
     }
@@ -84,15 +88,20 @@ int main(int argc, char** argv) {
     /* Boundary: exactly IR_MAX_TIMINGS maximal values is accepted. */
     {
         static char buf[IR_MAX_FILE_BYTES];
-        int n = snprintf(buf, sizeof(buf),
-                         "Filetype: IR signals file\nVersion: 1\n#\nname: Max\ntype: raw\n"
-                         "frequency: 38000\nduty_cycle: 0.33\ndata:");
+        int n = snprintf(
+            buf,
+            sizeof(buf),
+            "Filetype: IR signals file\nVersion: 1\n#\nname: Max\ntype: raw\n"
+            "frequency: 38000\nduty_cycle: 0.33\ndata:");
         for(unsigned i = 0; i < IR_MAX_TIMINGS; i++)
             n += snprintf(buf + n, sizeof(buf) - (size_t)n, " 4294967295");
         IrResult r = ir_parse(buf, (size_t)n, &remote);
         int ok = r.code == IrOk && remote.signals[0].timing_count == IR_MAX_TIMINGS;
-        printf("%s boundary %u maximal timings -> %s\n", ok ? "PASS" : "FAIL", IR_MAX_TIMINGS,
-               ir_error_name(r.code));
+        printf(
+            "%s boundary %u maximal timings -> %s\n",
+            ok ? "PASS" : "FAIL",
+            IR_MAX_TIMINGS,
+            ir_error_name(r.code));
         failures += !ok;
     }
     printf("%d failure(s)\n", failures);

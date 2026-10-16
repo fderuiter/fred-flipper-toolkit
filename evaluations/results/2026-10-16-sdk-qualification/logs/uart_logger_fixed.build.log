@@ -1,0 +1,11 @@
+scons: Entering directory `<build>/ufbt-home/current/scripts/ufbt'
+	CC	<build>/apps/uart_logger_fixed/uart_logger.c
+	CDB	<build>/apps/uart_logger_fixed/.vscode/compile_commands.json
+	LINK	<build>/ufbt-home/build/uart_logger_fixed_d.elf
+	INSTALL	<build>/apps/uart_logger_fixed/dist/debug/uart_logger_fixed_d.elf
+	APPMETA	<build>/ufbt-home/build/uart_logger_fixed.fap
+	FAP	<build>/ufbt-home/build/uart_logger_fixed.fap
+	FASTFAP	<build>/ufbt-home/build/uart_logger_fixed.fap
+	INSTALL	<build>/apps/uart_logger_fixed/dist/uart_logger_fixed.fap
+	APPCHK	<build>/ufbt-home/build/uart_logger_fixed.fap
+		Target: 7, API: 88.2

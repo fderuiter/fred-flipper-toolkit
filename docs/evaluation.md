@@ -36,7 +36,7 @@ These validate the bundle and helpers. They are not evaluations of agent benefit
 |---|---|
 | Bundle metadata, links, budgets, direct-entry structure | pass (offline checks) |
 | Helper unit/security tests | pass (offline) |
-| Live activation in a named Claude Code version | not-run |
-| SDK compile of fixtures, host tests of fixture logic | blocked (no prepared toolchain; SDK host unreachable from the implementation session) |
+| Live activation in a named Claude Code version | pass: 23/24, 0/8 negative false activations, 6/6 held-out; Claude Code 2.1.301, two models, both scopes ([summary](../evaluations/results/2026-10-16-activation-summary.md)) |
+| SDK compile of fixtures, host tests of fixture logic | pass: verified 1.5.1 SDK, toolchain 39 ([record](../evaluations/results/2026-10-16-sdk-qualification/README.md)) |
 | Controlled 42-session pilot | not-run (needs model-session budget) |
 | Device qualification | not-run (needs authorized hardware) |

@@ -1,0 +1,12 @@
+scons: Entering directory `<build>/ufbt-home/current/scripts/ufbt'
+	CC	<build>/apps/fred_interval_timer/interval_timer.c
+	CC	<build>/apps/fred_interval_timer/settings_store.c
+	CDB	<build>/apps/fred_interval_timer/.vscode/compile_commands.json
+	LINK	<build>/ufbt-home/build/fred_interval_timer_d.elf
+	INSTALL	<build>/apps/fred_interval_timer/dist/debug/fred_interval_timer_d.elf
+	APPMETA	<build>/ufbt-home/build/fred_interval_timer.fap
+	FAP	<build>/ufbt-home/build/fred_interval_timer.fap
+	FASTFAP	<build>/ufbt-home/build/fred_interval_timer.fap
+	INSTALL	<build>/apps/fred_interval_timer/dist/fred_interval_timer.fap
+	APPCHK	<build>/ufbt-home/build/fred_interval_timer.fap
+		Target: 7, API: 88.2

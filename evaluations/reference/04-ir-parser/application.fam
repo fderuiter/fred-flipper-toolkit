@@ -1,0 +1,11 @@
+# Reviewer-side reference solution for FRED task 04. MIT licensed, original.
+App(
+    appid="fred_ir_viewer",
+    name="IR File Viewer",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="fred_ir_viewer_app",
+    requires=["gui", "storage"],
+    stack_size=2 * 1024,
+    sources=["ir_viewer.c", "ir_parser.c"],
+    fap_category="Infrared",
+)

@@ -1,0 +1,4 @@
+PASS burst: 4 readings, errors=0
+PASS noise: 1 reading(s), bad_length=1 bad_crc=1
+PASS random stream: 200000 bytes, frames_ok=0 resyncs=29202
+0 failure(s)

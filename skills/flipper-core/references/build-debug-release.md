@@ -16,7 +16,7 @@ Load when building, migrating SDKs, debugging crashes or preparing distribution.
 | `ufbt lint` | `lint.py check`: clang-format/naming check | Formatting evidence only [C-BUILD-001] |
 | `ufbt format` | `lint.py format`: rewrites formatting/naming | Mutates sources; review the diff |
 | `ufbt update --branch=1.5.1` | Select SDK by release tag | Downloads; changes SDK state [C-BASE-004] |
-| `ufbt update --url=<verified-url>` / `--local=<path>` | Fixed SDK URL or local SDK | Verify archive SHA-256 first [C-BASE-003] |
+| `ufbt update --url=<verified-url>` / `--local=<path> --hw-target=f7` | Fixed SDK URL or a local, already verified SDK archive (`--local` needs `--hw-target`) | Verify archive SHA-256 first [C-BASE-003] |
 | `ufbt vscode_dist`, `ufbt create APPID=<id>` | Editor config / official template | Writes project files |
 | `./fbt build APPSRC=applications_user/<path>` | Build an app in a prepared firmware tree, no upload | Firmware build; first run may fetch toolchain [C-BUILD-003] |
 | `./fbt fap_<appid>` | Build a named external app in the firmware tree | Same |
@@ -28,8 +28,9 @@ There is no `ufbt test` [C-BUILD-001]. Do not describe lint as static analysis.
 ## Isolation and identity
 
 - Set `UFBT_HOME` to a project-specific directory (POSIX: `UFBT_HOME=$PWD/.ufbt-1.5.1 ufbt ...`; PowerShell: `$env:UFBT_HOME = "$PWD\.ufbt-1.5.1"`) so a global SDK is not mutated [C-BASE-004].
+- Pin the official toolchain too (1.5.1 uses Flipper toolchain 39, gcc 12.3.1) [C-BUILD-005]. A distro `arm-none-eabi` toolchain changed the generated SDK API from 88.2 to 89.0 in a firmware-tree build [C-BUILD-004].
 - Record: bootstrap version, SDK URL + SHA-256 + API, firmware commit, compiler/binutils versions, build flags/mode, host OS, app commit, dependency pins and `dist/*.fap` SHA-256.
-- Repeatable inputs are not bit-for-bit reproducibility; claim the latter only after comparing hashes from two clean builds.
+- Repeatable inputs are not bit-for-bit reproducibility; claim the latter only after comparing hashes from two clean builds. Observed: single-source FAPs were identical across clean builds, multi-source FAPs varied with object order.
 
 ## API migration
 

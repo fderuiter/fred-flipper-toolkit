@@ -1,0 +1,15 @@
+PASS v1 migrates, keeps Work/Rest, defaults Rounds/Vibrate
+PASS v2 loads
+PASS corrupt v2 -> defaults
+PASS future version detected
+PASS serialize/parse round trip
+PASS out-of-range settings are not saved
+PASS future file untouched by load
+PASS crash at step 1/4: saved=0 -> old
+PASS crash at step 2/4: saved=0 -> old
+PASS crash at step 3/4: saved=0 -> old
+PASS crash at step 4/4: saved=0 -> new
+PASS crash at step 5/4: saved=1 -> new
+PASS missing file -> defaults
+PASS bit-flip fuzz: no invalid settings accepted
+0 failure(s)

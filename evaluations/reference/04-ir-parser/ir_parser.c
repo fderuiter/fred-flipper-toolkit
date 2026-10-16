@@ -3,14 +3,33 @@
 #include <string.h>
 
 enum {
-    F_NAME = 1u << 0, F_TYPE = 1u << 1, F_PROTOCOL = 1u << 2, F_ADDRESS = 1u << 3,
-    F_COMMAND = 1u << 4, F_FREQUENCY = 1u << 5, F_DUTY = 1u << 6, F_DATA = 1u << 7,
+    F_NAME = 1u << 0,
+    F_TYPE = 1u << 1,
+    F_PROTOCOL = 1u << 2,
+    F_ADDRESS = 1u << 3,
+    F_COMMAND = 1u << 4,
+    F_FREQUENCY = 1u << 5,
+    F_DUTY = 1u << 6,
+    F_DATA = 1u << 7,
 };
 
 static const char* const error_names[] = {
-    "ok", "too_large", "header", "version", "line_too_long", "syntax", "unknown_key",
-    "duplicate_key", "name", "type", "hex", "number", "range", "missing_field",
-    "too_many_signals", "too_many_timings",
+    "ok",
+    "too_large",
+    "header",
+    "version",
+    "line_too_long",
+    "syntax",
+    "unknown_key",
+    "duplicate_key",
+    "name",
+    "type",
+    "hex",
+    "number",
+    "range",
+    "missing_field",
+    "too_many_signals",
+    "too_many_timings",
 };
 
 const char* ir_error_name(IrError code) {
@@ -102,7 +121,8 @@ IrResult ir_parse(const char* data, size_t len, IrRemote* out) {
 
     while(pos < len) {
         size_t start = pos;
-        while(pos < len && data[pos] != '\n') pos++;
+        while(pos < len && data[pos] != '\n')
+            pos++;
         size_t n = pos - start;
         if(pos < len) pos++; /* consume '\n' */
         line_no++;
@@ -114,7 +134,8 @@ IrResult ir_parse(const char* data, size_t len, IrRemote* out) {
 
         if(line_no == 1) {
             static const char hdr[] = "Filetype: IR signals file";
-            if(n != sizeof(hdr) - 1 || memcmp(line, hdr, n) != 0) return (IrResult){IrErrHeader, 1};
+            if(n != sizeof(hdr) - 1 || memcmp(line, hdr, n) != 0)
+                return (IrResult){IrErrHeader, 1};
             continue;
         }
         if(line_no == 2) {
@@ -148,7 +169,8 @@ IrResult ir_parse(const char* data, size_t len, IrRemote* out) {
                 IrError e = finish_signal(sig, fields);
                 if(e != IrOk) return (IrResult){e, line_no};
             }
-            if(out->signal_count >= IR_MAX_SIGNALS) return (IrResult){IrErrTooManySignals, line_no};
+            if(out->signal_count >= IR_MAX_SIGNALS)
+                return (IrResult){IrErrTooManySignals, line_no};
             if(vlen == 0 || vlen > IR_NAME_MAX) return (IrResult){IrErrName, line_no};
             for(size_t i = 0; i < vlen; i++) {
                 if((unsigned char)val[i] < 0x20 || (unsigned char)val[i] > 0x7E)
@@ -163,23 +185,34 @@ IrResult ir_parse(const char* data, size_t len, IrRemote* out) {
         if(!sig) return (IrResult){IrErrSyntax, line_no};
 
         uint32_t flag;
-        if(KEY_IS("type")) flag = F_TYPE;
-        else if(KEY_IS("protocol")) flag = F_PROTOCOL;
-        else if(KEY_IS("address")) flag = F_ADDRESS;
-        else if(KEY_IS("command")) flag = F_COMMAND;
-        else if(KEY_IS("frequency")) flag = F_FREQUENCY;
-        else if(KEY_IS("duty_cycle")) flag = F_DUTY;
-        else if(KEY_IS("data")) flag = F_DATA;
-        else return (IrResult){IrErrUnknownKey, line_no};
+        if(KEY_IS("type"))
+            flag = F_TYPE;
+        else if(KEY_IS("protocol"))
+            flag = F_PROTOCOL;
+        else if(KEY_IS("address"))
+            flag = F_ADDRESS;
+        else if(KEY_IS("command"))
+            flag = F_COMMAND;
+        else if(KEY_IS("frequency"))
+            flag = F_FREQUENCY;
+        else if(KEY_IS("duty_cycle"))
+            flag = F_DUTY;
+        else if(KEY_IS("data"))
+            flag = F_DATA;
+        else
+            return (IrResult){IrErrUnknownKey, line_no};
 #undef KEY_IS
         if(fields & flag) return (IrResult){IrErrDuplicateKey, line_no};
         fields |= flag;
 
         switch(flag) {
         case F_TYPE:
-            if(vlen == 6 && memcmp(val, "parsed", 6) == 0) sig->type = IrSignalParsed;
-            else if(vlen == 3 && memcmp(val, "raw", 3) == 0) sig->type = IrSignalRaw;
-            else return (IrResult){IrErrType, line_no};
+            if(vlen == 6 && memcmp(val, "parsed", 6) == 0)
+                sig->type = IrSignalParsed;
+            else if(vlen == 3 && memcmp(val, "raw", 3) == 0)
+                sig->type = IrSignalRaw;
+            else
+                return (IrResult){IrErrType, line_no};
             break;
         case F_PROTOCOL:
             if(vlen == 0 || vlen > IR_PROTOCOL_MAX) return (IrResult){IrErrRange, line_no};
@@ -202,18 +235,23 @@ IrResult ir_parse(const char* data, size_t len, IrRemote* out) {
             if(sig->frequency == 0) return (IrResult){IrErrRange, line_no};
             break;
         case F_DUTY:
-            if(!parse_duty(val, vlen, &sig->duty_permille)) return (IrResult){IrErrNumber, line_no};
+            if(!parse_duty(val, vlen, &sig->duty_permille))
+                return (IrResult){IrErrNumber, line_no};
             break;
         case F_DATA: {
             sig->timing_offset = out->timing_used;
             size_t i = 0;
             while(i < vlen) {
                 size_t t = i;
-                while(i < vlen && val[i] != ' ') i++;
+                while(i < vlen && val[i] != ' ')
+                    i++;
                 uint32_t v;
-                if(!parse_u32(val + t, i - t, &v) || v == 0) return (IrResult){IrErrNumber, line_no};
-                if(sig->timing_count >= IR_MAX_TIMINGS) return (IrResult){IrErrTooManyTimings, line_no};
-                if(out->timing_used >= IR_MAX_TIMING_POOL) return (IrResult){IrErrTooManyTimings, line_no};
+                if(!parse_u32(val + t, i - t, &v) || v == 0)
+                    return (IrResult){IrErrNumber, line_no};
+                if(sig->timing_count >= IR_MAX_TIMINGS)
+                    return (IrResult){IrErrTooManyTimings, line_no};
+                if(out->timing_used >= IR_MAX_TIMING_POOL)
+                    return (IrResult){IrErrTooManyTimings, line_no};
                 out->timings[out->timing_used++] = v;
                 sig->timing_count++;
                 if(i < vlen) i++; /* single space separator */

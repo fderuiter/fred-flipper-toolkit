@@ -6,5 +6,6 @@ App(
     entry_point="fred_soil_uart_app",
     requires=["gui"],
     stack_size=2 * 1024,
+    sources=["soil_uart.c", "soil_frame.c"],
     fap_category="GPIO",
 )

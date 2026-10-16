@@ -1,0 +1,12 @@
+scons: Entering directory `<build>/ufbt-home/current/scripts/ufbt'
+	CC	<build>/apps/fred_ir_viewer/ir_parser.c
+	CC	<build>/apps/fred_ir_viewer/ir_viewer.c
+	CDB	<build>/apps/fred_ir_viewer/.vscode/compile_commands.json
+	LINK	<build>/ufbt-home/build/fred_ir_viewer_d.elf
+	INSTALL	<build>/apps/fred_ir_viewer/dist/debug/fred_ir_viewer_d.elf
+	APPMETA	<build>/ufbt-home/build/fred_ir_viewer.fap
+	FAP	<build>/ufbt-home/build/fred_ir_viewer.fap
+	FASTFAP	<build>/ufbt-home/build/fred_ir_viewer.fap
+	INSTALL	<build>/apps/fred_ir_viewer/dist/fred_ir_viewer.fap
+	APPCHK	<build>/ufbt-home/build/fred_ir_viewer.fap
+		Target: 7, API: 88.2

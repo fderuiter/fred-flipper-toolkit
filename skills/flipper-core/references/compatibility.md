@@ -10,13 +10,13 @@ Use with the [compatibility card](../assets/compatibility-card.md). The reposito
 | Firmware commit | `9e810dc399e027e48ce07751df72168abbb19065` | [C-BASE-001] |
 | Hardware target | f7 | [C-BASE-002] |
 | Exported SDK API | 88.2 (`Version,+,88.2` row of `targets/f7/api_symbols.csv`) | [C-BASE-002] source-confirmed |
-| f7 SDK artifact | `https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip` | [C-BASE-003] documented (index metadata) |
-| Published SDK SHA-256 | `dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe` | [C-BASE-003]; downloaded bytes **not verified** |
+| f7 SDK artifact | `https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip` | [C-BASE-003] official index; archive bytes verified |
+| Published SDK SHA-256 | `dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe` | [C-BASE-003]; downloaded bytes matched on 2026-10-16 |
 | uFBT bootstrap | 0.2.6, release commit `093ab78058f19b11eab82020989aa4e123521490` | [C-BASE-004] documented |
-| Toolchain (compiler/binutils) | unknown | Supplied by SDK setup; record when actually installed |
+| Toolchain | Flipper toolchain 39: `arm-none-eabi-gcc` 12.3.1 20230626, GNU ld 2.40 | [C-BUILD-005]; installed by uFBT, no publisher checksum |
 | Application catalog | `5309fa2b142cb3bcc78098ddb1d1e3c7908fce47` | [C-CAT-001] |
 
-This is a **researched target**, not compiled or device-tested support. Do not replace it with a moving release channel; propose a baseline change as maintenance. Pin bootstrap, SDK, toolchain, firmware lineage and dependencies separately: the SDK carries much of the build machinery, so pinning uFBT alone is insufficient [C-BASE-004].
+FRED's designated reference fixtures compile against this exact SDK and toolchain and their extracted logic is host-tested; **nothing is device-tested** yet. A different compiler or newlib can change the generated API itself: a distro toolchain turned 88.2 into 89.0 [C-BUILD-004]. Do not replace it with a moving release channel; propose a baseline change as maintenance. Pin bootstrap, SDK, toolchain, firmware lineage and dependencies separately: the SDK carries much of the build machinery, so pinning uFBT alone is insufficient [C-BASE-004].
 
 The official `dev` branch observed at `3fb1d51727733d2007abc5ec636a89328857803e` declares API 88.4 and exports 42 symbols absent from 1.5.1 (no removals or signature changes) [C-BASE-005]. A FAP built against dev that imports one of them can fail to load on 1.5.1.
 

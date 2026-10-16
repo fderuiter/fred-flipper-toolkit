@@ -411,10 +411,15 @@ class RepositoryRecords(unittest.TestCase):
 
     def test_support_claim_requires_evidence(self):
         data = self.load("compatibility.json")
-        data["surfaces"][0]["support"] = "compiled"
+        data["surfaces"][0]["support"] = "device-verified"
         self.dump("compatibility.json", data)
         code, out = self.check()
         self.assertEqual(code, 1)
+        self.assertIn("support 'device-verified' claimed but evidence.device_behavior is not 'pass'", out)
+        data["evidence"]["compiled"] = {"status": "blocked", "reason": "x"}
+        data["surfaces"][0]["support"] = "compiled"
+        self.dump("compatibility.json", data)
+        code, out = self.check()
         self.assertIn("support 'compiled' claimed but evidence.compiled is not 'pass'", out)
 
     def test_pass_requires_existing_evidence_path(self):
@@ -427,9 +432,14 @@ class RepositoryRecords(unittest.TestCase):
     def test_sdk_bytes_verified_needs_matching_digest(self):
         data = self.load("compatibility.json")
         data["baseline"]["sdk_artifact"]["bytes_verified"] = True
+        data["baseline"]["sdk_artifact"]["observed_sha256"] = None
         self.dump("compatibility.json", data)
         code, out = self.check()
         self.assertIn("bytes_verified=true requires observed_sha256", out)
+        data["baseline"]["sdk_artifact"]["observed_sha256"] = "0" * 64
+        self.dump("compatibility.json", data)
+        code, out = self.check()
+        self.assertIn("observed_sha256 differs from published_sha256", out)
 
     def test_baseline_component_cannot_be_omitted(self):
         data = self.load("compatibility.json")

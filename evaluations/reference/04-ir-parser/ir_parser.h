@@ -6,16 +6,19 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define IR_MAX_FILE_BYTES   (64u * 1024u)
-#define IR_MAX_LINE         256u    /* any key except data */
-#define IR_MAX_DATA_LINE    (IR_MAX_TIMINGS * 11u + 8u) /* "data: " + up to 1024 uint32 */
-#define IR_MAX_SIGNALS      64u
-#define IR_MAX_TIMINGS      1024u   /* per signal, from InfraredFileFormats.md */
-#define IR_MAX_TIMING_POOL  4096u   /* all raw timings in one file */
-#define IR_NAME_MAX         32u
-#define IR_PROTOCOL_MAX     16u
+#define IR_MAX_FILE_BYTES  (64u * 1024u)
+#define IR_MAX_LINE        256u /* any key except data */
+#define IR_MAX_DATA_LINE   (IR_MAX_TIMINGS * 11u + 8u) /* "data: " + up to 1024 uint32 */
+#define IR_MAX_SIGNALS     64u
+#define IR_MAX_TIMINGS     1024u /* per signal, from InfraredFileFormats.md */
+#define IR_MAX_TIMING_POOL 4096u /* all raw timings in one file */
+#define IR_NAME_MAX        32u
+#define IR_PROTOCOL_MAX    16u
 
-typedef enum { IrSignalParsed, IrSignalRaw } IrSignalType;
+typedef enum {
+    IrSignalParsed,
+    IrSignalRaw
+} IrSignalType;
 
 typedef struct {
     char name[IR_NAME_MAX + 1];
@@ -24,8 +27,8 @@ typedef struct {
     uint8_t address[4];
     uint8_t command[4];
     uint32_t frequency;
-    uint32_t duty_permille;  /* duty cycle * 1000 */
-    uint32_t timing_offset;  /* index into IrRemote.timings */
+    uint32_t duty_permille; /* duty cycle * 1000 */
+    uint32_t timing_offset; /* index into IrRemote.timings */
     uint32_t timing_count;
 } IrSignal;
 

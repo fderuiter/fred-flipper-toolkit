@@ -6,7 +6,8 @@ uint16_t soil_crc16_ccitt_false(const uint8_t* data, size_t n) {
     uint16_t crc = 0xFFFF;
     for(size_t i = 0; i < n; i++) {
         crc ^= (uint16_t)(data[i] << 8);
-        for(int b = 0; b < 8; b++) crc = (crc & 0x8000) ? (uint16_t)((crc << 1) ^ 0x1021) : (uint16_t)(crc << 1);
+        for(int b = 0; b < 8; b++)
+            crc = (crc & 0x8000) ? (uint16_t)((crc << 1) ^ 0x1021) : (uint16_t)(crc << 1);
     }
     return crc;
 }
@@ -61,7 +62,12 @@ static bool step(SoilParser* p, uint8_t byte, SoilReadingCallback cb, void* ctx)
  * byte excluded) are rescanned so a sync byte inside a corrupt frame can start
  * the next frame. Each failure drops at least the sync byte, so this terminates;
  * the work buffer never exceeds one frame plus one byte and no recursion is used. */
-void soil_parser_feed(SoilParser* p, const uint8_t* data, size_t n, SoilReadingCallback cb, void* ctx) {
+void soil_parser_feed(
+    SoilParser* p,
+    const uint8_t* data,
+    size_t n,
+    SoilReadingCallback cb,
+    void* ctx) {
     uint8_t work[sizeof(p->buf) + 1];
     uint8_t tmp[sizeof(p->buf) + 1];
     for(size_t i = 0; i < n; i++) {

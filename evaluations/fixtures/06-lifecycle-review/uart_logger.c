@@ -5,10 +5,10 @@
 #include <notification/notification_messages.h>
 #include <storage/storage.h>
 
-#define TAG "UartLogger"
-#define LINE_MAX 64
+#define TAG             "UartLogger"
+#define LINE_MAX        64
 #define EVENT_QUEUE_LEN 4
-#define CAL_PATH APP_DATA_PATH("calibration.bin")
+#define CAL_PATH        APP_DATA_PATH("calibration.bin")
 
 typedef struct {
     uint32_t ticks;

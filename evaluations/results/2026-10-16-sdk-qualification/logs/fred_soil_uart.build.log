@@ -1,0 +1,12 @@
+scons: Entering directory `<build>/ufbt-home/current/scripts/ufbt'
+	CC	<build>/apps/fred_soil_uart/soil_frame.c
+	CC	<build>/apps/fred_soil_uart/soil_uart.c
+	CDB	<build>/apps/fred_soil_uart/.vscode/compile_commands.json
+	LINK	<build>/ufbt-home/build/fred_soil_uart_d.elf
+	INSTALL	<build>/apps/fred_soil_uart/dist/debug/fred_soil_uart_d.elf
+	APPMETA	<build>/ufbt-home/build/fred_soil_uart.fap
+	FAP	<build>/ufbt-home/build/fred_soil_uart.fap
+	FASTFAP	<build>/ufbt-home/build/fred_soil_uart.fap
+	INSTALL	<build>/apps/fred_soil_uart/dist/fred_soil_uart.fap
+	APPCHK	<build>/ufbt-home/build/fred_soil_uart.fap
+		Target: 7, API: 88.2

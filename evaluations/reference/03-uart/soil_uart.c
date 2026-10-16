@@ -7,10 +7,10 @@
 #include <stdio.h>
 #include "soil_frame.h"
 
-#define TAG "SoilUart"
-#define BAUD 115200
+#define TAG             "SoilUart"
+#define BAUD            115200
 #define RX_STREAM_BYTES 512 /* ~44 ms of line-rate data at 115200 8N1 */
-#define WORKER_STOP (1u << 0)
+#define WORKER_STOP     (1u << 0)
 
 typedef struct {
     FuriMessageQueue* input_queue;
@@ -51,7 +51,8 @@ static int32_t worker(void* context) {
     soil_parser_reset(&parser);
     uint8_t buf[64];
     while(!(furi_thread_flags_get() & WORKER_STOP)) {
-        size_t n = furi_stream_buffer_receive(app->rx_stream, buf, sizeof(buf), furi_ms_to_ticks(50));
+        size_t n =
+            furi_stream_buffer_receive(app->rx_stream, buf, sizeof(buf), furi_ms_to_ticks(50));
         if(n == 0) continue;
         furi_check(furi_mutex_acquire(app->mutex, FuriWaitForever) == FuriStatusOk);
         soil_parser_feed(&parser, buf, n, on_reading, app);
@@ -79,7 +80,13 @@ static void draw(Canvas* canvas, void* context) {
         snprintf(line, sizeof(line), "Moisture %u", app->last.moisture);
         canvas_draw_str(canvas, 2, 12, line);
         int t = app->last.temp_decicelsius;
-        snprintf(line, sizeof(line), "Temp %s%d.%d C", t < 0 ? "-" : "", (t < 0 ? -t : t) / 10, (t < 0 ? -t : t) % 10);
+        snprintf(
+            line,
+            sizeof(line),
+            "Temp %s%d.%d C",
+            t < 0 ? "-" : "",
+            (t < 0 ? -t : t) / 10,
+            (t < 0 ? -t : t) % 10);
         canvas_draw_str(canvas, 2, 26, line);
     } else {
         canvas_draw_str(canvas, 2, 12, "Waiting for data");
@@ -87,8 +94,12 @@ static void draw(Canvas* canvas, void* context) {
     uint32_t errors = app->stats.bad_crc + app->stats.bad_length + app->stats.bad_payload;
     furi_mutex_release(app->mutex);
     canvas_set_font(canvas, FontSecondary);
-    snprintf(line, sizeof(line), "errors %lu  overflow %lu", (unsigned long)errors,
-             (unsigned long)__atomic_load_n(&app->rx_overflow, __ATOMIC_RELAXED));
+    snprintf(
+        line,
+        sizeof(line),
+        "errors %lu  overflow %lu",
+        (unsigned long)errors,
+        (unsigned long)__atomic_load_n(&app->rx_overflow, __ATOMIC_RELAXED));
     canvas_draw_str(canvas, 2, 44, line);
     canvas_draw_str(canvas, 2, 60, "Back: stop and exit");
 }

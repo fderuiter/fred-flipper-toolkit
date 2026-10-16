@@ -5,12 +5,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define SOIL_SYNC        0xA5u
-#define SOIL_MAX_PAYLOAD 32u
+#define SOIL_SYNC         0xA5u
+#define SOIL_MAX_PAYLOAD  32u
 #define SOIL_MOISTURE_MAX 1000u
 
 typedef struct {
-    uint16_t moisture;      /* 0..1000 */
+    uint16_t moisture; /* 0..1000 */
     int16_t temp_decicelsius;
 } SoilReading;
 
@@ -34,5 +34,10 @@ typedef void (*SoilReadingCallback)(const SoilReading* reading, void* context);
 void soil_parser_reset(SoilParser* p);
 /* Feed any number of bytes; calls cb for each valid reading. Bounded work:
  * at most O(n * frame length) per call, no allocation. */
-void soil_parser_feed(SoilParser* p, const uint8_t* data, size_t n, SoilReadingCallback cb, void* ctx);
+void soil_parser_feed(
+    SoilParser* p,
+    const uint8_t* data,
+    size_t n,
+    SoilReadingCallback cb,
+    void* ctx);
 uint16_t soil_crc16_ccitt_false(const uint8_t* data, size_t n);

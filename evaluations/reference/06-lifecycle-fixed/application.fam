@@ -1,0 +1,10 @@
+# Reviewer-side corrected version of the FRED task 06 input. MIT licensed, original.
+App(
+    appid="uart_logger_fixed",
+    name="UART Logger (fixed)",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="uart_logger_app",
+    requires=["gui", "notification", "storage"],
+    stack_size=2 * 1024,
+    fap_category="Tools",
+)

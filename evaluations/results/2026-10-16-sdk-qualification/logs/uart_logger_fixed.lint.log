@@ -1,0 +1,3 @@
+scons: Entering directory `<build>/ufbt-home/current/scripts/ufbt'
+	INSTALL	<build>/apps/uart_logger_fixed/.clang-format
+python3 <build>/ufbt-home/current/scripts/lint.py check <build>/apps/uart_logger_fixed

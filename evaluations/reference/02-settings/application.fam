@@ -1,0 +1,11 @@
+# Reviewer-side reference solution for FRED task 02. MIT licensed, original.
+App(
+    appid="fred_interval_timer",
+    name="Interval Timer",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="fred_interval_timer_app",
+    requires=["gui", "storage", "notification"],
+    stack_size=2 * 1024,
+    sources=["interval_timer.c", "settings_store.c"],
+    fap_category="Tools",
+)

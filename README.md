@@ -2,7 +2,7 @@
 
 An AI development toolkit for the Flipper Zero ecosystem: four Agent Skills for Claude Code plus portable, source-grounded domain references for other coding agents. FRED is a skill/reference bundle; its name does not imply a new embedded runtime or hardware driver.
 
-**Status: v0.1 preview.** The skills, shared references, claim registry, offline helpers, tests and benchmark definitions are implemented and pass their offline checks. **Not yet done:** SDK compilation of benchmark fixtures, the controlled model comparison, and real-device qualification. Nothing here has been compiled against the SDK or run on a Flipper; do not treat FRED as production-ready. See [current evidence](#compatibility-and-evidence).
+**Status: v0.1 preview.** The skills, shared references, claim registry, offline helpers, tests and benchmark definitions are implemented and pass their offline checks. The skills pass live activation tests in Claude Code, and the designated reference fixtures compile against the byte-verified official 1.5.1 SDK. **Not yet done:** real-device qualification; nothing has run on a Flipper, so do not treat FRED as production-ready. See [current evidence](#compatibility-and-evidence).
 
 ## What it does
 
@@ -60,18 +60,19 @@ Python 3 standard library only; no network, subprocesses or installs. Exit codes
 
 ## Compatibility and evidence
 
-Researched baseline (checked 2026-10-16): official firmware **1.5.1**, commit [`9e810dc`](https://github.com/flipperdevices/flipperzero-firmware/tree/9e810dc399e027e48ce07751df72168abbb19065), target **f7**, API **88.2**; uFBT bootstrap 0.2.6; f7 SDK published SHA-256 `dfde39df…2ffe` (index metadata; archive bytes not yet verified).
+Baseline (checked 2026-10-16): official firmware **1.5.1**, commit [`9e810dc`](https://github.com/flipperdevices/flipperzero-firmware/tree/9e810dc399e027e48ce07751df72168abbb19065), target **f7**, API **88.2**; uFBT 0.2.6; f7 SDK SHA-256 `dfde39df…2ffe` (downloaded bytes verified); Flipper toolchain 39 (gcc 12.3.1).
 
 | Evidence | Status |
 |---|---|
 | Documentation reviewed / pinned source inspected | pass (registry re-resolved at its pins) |
 | Bundle, registry and helper checks | pass (offline) |
-| Fixture compilation against the 1.5.1 SDK | blocked — no prepared toolchain ([#7](https://github.com/fderuiter/fred-flipper-toolkit/issues/7)) |
-| Host tests of fixture logic | not run ([#7](https://github.com/fderuiter/fred-flipper-toolkit/issues/7)) |
-| Live activation and controlled model comparison | not run ([#8](https://github.com/fderuiter/fred-flipper-toolkit/issues/8)) |
+| Fixture compilation against the 1.5.1 SDK | pass — 6 designated apps, 0 warnings, API 88.2 ([record](evaluations/results/2026-10-16-sdk-qualification/README.md)) |
+| Host tests of fixture logic | pass — gcc/clang, ASan/UBSan ([record](evaluations/results/2026-10-16-sdk-qualification/README.md)) |
+| Live activation (24 cases + 6 held-out) | pass — 23/24, 0 negative false activations, 6/6 held-out ([record](evaluations/results/2026-10-16-activation-summary.md)) |
+| Controlled model comparison | see [#8](https://github.com/fderuiter/fred-flipper-toolkit/issues/8) |
 | Device behavior | not run ([#9](https://github.com/fderuiter/fred-flipper-toolkit/issues/9)) |
 
-Native FAP support is **researched**, not compiled or device-verified. Other firmware lineages are not supported. Compilation will never be presented as proof of hardware behavior.
+Native FAP support is **host-tested** in FRED's terms (designated fixtures compiled and their logic host-tested), not device-verified. Other firmware lineages are not supported. Compilation will never be presented as proof of hardware behavior.
 
 ## Scope
 

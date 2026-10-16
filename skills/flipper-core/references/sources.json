@@ -100,7 +100,7 @@
     },
     {
       "id": "C-BASE-003",
-      "claim": "The official update index publishes the f7 SDK for 1.5.1 at https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip with SHA-256 dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe; downloaded bytes have not been verified.",
+      "claim": "The official update index publishes the f7 SDK for 1.5.1 at https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip with SHA-256 dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe; a download on 2026-10-16 matched this digest and its api_symbols.csv is byte-identical to the pinned firmware table.",
       "sources": [
         {
           "url": "https://update.flipperzero.one/firmware/directory.json",
@@ -110,9 +110,9 @@
       ],
       "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
       "checked_on": "2026-10-16",
-      "status": "documented",
+      "status": "source-confirmed",
       "review_state": "current",
-      "consequence": "Verify archive bytes against the digest before use; until then the SDK identity is index metadata only.",
+      "consequence": "Use this URL and digest for the baseline SDK; verify bytes again on every new setup.",
       "consumers": [
         "flipper-core/references/build-debug-release.md",
         "flipper-core/references/compatibility.md"
@@ -123,7 +123,7 @@
     },
     {
       "id": "C-BASE-004",
-      "claim": "uFBT 0.2.6 builds from the app directory into dist, downloads SDK and toolchain on first run from the release channel by default, selects SDKs with update --branch/--url/--local, and stores state in UFBT_HOME (default ~/.ufbt).",
+      "claim": "uFBT 0.2.6 builds from the app directory into dist, downloads SDK and toolchain on first run from the release channel by default, selects SDKs with update --branch/--url/--local, and stores state in UFBT_HOME (default ~/.ufbt); 'ufbt update --local' additionally requires --hw-target.",
       "sources": [
         {
           "url": "https://github.com/flipperdevices/flipperzero-ufbt/blob/093ab78058f19b11eab82020989aa4e123521490/README.md",
@@ -1102,6 +1102,47 @@
       ],
       "research_ids": [
         "S28"
+      ]
+    },
+    {
+      "id": "C-BUILD-004",
+      "claim": "Building the pinned firmware tree with a non-official toolchain (Ubuntu arm-none-eabi-gcc 13.2.1, newlib 4.4) made the SDK API generator drop ten __retarget_lock_* exports and fbt rewrote targets/f7/api_symbols.csv to version 89.0.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/scripts/fbt_tools/fbt_sdk.py",
+          "locator": "_check_sdk_is_up2date / API table regeneration",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Pin the official toolchain as well as uFBT and the SDK; a different compiler/newlib can silently change the declared API.",
+      "consumers": [
+        "flipper-core/references/build-debug-release.md",
+        "flipper-core/references/compatibility.md"
+      ],
+      "notes": "Observed by executing fbt on 2026-10-16; record in evaluations/results/2026-10-16-sdk-qualification."
+    },
+    {
+      "id": "C-BUILD-005",
+      "claim": "The 1.5.1 SDK uses Flipper toolchain version 39 (arm-none-eabi-gcc 12.3.1 20230626, GNU ld 2.40), downloaded by uFBT from update.flipperzero.one without a published checksum file.",
+      "sources": [
+        {
+          "url": "https://github.com/flipperdevices/flipperzero-firmware/blob/9e810dc399e027e48ce07751df72168abbb19065/scripts/toolchain/fbtenv.sh",
+          "locator": "FBT_TOOLCHAIN_VERSION and TOOLCHAIN_URL",
+          "pin": "fw"
+        }
+      ],
+      "applies_to": "official firmware 1.5.1 / f7 / API 88.2",
+      "checked_on": "2026-10-16",
+      "status": "source-confirmed",
+      "review_state": "current",
+      "consequence": "Record toolchain version and compiler identity in every build report; the archive hash can only be observed, not publisher-verified.",
+      "consumers": [
+        "flipper-core/references/build-debug-release.md",
+        "flipper-core/references/compatibility.md"
       ]
     }
   ]

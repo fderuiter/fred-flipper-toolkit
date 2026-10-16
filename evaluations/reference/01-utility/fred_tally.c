@@ -44,15 +44,20 @@ int32_t fred_tally_app(void* p) {
     InputEvent event;
     bool running = true;
     while(running) {
-        if(furi_message_queue_get(tally.input_queue, &event, FuriWaitForever) != FuriStatusOk) continue;
+        if(furi_message_queue_get(tally.input_queue, &event, FuriWaitForever) != FuriStatusOk)
+            continue;
         bool changed = false;
         furi_check(furi_mutex_acquire(tally.mutex, FuriWaitForever) == FuriStatusOk);
         if(event.key == InputKeyBack && event.type == InputTypeShort) {
             running = false;
-        } else if(event.key == InputKeyUp && (event.type == InputTypeShort || event.type == InputTypeRepeat)) {
+        } else if(
+            event.key == InputKeyUp &&
+            (event.type == InputTypeShort || event.type == InputTypeRepeat)) {
             if(tally.count < UINT32_MAX) tally.count++;
             changed = true;
-        } else if(event.key == InputKeyDown && (event.type == InputTypeShort || event.type == InputTypeRepeat)) {
+        } else if(
+            event.key == InputKeyDown &&
+            (event.type == InputTypeShort || event.type == InputTypeRepeat)) {
             if(tally.count > 0) tally.count--;
             changed = true;
         } else if(event.key == InputKeyOk && event.type == InputTypeLong) {
