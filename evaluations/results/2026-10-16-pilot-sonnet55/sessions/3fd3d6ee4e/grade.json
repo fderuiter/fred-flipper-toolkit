@@ -1,0 +1,53 @@
+{
+  "assertions": [
+    {
+      "id": "T06-A1",
+      "awarded": 27.0,
+      "rationale": "All 8 seeded defects are identified with a correct trigger, consequence and fix. D5 is item 1 (join while holding the mutex the worker takes). D1 is item 2 (timer_stop doesn't wait for an in-flight callback, and the model is freed while tick/draw still use it). D2 is item 3, D7 is item 4, D4 is item 5 (FuriWaitForever put from the GUI thread into a 4-slot queue). D3 is item 8, with the leak covered in item 6. D6 is item 9 and D8 is item 14. That would be 30 \u00d7 8/8, but I deducted points for two gaps. First, no finding proposes a test or reproduction step, and the oracle's causal trace expects one. Second, the D1 trace leaves out the view_port_update-after-ViewPort-free consequence."
+    },
+    {
+      "id": "T06-A2",
+      "awarded": 17.0,
+      "rationale": "The fixes use real APIs: gui_remove_view_port, furi_timer_free, FuriStreamBuffer, storage_file_size, the NULL return from furi_hal_serial_control_acquire, and expansion disable. The review makes no 'malloc forbidden' claim, and malloc is flagged only in the ISR-context RX callback. Points are deducted for the suggestion of a 'ViewPort model with a lock'. ViewPort has no model API; locked models belong to View (with_view_model), so this conflates the two."
+    },
+    {
+      "id": "T06-A3",
+      "awarded": 12.0,
+      "rationale": "The join is moved outside the lock, gui_remove_view_port comes before view_port_free, the notification is sent before the record is closed, and the model is freed last. Those parts are correct. However, the consolidated teardown order is not quiescent. It never stops the timer up front: step 4 frees the ViewPort and step 5 frees the timer. A periodic tick_callback that runs between those steps calls view_port_update on a freed ViewPort. This contradicts the session's own item-2 fix, which put timer_free before the model and ViewPort were released."
+    },
+    {
+      "id": "T06-A4",
+      "awarded": 11.0,
+      "rationale": "The scope statement is clear: review only, no edits, not compiled or run, and everything comes from reading the code. The review makes no claim of a reproduced crash. However, evidence levels are not labelled per finding; there is only one blanket statement."
+    },
+    {
+      "id": "T06-A5",
+      "awarded": 10.0,
+      "rationale": "The tool calls were only Read and Glob, so no files were edited. None of the decoys (app_alloc malloc, blocking main-loop get, 100 ms worker timeout, 10 Hz redraw, no SceneManager, FURI_LOG_I) is flagged as a defect."
+    },
+    {
+      "id": "T06-A6",
+      "awarded": 4.0,
+      "rationale": "The output is well structured and actionable. The symptom root causes come first, followed by grouped findings and a teardown order. The findings are grouped by category rather than given explicit severity ranks."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "The proposed consolidated app_free order frees the ViewPort (step 4) before stopping or freeing the periodic timer (step 5). A tick_callback in that window calls view_port_update on freed memory. The proposed fix therefore keeps part of the D1 use-after-free.",
+    "It suggests a 'ViewPort model with a lock', but ViewPort has no model API. Locked models belong to View (with_view_model)."
+  ],
+  "seeded_defects_found": [
+    "T06-D1",
+    "T06-D2",
+    "T06-D3",
+    "T06-D4",
+    "T06-D5",
+    "T06-D6",
+    "T06-D7",
+    "T06-D8"
+  ],
+  "decoys_flagged": [],
+  "score": 81.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.15870459999999997
+}

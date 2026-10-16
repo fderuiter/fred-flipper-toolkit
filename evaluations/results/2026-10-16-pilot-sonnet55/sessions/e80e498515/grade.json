@@ -1,0 +1,50 @@
+{
+  "assertions": [
+    {
+      "id": "T06-A1",
+      "awarded": 27.0,
+      "rationale": "All 8 seeded defects were found with a correct trigger, consequence and fix: D1 timer stop/in-flight callback UAF on model and view_port (finding 3); D2 missing gui_remove_view_port (3); D3 malloc in the ISR plus leak on put failure (4); D4 FuriWaitForever on the 4-slot queue blocks the GUI thread (2); D5 join while holding the mutex (1); D6 unlocked line/line_len race with draw_callback (6); D7 notification_message after record close (8); D8 unbounded count, multiplication overflow and unchecked reads (9). The task says a causal trace includes a test, but no finding proposes a test or a reproduction strategy, so 3 points are deducted from the full 30."
+    },
+    {
+      "id": "T06-A2",
+      "awarded": 20.0,
+      "rationale": "Every fix uses real APIs: furi_timer_free, gui_remove_view_port, FuriStreamBuffer, thread flags, and checks on storage_file_read return values. The claim that furi_timer_stop is asynchronous and does not wait for an in-flight callback is accurate. The claim that view_port_free asserts while the port is still attached to the GUI is accurate. The NULL return from furi_hal_serial_control_acquire, for example while the expansion service holds the USART, is accurate. 'malloc not allowed in ISR' applies only to the actual ISR callback. There is no blanket 'malloc forbidden' claim and no furi_alloc."
+    },
+    {
+      "id": "T06-A3",
+      "awarded": 20.0,
+      "rationale": "The proposed teardown order reaches quiescence. Timer stop+free comes first. Then serial RX stop/deinit/release. Then running=false under the lock, unlock, join. Then gui_remove_view_port before view_port_free. Then the notification before the record close. Finally the leftover rx_queue chunks are drained and the remaining objects freed, with model and state freed last. No join happens under a needed lock and nothing is flushed from a timer callback. Changing the input_callback timeout to 0 removes the GUI-thread block that could otherwise stall gui_remove_view_port."
+    },
+    {
+      "id": "T06-A4",
+      "awarded": 13.0,
+      "rationale": "The review gives a clear scope statement: it read the file only, made no edits, and compiled or ran nothing, so every finding is a source trace. It makes no reproduced-crash claims. The evidence level is stated once for the whole review rather than per finding, and no finding proposes a verification test."
+    },
+    {
+      "id": "T06-A5",
+      "awarded": 10.0,
+      "rationale": "The only tool calls were Read and cat, so no files were edited. No decoys were reported as defects. The aside that the separate Model malloc 'adds nothing' is a style note, not a defect claim. The 10 Hz timer, the blocking main-loop wait, the worker timeout, the lack of a SceneManager and FURI_LOG_I were all left alone."
+    },
+    {
+      "id": "T06-A6",
+      "awarded": 4.5,
+      "rationale": "The output is well structured. It goes from the reported symptoms to other defects to minor issues, gives line references and concrete fixes, and adds a consolidated teardown order. It has no explicit severity labels, but the ordering reflects impact."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [
+    "T06-D1",
+    "T06-D2",
+    "T06-D3",
+    "T06-D4",
+    "T06-D5",
+    "T06-D6",
+    "T06-D7",
+    "T06-D8"
+  ],
+  "decoys_flagged": [],
+  "score": 94.5,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1545726
+}

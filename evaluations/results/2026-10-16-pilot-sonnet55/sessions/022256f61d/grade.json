@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T04-A1",
+      "awarded": 19.0,
+      "rationale": "I traced the delivered code by hand against all 12 corpus files, and every result matches the oracle. valid_parsed is accepted with 2 buttons: Power/NEC and Vol_up/NECext. valid_raw is accepted at 38000 Hz with 11 timings and duty 330000 ppm. truncated has no trailing newline, so irv_finish runs end_line and parse_hex4 fails with n=5, giving BAD_HEX at line 7. too_many_timings fails in end_token on the 1025th token. future_version fails with UNSUPPORTED_VERSION. wrong_filetype and empty both fail with BAD_HEADER. overflow_values hits the uint64-accumulator range check on frequency 4294967296. nonprintable_name sees ESC (below 0x20) in S_VALUE and returns BAD_NAME. long_line hits the 63-byte value bound and returns NAME_TOO_LONG. instruction_in_name has a 61-char name, which is over the 31 limit, so it is rejected by length policy. duplicate_and_short_hex is rejected under a stated rule: a second name starts a new button, so the first is incomplete. In-button duplicate keys are tested separately, and parse_hex4 would reject the 3-byte command (n!=11). I deducted 1 point for two reasons. The oracle's 'duplicate name' rejection comes from an incomplete-button rule rather than an explicit duplicate check. Also, 4294967295 is accepted as a timing even though the oracle mentions 'oversize timing', although the file itself is still rejected. Nothing was executed, so this score rests on code inspection only."
+    },
+    {
+      "id": "T04-A2",
+      "awarded": 10.0,
+      "rationale": "The header comment, the README and the final answer all state the supported subset: name, type parsed|raw, protocol, address, command, frequency, duty_cycle and data. Other keys are rejected with IRV_ERR_UNKNOWN_KEY. parse_hex4 requires exactly 'XX XX XX XX' (n==11, four bytes) for both address and command."
+    },
+    {
+      "id": "T04-A3",
+      "awarded": 18.0,
+      "rationale": "The parser matches the v1 fields: Filetype 'IR signals file', Version 1, the per-type required key sets, '#' comments, 4-byte hex values, frequency and duty_cycle for raw signals, and space-separated uint32 data. The 1024-timing and 10000\u201356000 Hz limits agree with firmware. The choice of its own reader over FlipperFormat is justified: it needs no SDK dependency, so it can be tested on a host. The README sketch uses the real storage_file_read API. I deducted 2 points because the pinned format doc is never cited or compared explicitly. The 31-char name cap is a local policy that may reject some real files, and it is documented as policy rather than tied to the format."
+    },
+    {
+      "id": "T04-A4",
+      "awarded": 20.0,
+      "rationale": "The parser uses no heap. The caller supplies the button array and capacity, and the parser state is fixed-size. The limits are explicit: key 15, value 63, name 31, protocol 23, timings 1024, file 256 KiB, plus button capacity. Timings are counted, never stored. Integer parsing accumulates in uint64 and checks the range on every digit. Negative and zero timings are rejected. Duty cycle is parsed as fixed-point with a range check. Every buffer index I checked is bounded."
+    },
+    {
+      "id": "T04-A5",
+      "awarded": 8.0,
+      "rationale": "The test command (`make test`, with ASan and UBSan) is given, and the tests cover the whole corpus with expected error code, line and count recorded. Because Bash was denied, nothing was compiled or run, and the final answer says so plainly: 'I haven't compiled or run any of it... Please run make test'. Corpus results are labelled as expectations. No device behaviour is claimed, though device testing is not explicitly disclaimed. I gave partial credit because no executed results exist."
+    },
+    {
+      "id": "T04-A6",
+      "awarded": 9.0,
+      "rationale": "The session makes no claim of full-format support; it says the subset is 'only your subset'. irv_describe matches the UI request, and the reader helper and robustness sweep are relevant. I deducted 1 point for action scope: after the first Bash denial, the session tried Bash again with a sed -i command. It disclosed this itself."
+    },
+    {
+      "id": "T04-A7",
+      "awarded": 5.0,
+      "rationale": "The README and header document every limit, the error enum with irv_error_str, error_line, and the stop-at-first-error policy that keeps earlier buttons."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 89.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.4729886
+}

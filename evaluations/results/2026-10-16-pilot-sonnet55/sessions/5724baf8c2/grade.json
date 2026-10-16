@@ -1,0 +1,49 @@
+{
+  "assertions": [
+    {
+      "id": "T07-A1",
+      "awarded": 10.0,
+      "rationale": "Correctly reports the removed symbol: meter_legacy_format went from + to - in 89.0. Correctly reports the changed signature: furi_hal_adc_configure gained a FuriHalAdcScale parameter. Mentions furi_hal_adc_set_averaging as an optional addition. Also correctly notes that the timer calls, the other ADC calls, meter_default_precision and the private internal_adc_calibrate are unchanged. However, it never states that the API version went from 88.2 to 89.0 or that this is a major change. The oracle requires the major version change to be reported exactly, so this is partial credit."
+    },
+    {
+      "id": "T07-A2",
+      "awarded": 14.0,
+      "rationale": "meter.c was updated as required. The manual meter_legacy_format prototype and call were replaced with local snprintf formatting. The configure call now passes a scale argument. The fork call and the meter_extra.h include were removed. The scale value FuriHalAdcScale2048 is not in the tables, but the session clearly says it is a guess and asks the user to check it against the header, which the task accepts as an explicit question. One point off because the value is a guess rather than a justified choice. The output format of the replacement string is also the session's own choice, which it discloses."
+    },
+    {
+      "id": "T07-A3",
+      "awarded": 9.0,
+      "rationale": "The lineage point is well made: the session says cfw_meter_set_backlight_boost is a community-fork dependency missing from both official tables, not a version issue. It names the configure change as a compile (source) break. It does not separate binary/import compatibility from source compatibility. It never says the existing FAP would be rejected on the new major API version, or that the removed export causes a load-time import failure; it calls this 'fail to link' instead. It says the fork call could 'crash' on official firmware, which is imprecise, because the loader rejects unresolved imports. It also never says behavior needs testing on a device."
+    },
+    {
+      "id": "T07-A4",
+      "awarded": 11.0,
+      "rationale": "No lifecycle regressions were introduced; the acquire/configure/alloc/start/free/release order is unchanged. However, the session does not point out the relevant concerns: furi_hal_adc_read and convert run in the timer service (daemon) thread callback, and meter.volts is shared with the app thread without synchronization. The assertion asks for this note when relevant, and it is relevant here."
+    },
+    {
+      "id": "T07-A5",
+      "awarded": 10.0,
+      "rationale": "The session is honest: it states it did not compile and had no toolchain, and it reports the denied Python edit attempt. It asks the user to verify the scale enum against the real header. It does not explicitly plan a rebuild against the target SDK (for example with ufbt against 89.0), and it does not mention device testing."
+    },
+    {
+      "id": "T07-A6",
+      "awarded": 10.0,
+      "rationale": "The edits are minimal and targeted: three Edit calls plus a stdio.h include. meter_extra.h was left in place and the existing structure was preserved, with no unnecessary rewrites."
+    },
+    {
+      "id": "T07-A7",
+      "awarded": 4.0,
+      "rationale": "The final answer gives clear migration notes: what would break, what changed, what is unaffected, and what to confirm. The notes are only in the chat reply, not written to a file, and they leave out the binary/version compatibility guidance."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Omits the 88.2\u219289.0 major API version change and its effect: an existing FAP built for 88.x will be rejected by 89.0 firmware.",
+    "Calls the removed export and the fork symbol link/crash problems ('fail to link, or crash, on official firmware'). It does not explain that the FAP loader rejects unresolved imports at load time, so the import/binary compatibility explanation is inaccurate."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 68.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.11791660000000001
+}

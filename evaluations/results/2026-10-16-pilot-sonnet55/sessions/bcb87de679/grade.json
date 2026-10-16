@@ -1,0 +1,48 @@
+{
+  "assertions": [
+    {
+      "id": "T07-A1",
+      "awarded": 11.0,
+      "rationale": "Correctly reports that meter_legacy_format was removed (status '-'), that furi_hal_adc_configure gained a FuriHalAdcScale parameter, and that furi_hal_adc_set_averaging was added and is optional. It also notes unchanged symbols accurately. It states 88.2 -> 89.0 only as context and never calls it a major API version bump or explains what a major bump means. That part of the assertion is only partly met."
+    },
+    {
+      "id": "T07-A2",
+      "awarded": 14.0,
+      "rationale": "meter.c is correctly updated. The removed prototype and call are gone, replaced by local snprintf formatting with <stdio.h> added. configure now passes a FuriHalAdcScale argument. The fork call and its include are removed. FuriHalAdcScale2048 is a real enumerator in official firmware, and the session flags it with a TODO and tells the user to verify it and choose a scale, which counts as an explicit question. The choice itself is not justified on technical grounds, so a small deduction."
+    },
+    {
+      "id": "T07-A3",
+      "awarded": 8.0,
+      "rationale": "The lineage dependency is identified well: cfw_meter_set_backlight_boost is absent from both tables and comes from a community fork, not from a version change. It also says the signature change breaks compilation (source compatibility). It never addresses binary or import compatibility: the old FAP being rejected after the major API change, or the removed export causing a load-time import failure. It describes the fork symbol as 'the link would fail' rather than an unresolved import at FAP load. It does not say that behaviour needs device testing. The core source-vs-binary distinction is missing."
+    },
+    {
+      "id": "T07-A4",
+      "awarded": 15.0,
+      "rationale": "No lifecycle regressions were introduced: timer free and ADC release keep their original order. It honestly flags two existing problems: the timer callback may still be running when furi_timer_free is called, and meter.volts is read and written without locking. It does not specifically say that the ADC read runs in the timer service (daemon) thread context. It also avoided adding furi_timer_stop because the reduced tables don't list it, which is honest but cautious."
+    },
+    {
+      "id": "T07-A5",
+      "awarded": 10.0,
+      "rationale": "It explicitly says it did not compile because no toolchain or SDK was available, so no evidence is fabricated. It does not lay out a concrete rebuild against the target SDK (for example, rebuilding the FAP with the 89.0 SDK and testing on device). It only tells the user to check the header."
+    },
+    {
+      "id": "T07-A6",
+      "awarded": 10.0,
+      "rationale": "The edits are minimal and targeted. meter_extra.h was left on disk rather than deleted, and the existing problems were reported, not rewritten. The blocked Python attempt was disclosed honestly and redone with Edit."
+    },
+    {
+      "id": "T07-A7",
+      "awarded": 4.0,
+      "rationale": "The final answer serves as clear migration notes, organised into what broke, what is not broken and existing issues. It lacks binary-compatibility and testing guidance, and no notes file was written."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Omits the binary/import-compatibility analysis entirely: it never says the old FAP will be rejected after the 88.x -> 89.0 major API change, or that a removed export causes a load-time import failure. It also describes the fork symbol as a link failure rather than an unresolved import when the FAP loads."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 72.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1151606
+}

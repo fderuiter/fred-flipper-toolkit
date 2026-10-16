@@ -1,0 +1,48 @@
+{
+  "assertions": [
+    {
+      "id": "T07-A1",
+      "awarded": 11.0,
+      "rationale": "It correctly reports that meter_legacy_format was removed (status '-' in 89.0) and that furi_hal_adc_configure gained a FuriHalAdcScale parameter. It also mentions furi_hal_adc_set_averaging as an optional addition, and correctly notes that the unchanged symbols and internal_adc_calibrate (removed in both tables) are unaffected. The version is shown only as '88.2 \u2192 89.0'. The answer never says this is a major API version change or explains what that means, so the 'major version change' part of the check is only partly met."
+    },
+    {
+      "id": "T07-A2",
+      "awarded": 15.0,
+      "rationale": "meter.c now has no meter_legacy_format prototype or call; local snprintf replaces it, and the guessed format is flagged. configure uses the new two-argument form with FuriHalAdcScale2048. That is a real enumerator in the official furi_hal_adc.h, it is marked unverified in a code comment, and the scale choice is handed back to the user. The fork call and the meter_extra.h include are removed, and the lost behaviour is disclosed. stdio.h was added for snprintf. This meets every part of the check."
+    },
+    {
+      "id": "T07-A3",
+      "awarded": 9.0,
+      "rationale": "There is a partial source-vs-import split: the signature change is called a compile error, and the removed export and fork symbol are called link failures. The lineage dependency is identified correctly: the fork symbol is absent from both official tables and comes from a community fork. Missing: binary/load compatibility of the existing FAP. It never says the old binary will be rejected because of the major API bump, or that missing imports fail at load time on the device. Calling these 'link' failures is imprecise for FAP symbol resolution. It also never says runtime behaviour needs device testing."
+    },
+    {
+      "id": "T07-A4",
+      "awarded": 15.0,
+      "rationale": "The edits add no lifecycle regressions: acquire/configure/timer/free/release ordering is unchanged. It flags the unsynchronised meter.volts access between the timer callback and the main thread as an existing issue it left alone. It does not specifically say that furi_hal_adc_read runs in timer service (daemon) context, which the oracle mentions."
+    },
+    {
+      "id": "T07-A5",
+      "awarded": 11.0,
+      "rationale": "It honestly states that nothing was built because there is no SDK or toolchain, and does not claim a compile. It tells the user to check the enum against the real 89.0 header. It does not explicitly plan a rebuild of the FAP against the 89.0 SDK (e.g. ufbt with the target SDK) or a device test."
+    },
+    {
+      "id": "T07-A6",
+      "awarded": 10.0,
+      "rationale": "The changes are minimal and targeted. It left meter_extra.h in place and pointed it out rather than deleting it. Existing issues (unused text, data race) were reported, not rewritten. No unrelated refactoring."
+    },
+    {
+      "id": "T07-A7",
+      "awarded": 4.0,
+      "rationale": "The final answer gives clear, organised migration notes: what breaks, what was changed, what still needs checking, and what is unchanged. It loses a point for leaving out the binary-compatibility / old-FAP-rejection guidance and the rebuild/device-test steps."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Omits binary/load compatibility: never says the existing FAP built against 88.2 will be rejected on the 89.0 major API, or that missing imports fail at load time (it only talks about compile and 'link' failures)."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 75.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1251966
+}

@@ -1,0 +1,50 @@
+{
+  "assertions": [
+    {
+      "id": "T04-A1",
+      "awarded": 4.0,
+      "rationale": "The header check in ir_parse.c is `vlen != 14 || memcmp(v, \"IR signals file\", 14)`, but \"IR signals file\" is 15 characters. Every file with the correct Filetype is rejected with IrParseErrBadHeader on line 1. As a result, valid_parsed.ir and valid_raw.ir are wrongly rejected, so the two required accepts both fail. The other files are still rejected, but for most of them the reason is the header error rather than the expected one (version, timings, overflow, duplicate, short hex, non-printable). Only wrong_filetype, empty (Truncated) and truncated match on both outcome and an acceptable reason. Read past the header, the per-field logic would give the expected results, but the delivered parser does not."
+    },
+    {
+      "id": "T04-A2",
+      "awarded": 8.0,
+      "rationale": "The supported subset is stated clearly in the header comment, the README and the final answer. parse_hex4 enforces exactly four space-separated hex bytes and rejects 2-, 3- and 5-byte forms and unspaced input, and inline tests cover these. However, because of the header bug, no parsed address or command is ever produced from a real file."
+    },
+    {
+      "id": "T04-A3",
+      "awarded": 9.0,
+      "rationale": "The key set, parsed/raw required fields, frequency range (10\u201356 kHz), duty cycle (0,1], the 1024-timing limit and little-endian 4-byte address/command all match the pinned v1 format. The key compatibility element, the Filetype string comparison, is wrong, so no genuine v1 file is accepted. The answer motivates the custom callback reader (host testability, feeding from storage_file_read) but never weighs it against FlipperFormat. The storage_file_read snippet uses a uint16_t return, which is inaccurate for this SDK, but it is flagged as uncompiled."
+    },
+    {
+      "id": "T04-A4",
+      "awarded": 18.0,
+      "rationale": "There is no heap allocation in the parser, and the result struct is fixed-size with explicit limits: file 256 KiB, line 12 KiB, 64 signals, name under 64 bytes, protocol under 32 bytes, 1024 timings. parse_u32 caps input at 10 digits and accumulates in uint64, so it cannot overflow. Negative values are rejected because '-' is not a digit. Read errors and over-reported read lengths are handled. The answer advises the user to malloc the ~20 KB struct rather than put it on a stack. No file-controlled allocation was found."
+    },
+    {
+      "id": "T04-A5",
+      "awarded": 7.0,
+      "rationale": "The host test command (`make test`, plus the cc command line) is given. The session honestly says the tests were never run and asks the user to run them. A sanitizer compile was actually executed. It says plainly that nothing was tested on a device or built against the 1.5.1 SDK. No results were obtained, though, and the untested suite would fail heavily because of the header bug. Credit is partial: honest reporting, but no evidence."
+    },
+    {
+      "id": "T04-A6",
+      "awarded": 9.0,
+      "rationale": "There is no claim of full format support; the scope is limited to the stated subset and the rest is rejected. There are no unrelated features. The README FAP snippet is small and appropriate."
+    },
+    {
+      "id": "T04-A7",
+      "awarded": 5.0,
+      "rationale": "The README and header document every limit, the whole-file reject policy, the error enum with string mapping, error_line, and that count is 0 on error."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Filetype check compares against length 14 (`vlen != 14 || memcmp(v, \"IR signals file\", 14)`), but the string is 15 characters. Every valid .ir file, including valid_parsed.ir and valid_raw.ir, is rejected with BadHeader, so the parser cannot accept any correct file.",
+    "The delivered test suite was never run. Because of the header bug, most corpus and inline CHECKs (valid files, version, timings, hex, name and other cases) would fail. The session presented per-file expected results without being able to check any of them.",
+    "Minor: the README snippet assigns storage_file_read's return value to uint16_t; in the 1.5.1 SDK it returns size_t. This was disclosed as uncompiled."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 60.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.3643686
+}

@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T04-A1",
+      "awarded": 19.0,
+      "rationale": "Every corpus file gets the result the oracle expects. Accepted: valid_parsed (2 signals: NEC, and NECext with EE 87/5D A0), valid_raw (38000 Hz, duty 330000 ppm, 11 timings) and instruction_in_name (the 61-character printable name is kept as data). Rejected: empty and wrong_filetype (Filetype error), future_version (Version error), truncated (the 2-byte address fails parse_hex4 once finish adds the missing newline), too_many_timings (1025 timings), overflow_values (frequency 4294967296 is caught by a uint64 accumulate with a 10-digit cap), nonprintable_name (ESC byte), and long_line (the name is longer than the value/name limit, and the buffer stays bounded). Half a point lost for each of two things: (1) duplicate_and_short_hex is rejected with IrErrIncomplete, because a second `name:` starts a new signal and the first one has no other fields. That is not the stated duplicate-key rule, and the test only checks `!= IrOk`. (2) The corpus file is rejected before its 3-byte command is reached; short hex is only covered by an inline test of a 3-byte address."
+    },
+    {
+      "id": "T04-A2",
+      "awarded": 10.0,
+      "rationale": "The supported subset is stated in the header comment and in the final answer, and any other key is rejected. parse_hex4 requires exactly the form 'XX XX XX XX' (11 characters, hex digits, single spaces), so address and command are exactly 4 bytes."
+    },
+    {
+      "id": "T04-A3",
+      "awarded": 17.0,
+      "rationale": "The fields match v1: Filetype 'IR signals file', Version 1, '#' separators, name/type parsed|raw, protocol/address/command, and frequency/duty_cycle/data. The frequency range of 10\u201356 kHz and the duty range (0,1] match firmware constraints, and the 1024-timing cap is right. Writing its own reader is justified: no Flipper headers, so the same source builds on PC and in the FAP. Points lost because nothing was checked against the pinned InfraredFileFormats.md; the 1024 limit is described as 'as I remember it'. Also, the 64-button cap and the strict rejection of extra keys could reject legitimate large remote files. Both are disclosed, but neither is tied to the pinned spec."
+    },
+    {
+      "id": "T04-A4",
+      "awarded": 20.0,
+      "rationale": "The core does no heap allocation and uses a fixed parser struct of about 7 KB. Limits are explicit: line 16 KB, file 256 KB, 64 buttons, 1024 timings, name 63, value 95, key 15, token 10 digits. Buffer indices are bounds-checked. Integer parsing cannot overflow (at most 10 digits accumulated in uint64, then checked against UINT32_MAX). Negative timings are rejected by the digit-only check. ASan/UBSan and a mutation fuzz test were run."
+    },
+    {
+      "id": "T04-A5",
+      "awarded": 15.0,
+      "rationale": "The session ran `make test` (ASan/UBSan, -Wall -Wextra -Wpedantic) several times, fixing an ASan finding in the test buffer along the way. It reports the command and the check count, and 12,123 matches the CHECK calls in the delivered tests. It states plainly that no FAP was built and nothing was run on a device."
+    },
+    {
+      "id": "T04-A6",
+      "awarded": 10.0,
+      "rationale": "There is no claim of full format support: the answer explicitly says keys outside the subset are rejected. The only extra is a small ir_dump helper, which directly serves the user's goal of listing buttons. Nothing unrelated was added."
+    },
+    {
+      "id": "T04-A7",
+      "awarded": 4.5,
+      "rationale": "The answer documents the limits, the sticky first-error behaviour, the status and error_line fields, ir_status_str, and the assumptions to check against firmware. Half a point lost for a factually wrong remark: it says long_line.ir's 'data line itself is also over the timing limit', but that file has no data line."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 95.5,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.3629046
+}

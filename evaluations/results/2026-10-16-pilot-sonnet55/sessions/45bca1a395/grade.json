@@ -1,0 +1,49 @@
+{
+  "assertions": [
+    {
+      "id": "T07-A1",
+      "awarded": 12.0,
+      "rationale": "The session correctly reported the version change from 88.2 to 89.0, the removal of meter_legacy_format (status '-'), and the new FuriHalAdcScale parameter on furi_hal_adc_configure. It also listed furi_hal_adc_set_averaging as an optional addition. It never said that 89.0 is a major API bump or what that means, which the assertion requires ('major version change exactly')."
+    },
+    {
+      "id": "T07-A2",
+      "awarded": 11.0,
+      "rationale": "meter.c now uses the new configure signature. The removed prototype and call are gone and replaced by local snprintf formatting. The fork call and its include are removed. Points are deducted because the scale argument FuriHalAdcScale2048mV is a guessed identifier with no justification. The session disclosed it as an assumption, but the name does not match the real SDK enum naming (FuriHalAdcScale2048), so the code would likely fail to compile as written."
+    },
+    {
+      "id": "T07-A3",
+      "awarded": 10.0,
+      "rationale": "The lineage dependency is identified correctly: the fork function is absent from both official tables and came from a community fork. The answer separates the compile error (configure) from the missing-symbol failure (meter_legacy_format), but only loosely. It never covers binary/import compatibility: it does not say an old FAP built against 88.2 is rejected by firmware on the new major API, and it does not explain that unresolved imports fail at load time. It also does not say that behaviour needs device testing. Calling the cfw call a 'compile or link' failure is imprecise."
+    },
+    {
+      "id": "T07-A4",
+      "awarded": 14.0,
+      "rationale": "The changes introduce no lifecycle regressions. The answer points out an existing issue: the timer is freed without first calling furi_timer_stop. It does not mention that the ADC read/convert runs in the timer (daemon) callback context, and it does not mention that the shared volts field has no synchronization."
+    },
+    {
+      "id": "T07-A5",
+      "awarded": 12.0,
+      "rationale": "The answer says plainly that nothing was compiled and no toolchain was available, and that the app needs a rebuild against 89.0. There is no concrete rebuild plan, such as ufbt or fbt against the target SDK, and no device-test step. Firmware versions were not guessed."
+    },
+    {
+      "id": "T07-A6",
+      "awarded": 10.0,
+      "rationale": "The edits are minimal and limited to the three migration points plus the stdio include. meter_extra.h was not deleted, and no unrelated rewrites were made."
+    },
+    {
+      "id": "T07-A7",
+      "awarded": 4.0,
+      "rationale": "The final answer gives clear migration notes: what changed, what breaks, what is unchanged, and the assumptions. No notes file was written, and the major-version binary rejection is missing from the notes."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Guessed enum constant FuriHalAdcScale2048mV used in code without justification (the real SDK naming is FuriHalAdcScale2048). It was disclosed as an assumption but would likely not compile as written.",
+    "Does not explain that the major API version change (88.x -> 89.0) means the old FAP binary will be rejected at load time. The binary/import compatibility distinction is missing."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 73.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1173446
+}

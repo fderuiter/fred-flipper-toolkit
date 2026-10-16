@@ -1,0 +1,55 @@
+{
+  "assertions": [
+    {
+      "id": "T06-A1",
+      "awarded": 25.0,
+      "rationale": "The review gives a correct causal trace for 7 of 8 seeded defects. D1: the model is freed after furi_timer_stop, and the stop does not wait for an in-flight tick_callback. D3: malloc in the RX callback in ISR context, plus a leak when the put fails. D4: input_callback uses FuriWaitForever on the 4-slot queue and blocks the GUI thread. D5: join is called while holding the mutex the worker acquires. D6: line/line_len race with draw_callback. D7: notification used after its record is closed. D8: count is unbounded, the multiplication can overflow, and read lengths are unchecked. D2 (no gui_remove_view_port before view_port_free) is never identified or traced as a defect; it only shows up implicitly in the suggested teardown order. The D1 trace also omits view_port_update on a freed ViewPort. D1's local fix (free the view port before stopping the timer) would reintroduce that UAF. 30*7/8 \u2248 26.25, reduced slightly for the flawed D1 fix."
+    },
+    {
+      "id": "T06-A2",
+      "awarded": 16.0,
+      "rationale": "The proposed fixes use real APIs (FuriStreamBuffer, gui_remove_view_port, furi_hal_serial_async_rx_stop, and others). There is no 'malloc forbidden' or furi_alloc claim; the review correctly separates the ISR-context malloc from normal thread allocation. Points are deducted for inaccurate compatibility claims. It says furi_hal_serial_init after acquire is redundant because acquire returns an initialized handle; this is hedged but wrong. It also recommends NULL checks on malloc results, but Flipper's malloc does not return NULL."
+    },
+    {
+      "id": "T06-A3",
+      "awarded": 16.0,
+      "rationale": "The final suggested teardown order reaches quiescence without deadlock. It clears the flag without holding the lock during the join, stops RX before joining the worker, drains the queue, then stops and frees the timer. After that it disables, removes and frees the ViewPort, notifies before closing the record, and frees the rest. Finding 1's fix contradicts this: freeing the view port before stopping and freeing the timer leaves tick_callback able to call view_port_update on a freed ViewPort. The two orders are inconsistent."
+    },
+    {
+      "id": "T06-A4",
+      "awarded": 11.0,
+      "rationale": "The review clearly states its scope ('reading only, nothing compiled or run, no files edited') and claims no reproduced crash. It does not label the evidence level per finding. Finding 2 overclaims 'deadlock on every exit' and then contradicts itself by calling the outcome a timing accident."
+    },
+    {
+      "id": "T06-A5",
+      "awarded": 10.0,
+      "rationale": "The tool calls were read-only (Read and ls), so no files were edited. No decoys were flagged: the review explicitly accepts FURI_LOG_I and notification in the main loop, and it does not flag app_alloc malloc, the 100 ms worker timeout, the redraw timer, or the absence of SceneManager."
+    },
+    {
+      "id": "T06-A6",
+      "awarded": 5.0,
+      "rationale": "The output is ranked by link to the reported symptoms, gives locations and fixes, ends with a consolidated teardown order, and summarizes how the findings map to the symptoms."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Missed seeded defect T06-D2: the ViewPort is freed without gui_remove_view_port, and this is never reported as a defect",
+    "Finding 1's fix ('disable and free the view port first, then stop and free the timer') would let tick_callback call view_port_update on a freed ViewPort; it contradicts the final teardown order",
+    "Incorrect claim that furi_hal_serial_init after furi_hal_serial_control_acquire is redundant on newer firmware",
+    "Recommends NULL checks on malloc results (rx_callback chunk, calibration), but Flipper's malloc never returns NULL",
+    "Overclaims that the join-under-mutex deadlock happens 'on every exit', then calls it timing-dependent"
+  ],
+  "seeded_defects_found": [
+    "T06-D1",
+    "T06-D3",
+    "T06-D4",
+    "T06-D5",
+    "T06-D6",
+    "T06-D7",
+    "T06-D8"
+  ],
+  "decoys_flagged": [],
+  "score": 83.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1632526
+}

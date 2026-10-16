@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T05-A1",
+      "awarded": 15.0,
+      "rationale": "Lists every required operation from kettle-protocol.md: scan for K2-xxxx, connect as central, discover service ff00, enable notifications via the CCCD, bond, and write frames to ff01. It also covers reconnecting after the 30 s idle drop."
+    },
+    {
+      "id": "T05-A2",
+      "awarded": 15.0,
+      "rationale": "Says clearly that a stock Flipper on official 1.5.1 can't do this with a FAP alone. Recommends an ESP32/nRF52 companion over UART, offers a host companion (Pi or laptop running bleak) as an alternative, and advises against custom firmware."
+    },
+    {
+      "id": "T05-A3",
+      "awarded": 11.0,
+      "rationale": "Correctly states that the official firmware runs BLE only as a peripheral (serial and HID profiles) and exports no central or GATT-client calls such as connect, discovery or writes. However, it cites the skill's capability notes rather than gap.c or the API export table. It also never says outright that the STM32WB silicon/radio could act as a central but the public FAP API doesn't expose it. Option 3 only hints at this."
+    },
+    {
+      "id": "T05-A4",
+      "awarded": 14.0,
+      "rationale": "Covers framing with a length field and CRC, timeouts, reconnect handling, no replay of stale commands after a reconnect, and keeping boil-dry and lid protection intact. It doesn't say that CRC is not authentication, and it doesn't propose an allowlist of kettle addresses or bonded devices."
+    },
+    {
+      "id": "T05-A5",
+      "awarded": 13.0,
+      "rationale": "Says the capability conclusion comes from the skill's capability notes, not device testing, and that kettle behavior still needs testing on the real appliance. It doesn't say directly that no firmware source or SDK headers were checked, which is a small gap."
+    },
+    {
+      "id": "T05-A6",
+      "awarded": 10.0,
+      "rationale": "Wrote no FAP and no code that pretends to perform central operations. The workspace is unchanged."
+    },
+    {
+      "id": "T05-A7",
+      "awarded": 5.0,
+      "rationale": "Opens with a clear decision, explains why, lists options with a recommendation, and asks a useful next-step question (which board the user has)."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 83.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.0728646
+}

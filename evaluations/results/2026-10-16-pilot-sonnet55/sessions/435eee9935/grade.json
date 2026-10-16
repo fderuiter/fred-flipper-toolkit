@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T07-A1",
+      "awarded": 15.0,
+      "rationale": "Reports all expected items from the tables: 88.2 \u2192 89.0 as a major bump, meter_legacy_format changed from + to - (no longer exported), and furi_hal_adc_configure gaining a FuriHalAdcScale parameter. It also notes that furi_hal_adc_set_averaging was added and is optional. It confirms the remaining used APIs are unchanged. Accurate and complete."
+    },
+    {
+      "id": "T07-A2",
+      "awarded": 14.0,
+      "rationale": "meter.c was updated as required. The removed prototype and call are replaced with local snprintf formatting, and <stdio.h> is added. configure now passes a scale argument. The fork call and its include are removed. The scale value FuriHalAdcScale2048 is not justified from the inputs, but the session says plainly that it is a guess, adds a code comment, and asks the user to check it against the 89.0 header. The oracle accepts that kind of explicit question. Small deduction because no scale rationale is given, such as the voltage range needed."
+    },
+    {
+      "id": "T07-A3",
+      "awarded": 12.0,
+      "rationale": "It separates compile errors (signature change) from link errors (removed export, fork symbol). It correctly identifies cfw_meter_set_backlight_boost as a community-fork dependency that fails on any official firmware, not a version issue. It never says that an existing FAP built against 88.x will be rejected by 89.0 firmware because of the API major mismatch, and that loader-level binary point is the core of the binary/import distinction. Device testing is only loosely covered by 'the tables can't show other behavior changes'."
+    },
+    {
+      "id": "T07-A4",
+      "awarded": 16.0,
+      "rationale": "The edits introduce no lifecycle regressions. It flags pre-existing problems: furi_timer_free is called without furi_timer_stop, and meter.volts is written in the timer callback and read on the main thread without synchronization. It does not explicitly say that the callback, and so the ADC read, runs in the timer service/daemon context, which the oracle mentions."
+    },
+    {
+      "id": "T07-A5",
+      "awarded": 11.0,
+      "rationale": "It is honest about evidence: it says up front that nothing was compiled because no SDK or toolchain is present, and that it checked only against the CSVs. It does not lay out a concrete rebuild plan against the 89.0 target SDK; 'Check before building' only implies one. It also does not say the app must be rebuilt rather than reused."
+    },
+    {
+      "id": "T07-A6",
+      "awarded": 10.0,
+      "rationale": "The edits are minimal and targeted. It does not rewrite unrelated code. Existing problems (unused GUI, data race, missing timer stop) are reported but deliberately left unchanged. meter_extra.h stays on disk instead of being deleted. A Python edit attempt was denied, and the session switched to Edit without retrying the same command."
+    },
+    {
+      "id": "T07-A7",
+      "awarded": 4.0,
+      "rationale": "The final answer works as migration notes: a table of breaking items, a list of things to verify, unchanged APIs, and pre-existing issues. They are clear and usable, but they exist only in the chat response, and the step-by-step rebuild/verification guidance is thin."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 82.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1134686
+}

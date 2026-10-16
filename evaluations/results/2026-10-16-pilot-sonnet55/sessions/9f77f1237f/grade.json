@@ -1,0 +1,50 @@
+{
+  "assertions": [
+    {
+      "id": "T06-A1",
+      "awarded": 27.0,
+      "rationale": "The review found all 8 seeded defects. D1: the model is freed while tick_callback can still run, because the timer is freed only at line 187; the fix frees the timer before the model. D2: gui_remove_view_port is missing. D3: malloc in the ISR, plus the leak when the put fails; the fix is an inline buffer or FuriStreamBuffer. D4: FuriWaitForever on the 4-slot queue blocks the GUI input thread. D5: join is called while holding the mutex. D6: race on line/line_len, with a fix that copies a snapshot under the lock. D7: notification used after its record is closed. D8: unbounded count, multiplication overflow, unchecked reads. Points off because some traces are thin. D1 never says that stop does not wait for a pending callback, and it misses the view_port_update-after-free path. D7 gives almost no causal detail. No finding comes with a suggested test, which the task definition asks for."
+    },
+    {
+      "id": "T06-A2",
+      "awarded": 20.0,
+      "rationale": "Every API used in the fixes is real: gui_remove_view_port, furi_timer_free, FuriStreamBuffer, thread flags, storage_file_size, calloc and furi_record_close. The malloc point is limited correctly to ISR context. There is no 'malloc forbidden' or furi_alloc claim."
+    },
+    {
+      "id": "T06-A3",
+      "awarded": 18.0,
+      "rationale": "The proposed sequence works. Serial RX is stopped first. The timer is stopped, then the view port is removed. The worker is signalled and joined without the lock, then the RX queue is drained. The timer is freed before the view port, and the model is freed after the timer. Records are closed last, and the notification is sent before its close. The order reaches quiescence without deadlock. Small gap: the GUI thread could still be blocked in input_callback when gui_remove_view_port is called during teardown. The review only says 'consider dropping' events and does not make a non-blocking put a precondition of the teardown."
+    },
+    {
+      "id": "T06-A4",
+      "awarded": 12.0,
+      "rationale": "The review states clearly that nothing was edited, compiled or run, and it does not claim to have reproduced anything. All findings cite line numbers. However, findings are not labelled with an evidence level one by one; there is only the single global scope statement."
+    },
+    {
+      "id": "T06-A5",
+      "awarded": 10.0,
+      "rationale": "The tool calls were reads only (Read, ls, cat), so no files were edited. No decoy was reported as a defect: app_alloc malloc, the main-loop wait, the 100 ms worker timeout, the 10 Hz timer, the absence of SceneManager and FURI_LOG_I were all left alone. The extra minor notes are not decoys."
+    },
+    {
+      "id": "T06-A6",
+      "awarded": 4.0,
+      "rationale": "The output is well structured and actionable. Findings are grouped by the reported symptoms first, then other defects, then minor issues, and a concrete teardown sequence is given. There are no explicit severity labels."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [
+    "T06-D1",
+    "T06-D2",
+    "T06-D3",
+    "T06-D4",
+    "T06-D5",
+    "T06-D6",
+    "T06-D7",
+    "T06-D8"
+  ],
+  "decoys_flagged": [],
+  "score": 91.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1553086
+}

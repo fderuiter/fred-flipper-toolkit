@@ -1,0 +1,62 @@
+{
+  "assertions": [
+    {
+      "id": "T02-A1",
+      "awarded": 10.0,
+      "rationale": "Main menu (Submenu with Start/Settings/About), a custom settings View, a running View and an About Widget are all wired through ViewDispatcher with previous callbacks. In the running view, the input callback returns false for Back, nav_to_menu returns to the menu, and running_exit stops the timer. Navigation is coherent."
+    },
+    {
+      "id": "T02-A2",
+      "awarded": 10.0,
+      "rationale": "For version 1, settings_load reads Work and Rest with range checks (45 and 15 are both valid) and leaves Rounds=8 and Vibrate=true as defaults. migrated=true triggers a rewrite to v2. This matches the oracle."
+    },
+    {
+      "id": "T02-A3",
+      "awarded": 7.0,
+      "rationale": "Corrupt file: the per-field fallback policy is stated. Work overflow, Rest -4 (reads as a huge unsigned value), Rounds 0 and the truncated Vibrate line each fall back to defaults with no crash path. Future v7 file: it is not rewritten on load (migrated is only set when version < 2). However, any settings change silently rewrites it as v2 and drops Profile. The user is never told the file came from a newer version, so the 'not overwritten silently/notify' expectation is only partly met. The session did state this policy explicitly, so this is not a full clobber."
+    },
+    {
+      "id": "T02-A4",
+      "awarded": 16.0,
+      "rationale": "The APIs used exist and are exported: ViewDispatcher, Submenu, Widget, View with a locking model, the FlipperFormat read/write/header/rewind functions, storage_common_rename/remove, storage_simply_mkdir, APP_DATA_PATH, DialogMessage, and the standard notification sequences. No invented calls were found. Deductions: a hand-rolled settings View is used instead of the VariableItemList the task expects, with no justification, and the code was never compiled against 1.5.1/API 88.2."
+    },
+    {
+      "id": "T02-A5",
+      "awarded": 5.0,
+      "rationale": "The countdown timer is stopped in running_exit and when the run reaches Done. The timer callback does no storage I/O. However, settings_save (storage I/O) plus a blocking dialog_message_show run inside the settings View exit callback, which fires synchronously from the Back input/navigation dispatch. That is storage work in a GUI view-lifecycle callback and in the input path, not deferred to an app-level event."
+    },
+    {
+      "id": "T02-A6",
+      "awarded": 3.0,
+      "rationale": "It writes to a temp file and checks each write call. However: no explicit sync; close goes through flipper_format_free and its result is never checked; there is no stale-temp recovery at startup. The target is removed before the rename, and if the rename fails the temp file is also deleted, so both copies are lost. SD absent at load falls back to defaults, and a failed save shows a 'Save failed' dialog, which partly covers the absent/full SD cases."
+    },
+    {
+      "id": "T02-A7",
+      "awarded": 3.0,
+      "rationale": "There are no host tests, no tests over samples/ and no model of interrupted writes. The session honestly said nothing was compiled or run (Bash was denied) and that rename behaviour is untested on device. It explicitly disclaimed power-loss safety rather than claiming atomicity. Credit is for honesty only."
+    },
+    {
+      "id": "T02-A8",
+      "awarded": 5.0,
+      "rationale": "No unrelated framework was added and the code footprint is small. However, parsing and migration are interleaved with FlipperFormat and storage calls in one file, with no pure, separable parsing layer."
+    },
+    {
+      "id": "T02-A9",
+      "awarded": 3.0,
+      "rationale": "The final answer documents the format, v1 migration, the corrupt-file policy and the future-version policy. Nothing was written into the workspace (no README or format doc), and the future-version policy amounts to 'overwrite on edit'."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Storage I/O (settings_save) and a blocking dialog_message_show are run inside the settings View exit callback, which fires synchronously from Back input/navigation dispatch.",
+    "Save path removes the target file before renaming. If storage_common_rename fails, the !ok branch then deletes settings.tmp too, so both the old and new settings are lost. This contradicts the answer's claim that 'a failed write never destroys the old settings'.",
+    "Close/flush result is not checked (flipper_format_free has no return value), there is no explicit sync, and there is no stale settings.tmp recovery at startup.",
+    "Future-version (v7) file is silently downgraded to v2 on any setting change, dropping unknown keys (Profile), with no notice to the user or read-only mode.",
+    "No host tests and no separated pure parsing/migration module, so the samples/ behaviour (overflow, negative, truncated values) is asserted from reasoning only."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 62.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.2781166
+}

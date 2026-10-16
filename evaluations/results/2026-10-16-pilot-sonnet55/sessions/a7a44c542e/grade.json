@@ -1,0 +1,62 @@
+{
+  "assertions": [
+    {
+      "id": "T02-A1",
+      "awarded": 9.0,
+      "rationale": "The app has a Submenu with Start/Settings/About, a VariableItemList settings screen, a custom running View and a Widget for About and messages, all inside a ViewDispatcher. Back is not consumed by any view, so it reaches navigation_cb, which tracks current_view. On the running view, Back sets active=false and switches to the menu. Back from the menu returns false, which exits. The design is sound. One point off: nothing was executed, there is a redundant switch_view before show_message, and the settings range bug under A4 hurts the settings screen."
+    },
+    {
+      "id": "T02-A2",
+      "awarded": 10.0,
+      "rationale": "For Version 1, the parser keeps Work and Rest and leaves Rounds and Vibrate at their defaults (8 and true). It returns ItLoadMigrated, and the next save rewrites the file as v2. The test_v1 test asserts Work 45, Rest 15, Rounds 8 and Vibrate true on the sample's content."
+    },
+    {
+      "id": "T02-A3",
+      "awarded": 9.0,
+      "rationale": "For the corrupt sample: parse_uint stops early on 99999999999, so it cannot overflow. -4 is rejected as a non-digit, Rounds 0 is below range, and 'Vib' with no colon is flagged as bad. Each field falls back to its default under a stated per-field policy, and the user sees a notice. For the v7 sample, the parser returns ItLoadFutureVersion and save_allowed=false; settings_save refuses and the user is told. One point off for edge cases: if a future file exceeds 512 bytes, has a different Filetype, or hits a read error, the result is BadFile/ReadError with save_allowed still true, so a later save could overwrite it."
+    },
+    {
+      "id": "T02-A4",
+      "awarded": 10.0,
+      "rationale": "Most of the ViewDispatcher, Submenu, Widget, View/model, notification and storage calls are real exported APIs used plausibly. Problems: (1) variable_item_list_add's values_count and the get/set current_value_index functions take uint8_t. Passing 596 and 601 values truncates them (to 84 and 89), so the Work 5\u2013600 and Rest 0\u2013600 pickers cannot work as specified, and the sync from index to value is wrong for values above 255. (2) It does not use FlipperFormat; a hand-rolled text parser reads raw storage_file_read data. (3) view_dispatcher_enable_queue is deprecated in API 88. SceneManager is correctly left out."
+    },
+    {
+      "id": "T02-A5",
+      "awarded": 9.0,
+      "rationale": "Loading happens on the main thread before the dispatcher runs. There is no storage I/O in the draw callback, the view input callback or the tick callback. The countdown is driven by the dispatcher tick and gated on app->active, which Back clears. The model is updated through a locking with_view_model. Saving runs in the navigation callback on the dispatcher thread with the queue enabled, not in the GUI input callback. That is acceptable but borderline, so one point off."
+    },
+    {
+      "id": "T02-A6",
+      "awarded": 9.0,
+      "rationale": "The save writes a temp file with FSOM_CREATE_ALWAYS, checks the write length and the sync and close results, then removes the old file (tolerating NOT_EXIST) and renames the temp file into place. If the main file is missing at load, the temp file is read instead. A missing or unreadable SD gives an actionable 'Check the SD card' note, and a full card or failed save gives an error screen. Deductions: the recovered temp file is not promoted to the main file, and a stale temp file next to an existing main file is simply ignored."
+    },
+    {
+      "id": "T02-A7",
+      "awarded": 7.0,
+      "rationale": "The host tests reproduce the four samples' content inline and cover migration, the corrupt file, the future version, round-trip and the timer. They do not read the samples/ files (the comment mentions a samples_dir argument that main ignores). There is no modeled-storage test for an interrupted write. The tests were not run, and the session honestly reported compile, tests and device as not run. It made no atomicity claim and explicitly disclaimed power-loss safety."
+    },
+    {
+      "id": "T02-A8",
+      "awarded": 10.0,
+      "rationale": "It brings in no unrelated framework. The pure parsing, formatting and timer state machine sit in it_logic.c/h with no Furi dependencies."
+    },
+    {
+      "id": "T02-A9",
+      "awarded": 3.5,
+      "rationale": "The handoff explains v1\u2192v2 migration, the per-field fallback policy, the policy of refusing to overwrite a future version, the SD failure behavior and the verification gaps. No README or format document was written to the workspace, and the exact v2 key/value format is only visible in the code."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "VariableItemList values_count and current_value_index are uint8_t. Registering 596 (Work) and 601 (Rest) values truncates them, so the required 5\u2013600 and 0\u2013600 ranges cannot be selected or displayed correctly. The handoff only mentions 'slow scrolling' and misses this.",
+    "It does not use the FlipperFormat API for a FlipperFormat-style file; a custom raw-text parser is used instead.",
+    "It uses view_dispatcher_enable_queue, which is deprecated in API 88.",
+    "Future-version protection depends on a successful parse. An oversized future file, a different Filetype, or a read error leaves save_allowed=true, so a later save can still overwrite the file.",
+    "The test harness does not load the actual samples/ files and does not model an interrupted write."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 76.5,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.34742860000000003
+}

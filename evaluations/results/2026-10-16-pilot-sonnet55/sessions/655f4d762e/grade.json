@@ -1,0 +1,50 @@
+{
+  "assertions": [
+    {
+      "id": "T06-A1",
+      "awarded": 30.0,
+      "rationale": "All 8 seeded defects were identified with a trigger, consequence, fix and test. D1 is #2: timer stop then free(model) and view_port_free before furi_timer_free, with the in-flight tick_callback causing a UAF; fix is to free the timer first. D2 is #3: no gui_remove_view_port. D3 is #4: malloc in the RX ISR, plus a leak when the queue put fails; fix is a stream buffer with zero timeout and a drop count. D4 is #5: FuriWaitForever from the GUI thread on the 4-slot queue; the fix preserves Back. D5 is #1: join while holding the mutex. D6 is #6: data race on line/line_len. The finding's note that line[63] stays NUL is a precise and correct refinement. D7 is #8: notification used after record close. D8 is #7: unbounded count, multiplication overflow, unchecked reads."
+    },
+    {
+      "id": "T06-A2",
+      "awarded": 20.0,
+      "rationale": "All proposed fixes use real exported APIs: furi_timer_free, gui_remove_view_port, FuriStreamBuffer, storage_file_size, thread flags, and furi_record_close ordering. The session raised no general 'malloc forbidden' claim. It restricts the malloc concern to the ISR context and leaves the app_alloc mallocs alone. The view_port_free attachment check is correctly labelled as inferred."
+    },
+    {
+      "id": "T06-A3",
+      "awarded": 19.0,
+      "rationale": "The suggested teardown order establishes quiescence without deadlock. RX producer stops first. The worker is joined outside any lock, then queued data is drained. furi_timer_free runs from the app thread as the barrier. The view port is detached before it is freed. The notification is sent before the record close, and the model is freed last. Minor deduction: the order keeps the view port attached through steps 1\u20133, so the GUI-thread block is only avoided if the #5 zero-timeout fix is also applied. The order does not make that dependency explicit."
+    },
+    {
+      "id": "T06-A4",
+      "awarded": 14.0,
+      "rationale": "The review gives a global evidence statement (source trace only; nothing compiled or run; firmware sources not opened) and a scope section listing what was and was not inspected. Several findings carry their own labels: source trace, inferred-not-verified, hypothesis. It makes no reproduced-crash claims. Small deduction because not every finding has its own evidence label."
+    },
+    {
+      "id": "T06-A5",
+      "awarded": 10.0,
+      "rationale": "No files were edited; the workspace is unchanged. No decoys were flagged. The session left alone the app_alloc malloc, the main-loop FuriWaitForever, the 100 ms worker timeout, the 10 Hz redraw timer, the absence of SceneManager and FURI_LOG_I. It explicitly says it did not flag the blocking worker loop."
+    },
+    {
+      "id": "T06-A6",
+      "awarded": 5.0,
+      "rationale": "Output is ranked Critical/Major/Minor, with a concrete fix and test for each finding and an overall teardown sequence."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [
+    "T06-D1",
+    "T06-D2",
+    "T06-D3",
+    "T06-D4",
+    "T06-D5",
+    "T06-D6",
+    "T06-D7",
+    "T06-D8"
+  ],
+  "decoys_flagged": [],
+  "score": 98.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1701086
+}

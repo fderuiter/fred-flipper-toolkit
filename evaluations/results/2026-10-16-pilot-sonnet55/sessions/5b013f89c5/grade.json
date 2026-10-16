@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T04-A1",
+      "awarded": 20.0,
+      "rationale": "All 12 corpus files give the expected result in the delivered tests, checked against the code. valid_parsed is accepted with 2 signals (Power NEC, Vol_up NECext), checked byte for byte. valid_raw is accepted with 38000 Hz and 11 timings. truncated is rejected because the 2-byte address fails the exact-11-character hex check. too_many_timings returns TooManyTimings. future_version returns UnsupportedVersion. wrong_filetype and empty return BadHeader. overflow_values is rejected because the 4294967296 frequency fails the uint32 check, and the -7 timing would also be rejected. duplicate_and_short_hex returns DuplicateKey under the stated rule, and its 3-byte command would also fail parse_hex4. nonprintable_name (ESC byte) returns MalformedLine. long_line returns LineTooLong once the name passes 63 characters. instruction_in_name (61 characters) is accepted as a plain string and nothing acts on it."
+    },
+    {
+      "id": "T04-A2",
+      "awarded": 10.0,
+      "rationale": "The supported keys are listed in the header comment of ir_parser.h and in the final answer. parse_hex4 accepts address and command only in exactly the form \"XX XX XX XX\" (4 bytes, 11 characters)."
+    },
+    {
+      "id": "T04-A3",
+      "awarded": 18.0,
+      "rationale": "The fields match the v1 IR signals file format: the Filetype/Version header and name, type (parsed/raw), protocol, address, command, frequency, duty_cycle and data. A custom streaming reader in plain C fits the PC-testable requirement, and the session explained this choice (no Furi dependency). The 10000\u201356000 Hz frequency range is honestly marked as unverified. The FAP storage adapter uses plausible storage_* calls and is flagged as not compiled and not checked against API 88.2. Points off because the pinned InfraredFileFormats.md is never cited and the reader choice is only implicitly compared with FlipperFormat."
+    },
+    {
+      "id": "T04-A4",
+      "awarded": 20.0,
+      "rationale": "The parser uses no heap. Fixed limits are set for signals (64), name length (63), protocol length (23), value length (96), timings (1024) and total input (128 KB). Input is read in 128-byte chunks. Integers are parsed with a uint64 accumulator plus a digit-count cap of 10, so they cannot overflow. Every buffer write is checked against its limit first. The read callback is checked for overreporting and IO errors. Tests show that endless input sources stop after a bounded amount of input."
+    },
+    {
+      "id": "T04-A5",
+      "awarded": 15.0,
+      "rationale": "The session ran `make test` three times, with ASan, UBSan and -Werror. It fixed failing checks between runs, which indicates real execution. The reported 100,096 checks matches the test structure (5 files \u00d7 20,000 fuzz iterations plus about 96 other checks). The final answer says nothing was run on a device and that the FAP adapter was not compiled."
+    },
+    {
+      "id": "T04-A6",
+      "awarded": 10.0,
+      "rationale": "There is no claim of full format support: the session calls the work a subset parser and rejects keys outside it. The small FAP adapter and summary formatter directly serve the request to list buttons, and nothing unrelated was added."
+    },
+    {
+      "id": "T04-A7",
+      "awarded": 5.0,
+      "rationale": "The limits are documented as header macros with comments and in the final answer. Errors are reported through the IrError enum, ir_error_str, error_line, and a warning not to show the partial signals parsed before a failure."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 98.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.3302846
+}

@@ -1,0 +1,61 @@
+{
+  "assertions": [
+    {
+      "id": "T02-A1",
+      "awarded": 7.0,
+      "rationale": "The app has a main menu (Start/Settings/About), a VariableItemList settings screen and a custom running view, all driven by ViewDispatcher. Back from the running view goes through run_previous_callback, which sets running=false, restores the backlight and returns ViewMain. The model is a locking model updated with with_view_model. The settings screen is not functional across the required ranges: variable_item_list_add takes a uint8_t values_count and the index is uint8_t. Work (596 values) and Rest (601 values) are truncated to 84 and 89 values, so most of 5\u2013600 cannot be reached. A loaded value such as 300 s sets a wrapped index. The final answer still claims 'work 5\u2013600 s, rest 0\u2013600 s'."
+    },
+    {
+      "id": "T02-A2",
+      "awarded": 10.0,
+      "rationale": "The parser accepts the v1 sample (Filetype and Version checked, Work 45 / Rest 15 in range, only Work and Rest required) and returns ItParseMigrated. Rounds defaults to 8 and Vibrate to true. The app marks the settings dirty so they are rewritten as v2, and the v1 copy is rotated to .bak."
+    },
+    {
+      "id": "T02-A3",
+      "awarded": 9.0,
+      "rationale": "For the corrupt sample, the 11-digit value is rejected by the 9-digit limit, -4 is not numeric, Rounds 0 is below the minimum, and the colon-less 'Vib' line returns Invalid. Output stays at defaults from the initial it_settings_defaults call. The all-or-nothing policy is stated and the UI shows 'Bad settings: defaults'. The v7 sample yields ItParseFuture, which sets save_blocked, so settings_save and save_if_dirty never write and the stale-tmp cleanup is skipped. Minor weakness: a future file that breaks the v2 syntax limits (a line over 64 chars, a non-colon line, size over 512) is classified as corrupt before its version is read. It can then be rotated to .bak and deleted after two user saves."
+    },
+    {
+      "id": "T02-A4",
+      "awarded": 13.0,
+      "rationale": "It uses real ViewDispatcher, Submenu, VariableItemList, Widget, View model, tick-event and storage_* / notification APIs. No SceneManager, which is acceptable, and the unchecked symbol assumptions are listed honestly. It deducts for the VariableItemList uint8_t count/index misuse, which silently breaks the required ranges. It also uses a hand-rolled parser instead of the FlipperFormat API, which is acceptable for host testing but not what the oracle names. storage_file_read is narrowed to uint16_t, which is harmless here."
+    },
+    {
+      "id": "T02-A5",
+      "awarded": 7.0,
+      "rationale": "The draw callback only renders the model and the tick callback does no storage I/O. The countdown is gated by app->running, which is cleared on Back, on finish and at teardown, and there is no FuriTimer to leak. However, settings_save_if_dirty, which does full tmp/rename storage I/O, runs from the settings view's previous callback, i.e. inside the dispatcher's Back-input handling path. It runs on the dispatcher thread, not the GUI thread, so it is not counted as critical. It still contradicts the code comment 'never draw/input' and the oracle's no-I/O-in-input-callback requirement. A deferred custom event would have avoided it."
+    },
+    {
+      "id": "T02-A6",
+      "awarded": 7.0,
+      "rationale": "The save path writes .tmp, checks the write length and storage_file_sync, rotates main to .bak, and renames tmp to main, rolling back on rename failure. Load recovers in order main \u2192 tmp \u2192 bak and removes a stale tmp. A save failure shows 'SD error: not saved' and keeps settings in memory. Deductions: the storage_file_close return value is not checked, which the oracle requires. An absent SD card at load is indistinguishable from a missing file, so no UI is shown. A save failure at exit gives no feedback."
+    },
+    {
+      "id": "T02-A7",
+      "awarded": 6.0,
+      "rationale": "The host test file covers inline copies of all four samples, bounds, duplicates, NUL bytes, oversize input, a serialize round trip and the state machine. The tests were not executed because Bash was denied, and the session reports this honestly with the exact command to run. Device testing is listed as pending and power-loss atomicity is explicitly disclaimed. There is no modeled storage for interrupted writes or tmp/bak recovery, which the oracle requires, and the tests do not read the samples/ files directly."
+    },
+    {
+      "id": "T02-A8",
+      "awarded": 10.0,
+      "rationale": "There is no unrelated framework. Parsing, serialization and the state machine are in the Furi-free interval_logic.c/h, and the scope is limited to the requested app."
+    },
+    {
+      "id": "T02-A9",
+      "awarded": 4.0,
+      "rationale": "The final answer and header comments document the format, v1\u2192v2 migration, the corrupt policy, the future-version read-only policy and the save scheme. No documentation file was written in the workspace, and the documentation claims a 5\u2013600 range that the UI cannot deliver."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "VariableItemList misuse: variable_item_list_add takes a uint8_t values_count and the current index is uint8_t, so Work (596) and Rest (601) value counts are truncated to 84 and 89. The required 5\u2013600/0\u2013600 ranges are unreachable and loaded values wrap, yet the final answer claims the full ranges work.",
+    "Storage I/O (settings_save_if_dirty) runs inside the settings view's Back previous-callback, i.e. the dispatcher input-handling path, contradicting the code's own 'never draw/input' comment.",
+    "storage_file_close result is not checked in the save path, despite the checked write/sync/close requirement.",
+    "Future-version protection depends on the file passing v2 syntax limits: a newer-format file with long lines, non-colon lines or size over 512 bytes is treated as corrupt and can be rotated to .bak and then deleted by later saves."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 73.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.3845206
+}

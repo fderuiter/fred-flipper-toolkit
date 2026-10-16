@@ -1,0 +1,48 @@
+{
+  "assertions": [
+    {
+      "id": "T05-A1",
+      "awarded": 14.0,
+      "rationale": "Lists scan for K2-xxxx, connect, discover service ff00, write ff01, enable the CCCD on ff02, and bond. It also covers the 30 s idle drop with a keepalive. It never names reconnect as a required operation."
+    },
+    {
+      "id": "T05-A2",
+      "awarded": 15.0,
+      "rationale": "Says plainly that a FAP-only controller won't work on stock 1.5.1 and recommends an ESP32 BLE-central companion over UART as the realistic route. It treats custom firmware with appropriate caution."
+    },
+    {
+      "id": "T05-A3",
+      "awarded": 10.0,
+      "rationale": "Correctly says the public SDK exposes only peripheral roles (serial, HID, GATT servers) and has no scan, connect, client-discovery or central-bonding API. It also separates what the radio can do from what the public API offers. However, it cites no source: no gap.c peripheral role and no check of the exported symbols. The tool calls show it inspected nothing beyond the two fixture files, so the claim rests on recalled knowledge rather than cited evidence."
+    },
+    {
+      "id": "T05-A4",
+      "awarded": 5.0,
+      "rationale": "The companion protocol is barely specified: plain-text UART commands (ON/OFF/TEMP 85). Credit for the keepalive under the idle limit, clamping the target to 40\u2013100 \u00b0C, an explicit 'on' action, and keeping the kettle's own safety features. Missing: framing, length bounds, CRC/integrity (and the point that CRC is not authentication), UART timeouts, reconnect handling, no stale-command replay, and a device allowlist."
+    },
+    {
+      "id": "T05-A5",
+      "awarded": 6.0,
+      "rationale": "Correctly points out that the protocol notes leave the checksum algorithm and the on/off value encoding unspecified, and asks for frame captures. It never says the SDK conclusion comes from prior knowledge rather than inspected source, and never says the appliance behaviour is unverified or pending physical testing. It does not fabricate any evidence."
+    },
+    {
+      "id": "T05-A6",
+      "awarded": 10.0,
+      "rationale": "It wrote no FAP and explicitly declined to invent central APIs."
+    },
+    {
+      "id": "T05-A7",
+      "awarded": 5.0,
+      "rationale": "The decision summary is clear and well structured: why it can't work, the gaps in the notes, workable options, safety, and next steps."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Suggests the Flipper 'WiFi dev board' as a BLE-central companion. The official WiFi devboard uses an ESP32-S2, which has no Bluetooth radio, so it cannot act as a BLE central."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 65.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.0826286
+}

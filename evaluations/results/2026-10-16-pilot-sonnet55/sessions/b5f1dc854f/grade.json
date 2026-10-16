@@ -1,0 +1,48 @@
+{
+  "assertions": [
+    {
+      "id": "T07-A1",
+      "awarded": 13.0,
+      "rationale": "Correctly reports the removal of meter_legacy_format (+ to -), the furi_hal_adc_configure signature gaining FuriHalAdcScale, the optional addition of furi_hal_adc_set_averaging, and the unaffected calls. It names the 88.2 \u2192 89.0 change and later calls it a 'major version bump'. It never says what a major API change means on its own, such as API compatibility being broken. Small deduction."
+    },
+    {
+      "id": "T07-A2",
+      "awarded": 11.0,
+      "rationale": "meter.c now has no removed import: the manual declaration is gone and snprintf replaces the call. The configure call has the new second argument. The fork call and its include are removed. However, the scale value FuriHalAdcScale2048mV is not a real SDK enumerator (the real Flipper enumerators are FuriHalAdcScale2048/FuriHalAdcScale2500) yet is attributed to 'memory of the real Flipper SDK'. It is hedged and the user is asked to verify it, but as written it would likely not compile. The '%.2f' replacement format is acknowledged as a guess."
+    },
+    {
+      "id": "T07-A3",
+      "awarded": 12.0,
+      "rationale": "The lineage analysis is good: cfw_meter_set_backlight_boost is absent from both tables, comes from a fork, and fails on official firmware in both versions. The session separates the compile error (signature change) from the link/load failure (removed export), but merges them as 'fail to link or load'. It does not say that an old FAP built for 88.x would be rejected on API major 89. It does not say runtime behavior needs device testing; it only says a real build is needed to confirm 'compiles and runs'."
+    },
+    {
+      "id": "T07-A4",
+      "awarded": 14.0,
+      "rationale": "No lifecycle regressions were introduced; the edits are local. It misses that the ADC is read in the timer daemon (callback) context. It also misses the pre-existing issues: furi_timer_free is called on a running periodic timer without stopping it, and meter.volts is shared unsynchronized between the timer callback and the main thread."
+    },
+    {
+      "id": "T07-A5",
+      "awarded": 14.0,
+      "rationale": "It honestly states there is no toolchain and nothing was compiled, and that verification was only a comparison against the tables. It recommends a real build against the 89.0 SDK, but this is a general statement rather than a concrete rebuild plan (e.g. ufbt against the target SDK). It honestly reports that the backup was not created because the command was denied."
+    },
+    {
+      "id": "T07-A6",
+      "awarded": 10.0,
+      "rationale": "The edits are minimal and targeted: the include swap, the declaration removal, the configure argument, the fork call removal and the snprintf replacement. meter_extra.h is left in place and noted as unused."
+    },
+    {
+      "id": "T07-A7",
+      "awarded": 4.0,
+      "rationale": "The final answer contains clear migration notes: what breaks, why, what changed, what was not checked, and a build-flag suggestion for the fork. No notes file was written to the workspace. The notes still carry the unverified enumerator name."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "Used the enumerator FuriHalAdcScale2048mV and attributed it to 'memory of the real Flipper SDK'. The real SDK names are FuriHalAdcScale2048/FuriHalAdcScale2500, so this is an incorrect API claim. It was hedged with a request to check the header, so it is not counted as critical."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 78.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1155326
+}

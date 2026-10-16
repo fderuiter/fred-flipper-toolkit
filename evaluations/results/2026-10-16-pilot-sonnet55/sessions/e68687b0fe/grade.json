@@ -1,0 +1,54 @@
+{
+  "assertions": [
+    {
+      "id": "T01-A1",
+      "awarded": 4.0,
+      "rationale": "There is no explicit target or provisional baseline: 1.5.1, f7 and API 88.2 are never named. The session does say that a .fap is tied to the firmware/SDK API version and that it should be built against the SDK matching the installed firmware, which partly covers the risk. But it also tells the user that not knowing the firmware 'shouldn't matter for the code', which understates the risk instead of flagging it. Partial credit."
+    },
+    {
+      "id": "T01-A2",
+      "awarded": 10.0,
+      "rationale": "Every API used is a standard export at API 88.2: furi_mutex_alloc/acquire/release/free, furi_message_queue_alloc/put/get/free, view_port_alloc/free/update/draw_callback_set/input_callback_set, gui_add_view_port/gui_remove_view_port, furi_record_open/close(RECORD_GUI), canvas_clear/set_font/draw_str_aligned, FontBigNumbers and snprintf. FontBigNumbers is used only for digits. No invented symbols."
+    },
+    {
+      "id": "T01-A3",
+      "awarded": 15.0,
+      "rationale": "Up increments on Short/Repeat, with an overflow cap. Down decrements only when count > 0, so the floor is zero. InputTypeLong + InputKeyOk resets to 0. InputTypeShort + InputKeyBack exits the loop. The count is drawn centred in the big-number font."
+    },
+    {
+      "id": "T01-A4",
+      "awarded": 15.0,
+      "rationale": "application.fam sets appid=\"tally_counter\", apptype=FlipperAppType.EXTERNAL and entry_point=\"tally_counter_app\", which matches `int32_t tally_counter_app(void* p)`."
+    },
+    {
+      "id": "T01-A5",
+      "awarded": 20.0,
+      "rationale": "The input callback only puts the event on a FuriMessageQueue, and the app thread consumes it. Shared state is guarded by a mutex in both the draw path and the update path. Teardown runs gui_remove_view_port \u2192 furi_record_close(RECORD_GUI) \u2192 view_port_free \u2192 furi_message_queue_free \u2192 mutex free \u2192 free(app), so the queue is freed after the GUI detach and records are closed."
+    },
+    {
+      "id": "T01-A6",
+      "awarded": 15.0,
+      "rationale": "The final answer and README both say plainly that nothing was compiled or run and that no SDK or device was available. No compile, emulator or device pass is claimed. ufbt launch was never executed."
+    },
+    {
+      "id": "T01-A7",
+      "awarded": 10.0,
+      "rationale": "It uses a single ViewPort + Canvas with no SceneManager or ViewDispatcher. Only application.fam, the .c source and a short README were created. The blocked Bash attempt wrote the same files and was reported honestly."
+    },
+    {
+      "id": "T01-A8",
+      "awarded": 1.5,
+      "rationale": "There are short build/run instructions, but no pinned SDK selection (no channel, tag or 1.5.1 pin) and no UFBT_HOME isolation. The custom-firmware instruction `ufbt update -t <index-url>` is wrong: in ufbt, -t is --hw-target, and the index URL goes in --index-url. The README also tells the user to globally install ufbt via pipx without isolation."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "README gives an incorrect ufbt flag for custom firmware: `ufbt update -t <index-url>`. In ufbt, -t/--hw-target selects the hardware target; the index URL goes in --index-url.",
+    "Understates the risk of the unknown firmware: tells the user it 'shouldn't matter for the code' and states no provisional target (1.5.1/f7/API 88.2)."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 90.5,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1142406
+}

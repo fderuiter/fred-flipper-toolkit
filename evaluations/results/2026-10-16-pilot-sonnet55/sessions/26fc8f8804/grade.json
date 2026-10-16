@@ -1,0 +1,66 @@
+{
+  "assertions": [
+    {
+      "id": "T02-A1",
+      "awarded": 9.0,
+      "rationale": "There are three required screens: a Submenu main menu (Start, Settings, About), a custom settings view and a custom running view. About is a Widget. Previous callbacks connect them correctly. run_back stops the timer, restores the backlight and returns to the menu, and Back on the menu returns VIEW_NONE to exit. Settings uses a hand-drawn View rather than VariableItemList. The oracle does not require VariableItemList, so I deducted only a little."
+    },
+    {
+      "id": "T02-A2",
+      "awarded": 8.0,
+      "rationale": "For a version 1 file, load_from reads Work and Rest with range checks and leaves Rounds and Vibrate at their defaults (8 and true). That gives Work 45, Rest 15, Rounds 8, Vibrate on. The result is SettingsLoadMigrated, which triggers one rewrite as version 2. The logic is correct, but nothing tested it against samples/settings_v1.txt."
+    },
+    {
+      "id": "T02-A3",
+      "awarded": 9.0,
+      "rationale": "Corrupt file: the stated policy is that each field falls back to its default if it is missing, unparsable or out of range. Work, Rest and Rounds are all out of range and Vibrate is truncated, so every field defaults. The result is Repaired, a notice is shown, the app does not crash, and the file is not rewritten unless the user edits. Version 7 file: block_save is set, and both app_save and the save on exit return early, so the file is never overwritten. The trade-off of not saving is stated. Neither path was executed, so I deducted a little."
+    },
+    {
+      "id": "T02-A4",
+      "awarded": 17.0,
+      "rationale": "Every API used exists in the exported SDK, so I found no invented API. That covers the ViewDispatcher, Submenu and Widget functions, view_alloc/view_allocate_model/with_view_model, and FlipperFormat open/read_header/read_uint32/read_bool/write_header_cstr/write_uint32/write_bool/rewind. It also covers storage_common_remove/rename, storage_simply_mkdir, storage_sd_status and APP_DATA_PATH, plus the notification sequences and FontBigNumbers. No SceneManager is used, which is fine. Deductions: the settings screen does not use a standard module, mkdir on APP_DATA_PATH(\"\") is questionable, and nothing was compiled."
+    },
+    {
+      "id": "T02-A5",
+      "awarded": 4.0,
+      "rationale": "The countdown timer is stopped correctly in run_back, when the run finishes and on exit. The tick callback only posts a custom event, so the timer callback does no storage I/O. However, settings_back runs on the Back-key input path and calls app_save, which writes to the SD card. It does this inside with_view_model on a ViewModelTypeLocking model, so the GUI draw path blocks during the write. That is the I/O-in-GUI-callback pattern the task forbids."
+    },
+    {
+      "id": "T02-A6",
+      "awarded": 5.0,
+      "rationale": "The save writes settings.tmp, checks each write call's result, deletes the temp file on failure, then removes the main file and renames the temp over it. Missing sync: no sync is called. Unchecked close: the close result is not checked, because flipper_format_free returns nothing. Partial stale-temp handling: a stale temp file is used for recovery only when the main file is missing. It is never cleaned up otherwise. SD card absent: shown as a notice. SD full or failed save: \"Save failed (SD?)\" is set only as the user leaves the screen, so they see it late. A failed migration rewrite is not reported at all."
+    },
+    {
+      "id": "T02-A7",
+      "awarded": 4.0,
+      "rationale": "No host tests were written, either over the sample files or for a modeled interrupted write. The answer states honestly that the shell was denied and nothing was built or tested. It says the device behavior is unverified and makes no atomicity promise; the header comment says \"Atomic-ish\", which is hedged. All the credit here is for honest reporting."
+    },
+    {
+      "id": "T02-A8",
+      "awarded": 7.0,
+      "rationale": "No unrelated framework is added. Settings code is split into settings.c/h, separate from the UI. The parsing and migration logic is not pure: it is tied to FlipperFormat and Storage, so it cannot be tested on the host."
+    },
+    {
+      "id": "T02-A9",
+      "awarded": 4.0,
+      "rationale": "The final answer documents the file location, the version 2 format, the version 1 migration defaults, the corrupt-file policy, the future-version policy, the save procedure and SD-card failure behaviour. There is no README or other documentation file in the workspace."
+    }
+  ],
+  "critical_failures": [
+    "storage in GUI/timer callback: settings_back, the Back-key callback on the input path, calls settings_save to write to the SD card inside with_view_model on a Locking model, so drawing blocks during the write"
+  ],
+  "major_errors": [
+    "No host tests were written for parsing or migration against samples/, and there is no modeled interrupted write, even though the code could have been written without a shell",
+    "The pure parsing and migration logic is not separated from FlipperFormat and Storage, so it cannot be tested on the host",
+    "The save path never calls sync and never checks the close result (flipper_format_free returns nothing)",
+    "The main file is removed before the rename, which leaves a window with no main file; this is only partly covered by recovering from the temp file",
+    "A stale temp file is never cleaned up when the main file exists",
+    "The save-failure notice is set only as the user leaves the settings screen, and a failed migration rewrite is not reported to the user",
+    "The settings screen is a hand-drawn View rather than the VariableItemList standard module"
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 67.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.2431446
+}

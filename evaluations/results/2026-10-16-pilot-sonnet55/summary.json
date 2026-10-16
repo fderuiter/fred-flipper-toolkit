@@ -1,0 +1,1078 @@
+{
+  "model": "claude-sonnet-5-5",
+  "grader_model": "claude-opus-5-5",
+  "sessions": 42,
+  "treatment_mean": 84.6,
+  "baseline_mean": 77.4,
+  "mean_paired_improvement": 7.2,
+  "pairs": 21,
+  "min_task_family_treatment_mean": 74.0,
+  "treatment_sessions_with_critical": 0,
+  "critical_plus_major_baseline": 45,
+  "critical_plus_major_treatment": 19,
+  "median_tokens_baseline": 103472,
+  "median_tokens_treatment": 184882,
+  "total_session_cost_usd": 9.38,
+  "isolation_violations": [
+    "06eccaeb35",
+    "7fdc57803c",
+    "83f1fdee1c",
+    "9c28166606",
+    "a86d9e1ee4",
+    "bbf0d00a16",
+    "de367f3890"
+  ],
+  "per_task": {
+    "01-utility": {
+      "baseline_mean": 90.5,
+      "treatment_mean": 87.3,
+      "baseline_critical": 0,
+      "treatment_critical": 0,
+      "baseline_major": 2,
+      "treatment_major": 0
+    },
+    "02-settings": {
+      "baseline_mean": 66.0,
+      "treatment_mean": 74.0,
+      "baseline_critical": 1,
+      "treatment_critical": 0,
+      "baseline_major": 18,
+      "treatment_major": 13
+    },
+    "03-uart": {
+      "baseline_mean": 71.0,
+      "treatment_mean": 88.3,
+      "baseline_critical": 1,
+      "treatment_critical": 0,
+      "baseline_major": 9,
+      "treatment_major": 1
+    },
+    "04-ir-parser": {
+      "baseline_mean": 92.2,
+      "treatment_mean": 82.2,
+      "baseline_critical": 0,
+      "treatment_critical": 0,
+      "baseline_major": 0,
+      "treatment_major": 3
+    },
+    "05-ble-feasibility": {
+      "baseline_mean": 62.7,
+      "treatment_mean": 88.0,
+      "baseline_critical": 0,
+      "treatment_critical": 0,
+      "baseline_major": 2,
+      "treatment_major": 0
+    },
+    "06-lifecycle-review": {
+      "baseline_mean": 86.2,
+      "treatment_mean": 96.0,
+      "baseline_critical": 0,
+      "treatment_critical": 0,
+      "baseline_major": 7,
+      "treatment_major": 0
+    },
+    "07-sdk-migration": {
+      "baseline_mean": 73.0,
+      "treatment_mean": 76.3,
+      "baseline_critical": 0,
+      "treatment_critical": 0,
+      "baseline_major": 5,
+      "treatment_major": 2
+    }
+  },
+  "rows": [
+    {
+      "id": "022256f61d",
+      "task": "04-ir-parser",
+      "rep": 2,
+      "arm": "baseline",
+      "score": 89.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.6558461,
+      "tokens": {
+        "input_tokens": 30,
+        "output_tokens": 38635,
+        "cache_read_input_tokens": 507561,
+        "cache_creation_input_tokens": 54670
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "06eccaeb35",
+      "task": "02-settings",
+      "rep": 2,
+      "arm": "treatment",
+      "score": 72.5,
+      "critical": [],
+      "major": 4,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.5383562,
+      "tokens": {
+        "input_tokens": 18,
+        "output_tokens": 30414,
+        "cache_read_input_tokens": 266042,
+        "cache_creation_input_tokens": 51894
+      },
+      "skills": [
+        "flipper-native"
+      ],
+      "private": [
+        "cd /tmp/fred-eval/pilot/06eccaeb35/ws/interval_timer/tests && gcc -Wall -Wextra -fsanitize=address,undefined -I.. test_settings.c ../settings_logic.c -o /tmp/claude-0/-tmp-fred-eval-pilot-06eccaeb35-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t && /tmp/claude-0/-tmp-fred-eval-pilot-06eccaeb35-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t ../../samples"
+      ],
+      "rc": 0
+    },
+    {
+      "id": "11f438abc6",
+      "task": "03-uart",
+      "rep": 2,
+      "arm": "baseline",
+      "score": 66.0,
+      "critical": [
+        "Unsafe lifetime defect in the scored code path: view_port_free runs before the worker thread is stopped and joined, while the worker calls view_port_update(app->view_port), so there is a possible use-after-free during Back/teardown."
+      ],
+      "major": 3,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.18638659999999999,
+      "tokens": {
+        "input_tokens": 14,
+        "output_tokens": 8915,
+        "cache_read_input_tokens": 125326,
+        "cache_creation_input_tokens": 21169
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "1da462991e",
+      "task": "03-uart",
+      "rep": 1,
+      "arm": "baseline",
+      "score": 77.0,
+      "critical": [],
+      "major": 2,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.1829132,
+      "tokens": {
+        "input_tokens": 12,
+        "output_tokens": 8918,
+        "cache_read_input_tokens": 102212,
+        "cache_creation_input_tokens": 20872
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "26fc8f8804",
+      "task": "02-settings",
+      "rep": 1,
+      "arm": "baseline",
+      "score": 67.0,
+      "critical": [
+        "storage in GUI/timer callback: settings_back, the Back-key callback on the input path, calls settings_save to write to the SD card inside with_view_model on a Locking model, so drawing blocks during the write"
+      ],
+      "major": 7,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.23319810000000002,
+      "tokens": {
+        "input_tokens": 14,
+        "output_tokens": 12321,
+        "cache_read_input_tokens": 127121,
+        "cache_creation_input_tokens": 24312
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "361cb52230",
+      "task": "05-ble-feasibility",
+      "rep": 3,
+      "arm": "baseline",
+      "score": 59.0,
+      "critical": [],
+      "major": 1,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.0637621,
+      "tokens": {
+        "input_tokens": 6,
+        "output_tokens": 1146,
+        "cache_read_input_tokens": 43741,
+        "cache_creation_input_tokens": 11979
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "38ef43d05e",
+      "task": "06-lifecycle-review",
+      "rep": 3,
+      "arm": "treatment",
+      "score": 99.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [
+        "T06-D1",
+        "T06-D2",
+        "T06-D3",
+        "T06-D4",
+        "T06-D5",
+        "T06-D6",
+        "T06-D7",
+        "T06-D8"
+      ],
+      "decoys": [],
+      "cost": 0.1836,
+      "tokens": {
+        "input_tokens": 10,
+        "output_tokens": 8687,
+        "cache_read_input_tokens": 90900,
+        "cache_creation_input_tokens": 21905
+      },
+      "skills": [
+        "flipper-review"
+      ],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "3fd3d6ee4e",
+      "task": "06-lifecycle-review",
+      "rep": 1,
+      "arm": "baseline",
+      "score": 81.0,
+      "critical": [],
+      "major": 2,
+      "seeded": [
+        "T06-D1",
+        "T06-D2",
+        "T06-D3",
+        "T06-D4",
+        "T06-D5",
+        "T06-D6",
+        "T06-D7",
+        "T06-D8"
+      ],
+      "decoys": [],
+      "cost": 0.1177068,
+      "tokens": {
+        "input_tokens": 6,
+        "output_tokens": 5309,
+        "cache_read_input_tokens": 43808,
+        "cache_creation_input_tokens": 15056
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "435eee9935",
+      "task": "07-sdk-migration",
+      "rep": 1,
+      "arm": "treatment",
+      "score": 82.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.09582340000000002,
+      "tokens": {
+        "input_tokens": 10,
+        "output_tokens": 2474,
+        "cache_read_input_tokens": 86594,
+        "cache_creation_input_tokens": 15601
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "45bca1a395",
+      "task": "07-sdk-migration",
+      "rep": 3,
+      "arm": "baseline",
+      "score": 73.0,
+      "critical": [],
+      "major": 2,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.10616250000000002,
+      "tokens": {
+        "input_tokens": 12,
+        "output_tokens": 2870,
+        "cache_read_input_tokens": 109265,
+        "cache_creation_input_tokens": 16628
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "495ab335a8",
+      "task": "05-ble-feasibility",
+      "rep": 2,
+      "arm": "treatment",
+      "score": 85.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.1258883,
+      "tokens": {
+        "input_tokens": 10,
+        "output_tokens": 2827,
+        "cache_read_input_tokens": 95663,
+        "cache_creation_input_tokens": 22008
+      },
+      "skills": [
+        "flipper-core"
+      ],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "518e6eec14",
+      "task": "05-ble-feasibility",
+      "rep": 3,
+      "arm": "treatment",
+      "score": 96.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.15478640000000002,
+      "tokens": {
+        "input_tokens": 14,
+        "output_tokens": 3227,
+        "cache_read_input_tokens": 136604,
+        "cache_creation_input_tokens": 27207
+      },
+      "skills": [
+        "flipper-core"
+      ],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "5724baf8c2",
+      "task": "07-sdk-migration",
+      "rep": 1,
+      "arm": "baseline",
+      "score": 68.0,
+      "critical": [],
+      "major": 2,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.0911326,
+      "tokens": {
+        "input_tokens": 10,
+        "output_tokens": 2172,
+        "cache_read_input_tokens": 85846,
+        "cache_creation_input_tokens": 15202
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "5b013f89c5",
+      "task": "04-ir-parser",
+      "rep": 1,
+      "arm": "treatment",
+      "score": 98.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.5619066000000001,
+      "tokens": {
+        "input_tokens": 24,
+        "output_tokens": 29730,
+        "cache_read_input_tokens": 454466,
+        "cache_creation_input_tokens": 54778
+      },
+      "skills": [
+        "flipper-native"
+      ],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "5e5ea0d664",
+      "task": "03-uart",
+      "rep": 3,
+      "arm": "baseline",
+      "score": 70.0,
+      "critical": [],
+      "major": 4,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.1634375,
+      "tokens": {
+        "input_tokens": 14,
+        "output_tokens": 7338,
+        "cache_read_input_tokens": 125575,
+        "cache_creation_input_tokens": 19368
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "655f4d762e",
+      "task": "06-lifecycle-review",
+      "rep": 1,
+      "arm": "treatment",
+      "score": 98.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [
+        "T06-D1",
+        "T06-D2",
+        "T06-D3",
+        "T06-D4",
+        "T06-D5",
+        "T06-D6",
+        "T06-D7",
+        "T06-D8"
+      ],
+      "decoys": [],
+      "cost": 0.14694469999999998,
+      "tokens": {
+        "input_tokens": 8,
+        "output_tokens": 5598,
+        "cache_read_input_tokens": 67687,
+        "cache_creation_input_tokens": 21045
+      },
+      "skills": [
+        "flipper-review"
+      ],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "7e95ab3187",
+      "task": "03-uart",
+      "rep": 3,
+      "arm": "treatment",
+      "score": 86.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.2390044,
+      "tokens": {
+        "input_tokens": 16,
+        "output_tokens": 10065,
+        "cache_read_input_tokens": 168344,
+        "cache_creation_input_tokens": 30372
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "7fdc57803c",
+      "task": "03-uart",
+      "rep": 1,
+      "arm": "treatment",
+      "score": 87.0,
+      "critical": [],
+      "major": 1,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.30931980000000003,
+      "tokens": {
+        "input_tokens": 22,
+        "output_tokens": 13672,
+        "cache_read_input_tokens": 293438,
+        "cache_creation_input_tokens": 35803
+      },
+      "skills": [],
+      "private": [
+        "cd /tmp/fred-eval/pilot/7fdc57803c/ws/soil_link/test && gcc -Wall -Wextra -I.. -o /tmp/claude-0/-tmp-fred-eval-pilot-7fdc57803c-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t test_frame.c ../soil_frame.c && /tmp/claude-0/-tmp-fred-eval-pilot-7fdc57803c-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t"
+      ],
+      "rc": 0
+    },
+    {
+      "id": "827a048879",
+      "task": "06-lifecycle-review",
+      "rep": 2,
+      "arm": "baseline",
+      "score": 83.0,
+      "critical": [],
+      "major": 5,
+      "seeded": [
+        "T06-D1",
+        "T06-D3",
+        "T06-D4",
+        "T06-D5",
+        "T06-D6",
+        "T06-D7",
+        "T06-D8"
+      ],
+      "decoys": [],
+      "cost": 0.1036404,
+      "tokens": {
+        "input_tokens": 8,
+        "output_tokens": 3480,
+        "cache_read_input_tokens": 66044,
+        "cache_creation_input_tokens": 15555
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "83f1fdee1c",
+      "task": "02-settings",
+      "rep": 1,
+      "arm": "treatment",
+      "score": 73.0,
+      "critical": [],
+      "major": 4,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.48532420000000004,
+      "tokens": {
+        "input_tokens": 18,
+        "output_tokens": 26729,
+        "cache_read_input_tokens": 245342,
+        "cache_creation_input_tokens": 48366
+      },
+      "skills": [
+        "flipper-native"
+      ],
+      "private": [
+        "cd /tmp/fred-eval/pilot/83f1fdee1c/ws/interval_timer/tests && gcc -Wall -Wextra -I.. host_test.c ../interval_logic.c -o /tmp/claude-0/-tmp-fred-eval-pilot-83f1fdee1c-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/host_test && /tmp/claude-0/-tmp-fred-eval-pilot-83f1fdee1c-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/host_test"
+      ],
+      "rc": 0
+    },
+    {
+      "id": "8556fd0bba",
+      "task": "05-ble-feasibility",
+      "rep": 1,
+      "arm": "baseline",
+      "score": 64.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.0649194,
+      "tokens": {
+        "input_tokens": 6,
+        "output_tokens": 1256,
+        "cache_read_input_tokens": 43754,
+        "cache_creation_input_tokens": 11993
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "901e4f78c6",
+      "task": "02-settings",
+      "rep": 3,
+      "arm": "baseline",
+      "score": 62.0,
+      "critical": [],
+      "major": 5,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.3075056,
+      "tokens": {
+        "input_tokens": 18,
+        "output_tokens": 13957,
+        "cache_read_input_tokens": 170956,
+        "cache_creation_input_tokens": 37701
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "9023df2cb4",
+      "task": "04-ir-parser",
+      "rep": 3,
+      "arm": "baseline",
+      "score": 95.5,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.49586689999999994,
+      "tokens": {
+        "input_tokens": 30,
+        "output_tokens": 26764,
+        "cache_read_input_tokens": 493589,
+        "cache_creation_input_tokens": 44702
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "9322a0c88d",
+      "task": "07-sdk-migration",
+      "rep": 3,
+      "arm": "treatment",
+      "score": 75.0,
+      "critical": [],
+      "major": 1,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.09569420000000001,
+      "tokens": {
+        "input_tokens": 10,
+        "output_tokens": 2324,
+        "cache_read_input_tokens": 86942,
+        "cache_creation_input_tokens": 15935
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "993784c0b8",
+      "task": "04-ir-parser",
+      "rep": 3,
+      "arm": "treatment",
+      "score": 88.5,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.37073999999999996,
+      "tokens": {
+        "input_tokens": 22,
+        "output_tokens": 17708,
+        "cache_read_input_tokens": 314400,
+        "cache_creation_input_tokens": 40544
+      },
+      "skills": [
+        "flipper-native"
+      ],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "99b860f6b2",
+      "task": "04-ir-parser",
+      "rep": 1,
+      "arm": "baseline",
+      "score": 92.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.4019637,
+      "tokens": {
+        "input_tokens": 22,
+        "output_tokens": 22136,
+        "cache_read_input_tokens": 286437,
+        "cache_creation_input_tokens": 37979
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "9c28166606",
+      "task": "03-uart",
+      "rep": 2,
+      "arm": "treatment",
+      "score": 92.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.29379819999999995,
+      "tokens": {
+        "input_tokens": 18,
+        "output_tokens": 12372,
+        "cache_read_input_tokens": 218182,
+        "cache_creation_input_tokens": 37056
+      },
+      "skills": [],
+      "private": [
+        "cd /tmp/fred-eval/pilot/9c28166606/ws/soil_link/test && gcc -Wall -Wextra -fsanitize=address,undefined -I.. test_soil_frame.c ../soil_frame.c -o /tmp/claude-0/-tmp-fred-eval-pilot-9c28166606-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t && /tmp/claude-0/-tmp-fred-eval-pilot-9c28166606-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t"
+      ],
+      "rc": 0
+    },
+    {
+      "id": "9f77f1237f",
+      "task": "06-lifecycle-review",
+      "rep": 2,
+      "arm": "treatment",
+      "score": 91.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [
+        "T06-D1",
+        "T06-D2",
+        "T06-D3",
+        "T06-D4",
+        "T06-D5",
+        "T06-D6",
+        "T06-D7",
+        "T06-D8"
+      ],
+      "decoys": [],
+      "cost": 0.1298164,
+      "tokens": {
+        "input_tokens": 8,
+        "output_tokens": 5044,
+        "cache_read_input_tokens": 66364,
+        "cache_creation_input_tokens": 18181
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "a7a44c542e",
+      "task": "02-settings",
+      "rep": 3,
+      "arm": "treatment",
+      "score": 76.5,
+      "critical": [],
+      "major": 5,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.41525410000000007,
+      "tokens": {
+        "input_tokens": 22,
+        "output_tokens": 20906,
+        "cache_read_input_tokens": 324981,
+        "cache_creation_input_tokens": 43413
+      },
+      "skills": [
+        "flipper-native"
+      ],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "a86d9e1ee4",
+      "task": "04-ir-parser",
+      "rep": 2,
+      "arm": "treatment",
+      "score": 60.0,
+      "critical": [],
+      "major": 3,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.4483737,
+      "tokens": {
+        "input_tokens": 30,
+        "output_tokens": 21372,
+        "cache_read_input_tokens": 515497,
+        "cache_creation_input_tokens": 45761
+      },
+      "skills": [
+        "flipper-native"
+      ],
+      "private": [
+        "/tmp/claude-0/-tmp-fred-eval-pilot-a86d9e1ee4-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t /tmp/fred-eval/pilot/a86d9e1ee4/ws/corpus",
+        "cc -std=c99 -Wall -Wextra -fsanitize=address,undefined ir_parse.c test_ir_parse.c -o /tmp/claude-0/-tmp-fred-eval-pilot-a86d9e1ee4-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t",
+        "cc -std=c99 -Wall -Wextra -fsanitize=address,undefined ir_parse.c test_ir_parse.c -o /tmp/claude-0/-tmp-fred-eval-pilot-a86d9e1ee4-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t 2>&1 | head -30 && /tmp/claude-0/-tmp-fred-eval-pilot-a86d9e1ee4-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t ../corpus 2>&1 | tail -40",
+        "cd /tmp/fred-eval/pilot/a86d9e1ee4/ws/ir_parse && cc -std=c99 -Wall -Wextra -fsanitize=address,undefined ir_parse.c test_ir_parse.c -o /tmp/claude-0/-tmp-fred-eval-pilot-a86d9e1ee4-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t 2>&1 | head -30"
+      ],
+      "rc": 0
+    },
+    {
+      "id": "adc9da409f",
+      "task": "02-settings",
+      "rep": 2,
+      "arm": "baseline",
+      "score": 69.0,
+      "critical": [],
+      "major": 6,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.33799019999999996,
+      "tokens": {
+        "input_tokens": 22,
+        "output_tokens": 18676,
+        "cache_read_input_tokens": 254062,
+        "cache_creation_input_tokens": 31445
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "af02595022",
+      "task": "05-ble-feasibility",
+      "rep": 1,
+      "arm": "treatment",
+      "score": 83.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.0366927,
+      "tokens": {
+        "input_tokens": 10,
+        "output_tokens": 1228,
+        "cache_read_input_tokens": 93887,
+        "cache_creation_input_tokens": 3751
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "af83a79660",
+      "task": "05-ble-feasibility",
+      "rep": 2,
+      "arm": "baseline",
+      "score": 65.0,
+      "critical": [],
+      "major": 1,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.0646721,
+      "tokens": {
+        "input_tokens": 6,
+        "output_tokens": 1237,
+        "cache_read_input_tokens": 43741,
+        "cache_creation_input_tokens": 11979
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "b1a65169ad",
+      "task": "01-utility",
+      "rep": 3,
+      "arm": "treatment",
+      "score": 89.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.17697059999999998,
+      "tokens": {
+        "input_tokens": 14,
+        "output_tokens": 5092,
+        "cache_read_input_tokens": 152466,
+        "cache_creation_input_tokens": 27694
+      },
+      "skills": [
+        "flipper-native"
+      ],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "b4a6e1f4f6",
+      "task": "01-utility",
+      "rep": 1,
+      "arm": "baseline",
+      "score": 91.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.1123325,
+      "tokens": {
+        "input_tokens": 8,
+        "output_tokens": 4313,
+        "cache_read_input_tokens": 64425,
+        "cache_creation_input_tokens": 15686
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "b5f1dc854f",
+      "task": "07-sdk-migration",
+      "rep": 2,
+      "arm": "baseline",
+      "score": 78.0,
+      "critical": [],
+      "major": 1,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.09278039999999999,
+      "tokens": {
+        "input_tokens": 10,
+        "output_tokens": 2310,
+        "cache_read_input_tokens": 85884,
+        "cache_creation_input_tokens": 15268
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "bbf0d00a16",
+      "task": "01-utility",
+      "rep": 1,
+      "arm": "treatment",
+      "score": 87.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.1804557,
+      "tokens": {
+        "input_tokens": 14,
+        "output_tokens": 6248,
+        "cache_read_input_tokens": 152957,
+        "cache_creation_input_tokens": 25663
+      },
+      "skills": [
+        "flipper-native"
+      ],
+      "private": [
+        "cd /tmp/claude-0/-tmp-fred-eval-pilot-bbf0d00a16-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad && gcc -Wall -Wextra -o t_logic /tmp/fred-eval/pilot/bbf0d00a16/ws/test/test_logic.c && ./t_logic",
+        "cd /tmp/fred-eval/pilot/bbf0d00a16/ws && mkdir -p test && cat > application.fam <<'E'\nApp(\n    appid=\"tally_counter\",\n    name=\"Tally Counter\",\n    apptype=FlipperAppType.EXTERNAL,\n    entry_point=\"tally_counter_app\",\n    stack_size=2 * 1024,\n    requires=[\"gui\"],\n    fap_category=\"Tools\",\n)\nE\ncat > tally_logic.h <<'E'\n#pragma once\n#include <stdint.h>\n\n// Pure counter logic, kept free of Furi so it can be host-tested.\n#define TALLY_MAX 999999U\n\nstatic inline uint32_t tally_inc(uint32_t count) {\n    return (count < TALLY_MAX) ? count + 1U : TALLY_MAX;\n}\n\nstatic inline uint32_t tally_dec(uint32_t count) {\n    return (count > 0U) ? count - 1U : 0U;\n}\nE\ncat > tally_counter.c <<'E'\n#include <furi.h>\n#include <gui/gui.h>\n#include <input/input.h>\n#include <stdio.h>\n\n#include \"tally_logic.h\"\n\n#define TAG \"TallyCounter\"\n\ntypedef struct {\n    Gui* gui; // borrowed record\n    ViewPort* view_port; // owned\n    FuriMutex* mutex; // guards count\n    FuriEventFlag* exit_flag; // set by Back, awaited by main thread\n    uint32_t count;\n} TallyApp;\n\n#define TALLY_EVENT_EXIT (1U << 0)\n\n// GUI thread. Take a snapshot under the mutex, draw outside it.\nstatic void tally_draw_callback(Canvas* canvas, void* ctx) {\n    TallyApp* app = ctx;\n    uint32_t count = 0;\n    if(furi_mutex_acquire(app->mutex, FuriWaitForever) == FuriStatusOk) {\n        count = app->count;\n        furi_mutex_release(app->mutex);\n    }\n\n    char text[16];\n    snprintf(text, sizeof(text), \"%lu\", (unsigned long)count);\n\n    canvas_clear(canvas);\n    canvas_set_color(canvas, ColorBlack);\n    canvas_set_font(canvas, FontBigNumbers);\n    canvas_draw_str_aligned(canvas, 64, 30, AlignCenter, AlignCenter, text);\n    canvas_set_font(canvas, FontSecondary);\n    canvas_draw_str_aligned(canvas, 64, 62, AlignCenter, AlignBottom, \"Hold OK: reset\");\n}\n\n// GUI thread. Short, no blocking beyond the brief mutex.\nstatic void tally_input_callback(InputEvent* event, void* ctx) {\n    TallyApp* app = ctx;\n\n    if(event->key == InputKeyBack && event->type == InputTypeShort) {\n        // Flag cannot be dropped like a queue message.\n        furi_event_flag_set(app->exit_flag, TALLY_EVENT_EXIT);\n        return;\n    }\n\n    bool changed = false;\n    if(furi_mutex_acquire(app->mutex, FuriWaitForever) == FuriStatusOk) {\n        if(event->key == InputKeyUp && event->type == InputTypeShort) {\n            app->count = tally_inc(app->count);\n            changed = true;\n        } else if(event->key == InputKeyDown && event->type == InputTypeShort) {\n            app->count = tally_dec(app->count);\n            changed = true;\n        } else if(event->key == InputKeyOk && event->type == InputTypeLong) {\n            app->count = 0;\n            changed = true;\n        }\n        furi_mutex_release(app->mutex);\n    }\n    if(changed) view_port_update(app->view_port);\n}\n\nint32_t tally_counter_app(void* p) {\n    UNUSED(p);\n\n    TallyApp* app = malloc(sizeof(TallyApp));\n    app->count = 0;\n    app->mutex = furi_mutex_alloc(FuriMutexTypeNormal);\n    app->exit_flag = furi_event_flag_alloc();\n    app->view_port = view_port_alloc();\n    view_port_draw_callback_set(app->view_port, tally_draw_callback, app);\n    view_port_input_callback_set(app->view_port, tally_input_callback, app);\n\n    app->gui = furi_record_open(RECORD_GUI);\n    gui_add_view_port(app->gui, app->view_port, GuiLayerFullscreen);\n\n    furi_event_flag_wait(app->exit_flag, TALLY_EVENT_EXIT, FuriFlagWaitAny, FuriWaitForever);\n\n    // Detach from GUI first so no callback can run while freeing.\n    gui_remove_view_port(app->gui, app->view_port);\n    furi_record_close(RECORD_GUI);\n    view_port_free(app->view_port);\n    furi_event_flag_free(app->exit_flag);\n    furi_mutex_free(app->mutex);\n    free(app);\n    return 0;\n}\nE\ncat > test/test_logic.c <<'E'\n#include <assert.h>\n#include <stdio.h>\n#include \"../tally_logic.h\"\nint main(void) {\n    assert(tally_dec(0) == 0);\n    assert(tally_dec(1) == 0);\n    assert(tally_inc(0) == 1);\n    assert(tally_inc(TALLY_MAX) == TALLY_MAX);\n    assert(tally_dec(TALLY_MAX) == TALLY_MAX - 1);\n    puts(\"ok\");\n    return 0;\n}\nE\ngcc -Wall -Wextra -o /tmp/claude-0/t test/test_logic.c && /tmp/claude-0/t"
+      ],
+      "rc": 0
+    },
+    {
+      "id": "bcb87de679",
+      "task": "07-sdk-migration",
+      "rep": 2,
+      "arm": "treatment",
+      "score": 72.0,
+      "critical": [],
+      "major": 1,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.0951525,
+      "tokens": {
+        "input_tokens": 10,
+        "output_tokens": 2418,
+        "cache_read_input_tokens": 86565,
+        "cache_creation_input_tokens": 15574
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "c692658d2a",
+      "task": "01-utility",
+      "rep": 3,
+      "arm": "baseline",
+      "score": 90.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.1143041,
+      "tokens": {
+        "input_tokens": 8,
+        "output_tokens": 4443,
+        "cache_read_input_tokens": 64501,
+        "cache_creation_input_tokens": 15852
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "de367f3890",
+      "task": "01-utility",
+      "rep": 2,
+      "arm": "treatment",
+      "score": 86.0,
+      "critical": [],
+      "major": 0,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.1772873,
+      "tokens": {
+        "input_tokens": 12,
+        "output_tokens": 6226,
+        "cache_read_input_tokens": 121433,
+        "cache_creation_input_tokens": 25715
+      },
+      "skills": [
+        "flipper-native"
+      ],
+      "private": [
+        "mkdir -p test && cat > application.fam <<'EOF'\nApp(\n    appid=\"tally_counter\",\n    name=\"Tally Counter\",\n    apptype=FlipperAppType.EXTERNAL,\n    entry_point=\"tally_counter_app\",\n    requires=[\"gui\"],\n    stack_size=1 * 1024,\n    fap_category=\"Tools\",\n)\nEOF\ncat > tally_logic.h <<'EOF'\n#pragma once\n#include <stdint.h>\n\n// Pure counter logic, no Furi dependencies so it can be host-tested.\n#define TALLY_MAX 999999U\n\nstatic inline uint32_t tally_increment(uint32_t count) {\n    return (count >= TALLY_MAX) ? TALLY_MAX : count + 1;\n}\n\nstatic inline uint32_t tally_decrement(uint32_t count) {\n    return (count == 0) ? 0 : count - 1;\n}\n\nstatic inline uint32_t tally_reset(void) {\n    return 0;\n}\nEOF\ncat > tally_counter.c <<'EOF'\n#include <furi.h>\n#include <gui/gui.h>\n#include <input/input.h>\n#include <stdio.h>\n\n#include \"tally_logic.h\"\n\ntypedef struct {\n    Gui* gui;\n    ViewPort* view_port;\n    FuriMutex* mutex; // guards count; held only for short reads/writes\n    FuriMessageQueue* exit_queue; // capacity 1: a pending exit request is never lost\n    uint32_t count;\n} TallyApp;\n\n// Context: GUI thread. Snapshot the count, then draw.\nstatic void tally_draw_callback(Canvas* canvas, void* ctx) {\n    TallyApp* app = ctx;\n\n    furi_mutex_acquire(app->mutex, FuriWaitForever);\n    uint32_t count = app->count;\n    furi_mutex_release(app->mutex);\n\n    char text[16];\n    snprintf(text, sizeof(text), \"%lu\", (unsigned long)count);\n\n    canvas_clear(canvas);\n    canvas_set_color(canvas, ColorBlack);\n    canvas_set_font(canvas, FontBigNumbers);\n    canvas_draw_str_aligned(canvas, 64, 32, AlignCenter, AlignCenter, text);\n}\n\n// Context: GUI thread. Counter updates are tiny, so they are applied here.\nstatic void tally_input_callback(InputEvent* event, void* ctx) {\n    TallyApp* app = ctx;\n\n    if(event->type == InputTypeShort) {\n        switch(event->key) {\n        case InputKeyUp:\n        case InputKeyDown:\n            furi_mutex_acquire(app->mutex, FuriWaitForever);\n            app->count = (event->key == InputKeyUp) ? tally_increment(app->count) :\n                                                      tally_decrement(app->count);\n            furi_mutex_release(app->mutex);\n            view_port_update(app->view_port);\n            break;\n        case InputKeyBack: {\n            uint8_t exit_msg = 1;\n            // Full queue means an exit is already pending; nothing is lost.\n            furi_message_queue_put(app->exit_queue, &exit_msg, 0);\n            break;\n        }\n        default:\n            break;\n        }\n    } else if(event->type == InputTypeLong && event->key == InputKeyOk) {\n        furi_mutex_acquire(app->mutex, FuriWaitForever);\n        app->count = tally_reset();\n        furi_mutex_release(app->mutex);\n        view_port_update(app->view_port);\n    }\n}\n\nint32_t tally_counter_app(void* p) {\n    UNUSED(p);\n\n    TallyApp* app = malloc(sizeof(TallyApp));\n    app->count = 0;\n    app->mutex = furi_mutex_alloc(FuriMutexTypeNormal);\n    app->exit_queue = furi_message_queue_alloc(1, sizeof(uint8_t));\n    app->view_port = view_port_alloc();\n    view_port_draw_callback_set(app->view_port, tally_draw_callback, app);\n    view_port_input_callback_set(app->view_port, tally_input_callback, app);\n\n    app->gui = furi_record_open(RECORD_GUI);\n    gui_add_view_port(app->gui, app->view_port, GuiLayerFullscreen);\n\n    uint8_t msg;\n    furi_message_queue_get(app->exit_queue, &msg, FuriWaitForever);\n\n    // Teardown: detach from GUI first so no callback can run, then free.\n    gui_remove_view_port(app->gui, app->view_port);\n    furi_record_close(RECORD_GUI);\n    view_port_free(app->view_port);\n    furi_message_queue_free(app->exit_queue);\n    furi_mutex_free(app->mutex);\n    free(app);\n\n    return 0;\n}\nEOF\ncat > test/test_logic.c <<'EOF'\n#include <assert.h>\n#include <stdio.h>\n#include \"../tally_logic.h\"\n\nint main(void) {\n    assert(tally_decrement(0) == 0);\n    assert(tally_decrement(1) == 0);\n    assert(tally_increment(0) == 1);\n    assert(tally_increment(TALLY_MAX) == TALLY_MAX);\n    assert(tally_decrement(TALLY_MAX) == TALLY_MAX - 1);\n    assert(tally_reset() == 0);\n    puts(\"ok\");\n    return 0;\n}\nEOF\ngcc -Wall -Wextra -o /tmp/claude-0/-tmp-fred-eval-pilot-de367f3890-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t test/test_logic.c && /tmp/claude-0/-tmp-fred-eval-pilot-de367f3890-ws/efb7e4f0-0e94-5cac-b4f6-17d468781aac/scratchpad/t"
+      ],
+      "rc": 0
+    },
+    {
+      "id": "e68687b0fe",
+      "task": "01-utility",
+      "rep": 2,
+      "arm": "baseline",
+      "score": 90.5,
+      "critical": [],
+      "major": 2,
+      "seeded": [],
+      "decoys": [],
+      "cost": 0.1097785,
+      "tokens": {
+        "input_tokens": 8,
+        "output_tokens": 4118,
+        "cache_read_input_tokens": 64265,
+        "cache_creation_input_tokens": 15539
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    },
+    {
+      "id": "e80e498515",
+      "task": "06-lifecycle-review",
+      "rep": 3,
+      "arm": "baseline",
+      "score": 94.5,
+      "critical": [],
+      "major": 0,
+      "seeded": [
+        "T06-D1",
+        "T06-D2",
+        "T06-D3",
+        "T06-D4",
+        "T06-D5",
+        "T06-D6",
+        "T06-D7",
+        "T06-D8"
+      ],
+      "decoys": [],
+      "cost": 0.1158843,
+      "tokens": {
+        "input_tokens": 6,
+        "output_tokens": 5027,
+        "cache_read_input_tokens": 43783,
+        "cache_creation_input_tokens": 15306
+      },
+      "skills": [],
+      "private": [],
+      "rc": 0
+    }
+  ],
+  "token_ratio_median": 1.79,
+  "gates": {
+    "treatment_mean_ge_85": false,
+    "no_task_family_below_80": false,
+    "no_critical_failures": true,
+    "paired_improvement_ge_10": false,
+    "critical_major_reduction_ge_50pct": true,
+    "token_ratio_le_1_5": false,
+    "comparative_gate_met": false
+  }
+}

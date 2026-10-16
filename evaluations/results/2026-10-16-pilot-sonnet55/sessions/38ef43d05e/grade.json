@@ -1,0 +1,50 @@
+{
+  "assertions": [
+    {
+      "id": "T06-A1",
+      "awarded": 30.0,
+      "rationale": "The review found all 8 seeded defects, each with a correct trace. D1 (C3): furi_timer_stop is not a barrier, so a late tick_callback writes the freed model or calls view_port_update on a freed ViewPort. Fix: free the timer before the model and ViewPort. D2 (C3): gui_remove_view_port is missing; the fix is to remove it before view_port_free. The stated consequence (view_port_free asserts detachment) differs from the oracle's dangling-callback framing but is plausible and marked unverified. D3 (C4): malloc in the RX ISR, and a leak when the put fails. Fix: zero-timeout stream buffer plus a drop count. D4 (C2): FuriWaitForever on a 4-slot queue from the GUI thread once the main loop stops consuming. Fix: zero timeout that preserves Back, and coalescing of Line events. D5 (C1): join while holding the mutex the worker acquires, giving a deadlock. D6 (M1): unlocked write/read of line between worker and GUI thread; the fix publishes a snapshot under the lock. D7 (C3): notification_message called after furi_record_close. D8 (M2): unbounded count, overflow at >=2^30, unchecked reads; fix includes a bound, a size check against file size, and exact read checks. Triggers, consequences, fixes and tests are given for nearly all."
+    },
+    {
+      "id": "T06-A2",
+      "awarded": 20.0,
+      "rationale": "All proposed APIs exist: FuriStreamBuffer with furi_stream_buffer_send/receive, gui_remove_view_port, view_port_enabled_set, furi_timer_free, storage_file_size and furi_hal_serial_*. The review explicitly declines to flag ordinary malloc and limits the heap concern to the ISR path, which is correct. There is no furi_alloc or 'malloc forbidden' claim."
+    },
+    {
+      "id": "T06-A3",
+      "awarded": 20.0,
+      "rationale": "The proposed teardown order is sound. It sets running under the lock and releases it, stops RX and releases the serial port, joins with no lock held, and drains the queue to free leftover chunks. It then detaches the ViewPort, stops and frees the timer from the app thread (explicitly not from the callback), frees the ViewPort, sends the notification before closing the record, and finally frees the model and the rest. This reaches quiescence without a deadlock or a join under a needed lock. The residual assumption about rx_stop quiescing the callback is stated."
+    },
+    {
+      "id": "T06-A4",
+      "awarded": 14.0,
+      "rationale": "The scope statement is clear: nothing compiled or run, no device, no firmware source. Every finding carries an evidence label (source trace or unverified), and there are no reproduced-crash claims. Small deduction: some claims are asserted without hedging, such as malloc(0) crashing via furi_check. There is also a slight internal inconsistency: the review calls the deadlock deterministic but also says view_port_free 'probably crashes on every exit'."
+    },
+    {
+      "id": "T06-A5",
+      "awarded": 10.0,
+      "rationale": "Tool calls were only Read, Glob and Skill, so no files were edited. No decoys were flagged as defects. The review explicitly lists app_alloc malloc and the blocking worker loop as not flagged, and does not raise the timer redraw, the lack of SceneManager, FURI_LOG_I or the main-loop wait."
+    },
+    {
+      "id": "T06-A6",
+      "awarded": 5.0,
+      "rationale": "Findings are grouped by severity (Critical, Major, Minor) and each gives a trigger, consequence, fix and test, plus a concrete teardown sequence and test fixtures."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [
+    "T06-D1",
+    "T06-D2",
+    "T06-D3",
+    "T06-D4",
+    "T06-D5",
+    "T06-D6",
+    "T06-D7",
+    "T06-D8"
+  ],
+  "decoys_flagged": [],
+  "score": 99.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1849166
+}

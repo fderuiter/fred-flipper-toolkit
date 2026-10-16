@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T05-A1",
+      "awarded": 15.0,
+      "rationale": "Lists every required central operation from kettle-protocol.md and maps each to the 1.5.1 FAP surface: scan for K2-xxxx, connect as central, discover ff00, write ff01, enable ff02 notifications via the CCCD, bond on first connection, and reconnect within the 30 s idle limit. Both the final answer and the card do this."
+    },
+    {
+      "id": "T05-A2",
+      "awarded": 15.0,
+      "rationale": "Concludes clearly that a FAP-only controller on stock 1.5.1 is not feasible. Recommends a companion BLE-central MCU (ESP32/nRF52) over UART and names a host companion as an alternative. Custom firmware is correctly ruled out as not being a FAP."
+    },
+    {
+      "id": "T05-A3",
+      "awarded": 18.0,
+      "rationale": "Cites gap_init setting GAP_PERIPHERAL_ROLE [C-BLE-001], notes that aci_gap_create_connection, aci_gatt_disc_* and aci_gatt_write_char_* are not exported, and says the exported ble_gatt_* functions are server-side. It explicitly separates the public API limit from the radio silicon. Deductions: gap.c is never named as a file. The session relied on the skill's pinned source notes rather than reading the firmware, which it honestly admits in the final answer. Even so, the card table labels the claim 'source-confirmed', and some non-export claims carry no citation."
+    },
+    {
+      "id": "T05-A4",
+      "awarded": 19.0,
+      "rationale": "The companion protocol covers a bounded, versioned frame format with request IDs, lengths, a CRC and timeouts. It also covers a keepalive against the 30 s idle drop, no stale replay after a reconnect, a K2 target allowlist, a 40\u2013100 \u00b0C clamp, and reliance on the kettle's boil-dry and lid protections without bypassing them. It says the CRC is not authentication. Minor gap: the MCU's explicit reconnect or backoff state handling is only partly specified."
+    },
+    {
+      "id": "T05-A5",
+      "awarded": 14.0,
+      "rationale": "Clearly states that the evidence is pinned notes that were read but not tested, and that the firmware source was not re-checked. The BLE API claim is marked 'inferred'. Compile, host and device testing are all reported as not-run, and no commands were sent to the kettle. The unknown checksum and pairing method are flagged. Small inconsistency: the card's 'source inspection recorded' wording slightly overstates direct inspection."
+    },
+    {
+      "id": "T05-A6",
+      "awarded": 10.0,
+      "rationale": "No FAP code was written. The session explicitly declined to write a FAP that would call functions the firmware doesn't provide."
+    },
+    {
+      "id": "T05-A7",
+      "awarded": 5.0,
+      "rationale": "The final answer and card give a clear verdict, the reasoning, a recommended route, and three concrete decisions the user needs to make."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 96.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.10276060000000001
+}

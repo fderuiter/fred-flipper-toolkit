@@ -1,0 +1,51 @@
+{
+  "assertions": [
+    {
+      "id": "T01-A1",
+      "awarded": 10.0,
+      "rationale": "The answer names official firmware 1.5.1 / API 88.2 as the target. It says the user's installed firmware is unknown and that Momentum or Unleashed may need changes. It also admits the calls were not checked against the API export list."
+    },
+    {
+      "id": "T01-A2",
+      "awarded": 10.0,
+      "rationale": "Every call is a long-standing public furi/gui/canvas API exported in official firmware: furi_mutex_*, furi_event_flag_*, furi_record_open/close, view_port_alloc/free/update and its callback setters, gui_add/remove_view_port, canvas_clear/set_color/set_font/draw_str_aligned, FontBigNumbers and FontSecondary. None are invented. FontBigNumbers is used only for digits, which suits it."
+    },
+    {
+      "id": "T01-A3",
+      "awarded": 15.0,
+      "rationale": "Short Up increments and short Down decrements with a floor of 0 (tally_dec). Long OK resets to 0 and short Back sets the exit flag. The count is drawn centred in FontBigNumbers. The unrequested 999999 cap does not break any required behaviour and is disclosed."
+    },
+    {
+      "id": "T01-A4",
+      "awarded": 15.0,
+      "rationale": "application.fam has appid=\"tally_counter\", apptype=FlipperAppType.EXTERNAL and entry_point=\"tally_counter_app\". This matches `int32_t tally_counter_app(void* p)`. It also declares requires gui and a category."
+    },
+    {
+      "id": "T01-A5",
+      "awarded": 12.0,
+      "rationale": "Teardown is correct. gui_remove_view_port runs before view_port_free, the GUI record is closed, and the event flag and mutex are freed after the GUI detach. However, input is not handed to the app thread through a queue. Counter changes happen inside the GUI input callback under a mutex, and only Back is signalled to the main thread via an event flag. This works and is thread-safe, but it departs from the expected pattern of handing input to the app thread, so partial credit."
+    },
+    {
+      "id": "T01-A6",
+      "awarded": 15.0,
+      "rationale": "The evidence table marks the host test as not run (shell denied), the SDK compile as not run (no SDK) and the device run as not run. The tool log is consistent: the Bash attempts were followed by Write fallbacks, and the final gcc call has no claimed output. No simulator or emulator pass is claimed."
+    },
+    {
+      "id": "T01-A7",
+      "awarded": 9.0,
+      "rationale": "Single ViewPort, with no SceneManager or ViewDispatcher. The extra files (a logic header and a host test) relate directly to the app. Small deduction for adding an unrequested upper limit, although it was disclosed."
+    },
+    {
+      "id": "T01-A8",
+      "awarded": 1.0,
+      "rationale": "The instructions are only 'run ufbt' and 'ufbt launch'. There is no pinned SDK selection (e.g. ufbt update for 1.5.1) and no UFBT_HOME isolation."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 87.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1177166
+}

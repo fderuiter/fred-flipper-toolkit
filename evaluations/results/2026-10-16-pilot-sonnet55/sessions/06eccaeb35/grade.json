@@ -1,0 +1,61 @@
+{
+  "assertions": [
+    {
+      "id": "T02-A1",
+      "awarded": 7.0,
+      "rationale": "There are three screens: a Submenu with Start/Settings/About, a VariableItemList for settings, and a custom running view. Back from the running view is not consumed, so the dispatcher calls running_previous_callback and returns to the menu. The exit callback stops the run. Points deducted because the settings screen cannot reach most of the work/rest range: the value count is a uint8_t, so 596 and 601 are truncated. settings_previous_callback also switches views itself and then returns a view ID, which is a double switch."
+    },
+    {
+      "id": "T02-A2",
+      "awarded": 9.0,
+      "rationale": "The parser keeps Work/Rest for version 1, ignores Rounds/Vibrate for v1, and returns MigratedV1. The v1 sample gives 45/15 with defaults of 8 rounds and vibrate on. A test asserting this was written but never executed, so this rests on code inspection."
+    },
+    {
+      "id": "T02-A3",
+      "awarded": 10.0,
+      "rationale": "In the corrupt sample, an 11-digit work value, rest -4, rounds 0 and the truncated 'Vib' line each fall back to defaults. The status is Repaired with a 'Settings repaired' notice, and the policy is stated. A version 7 file returns ITLoadFuture, sets read_only, and save_settings skips the write with a 'Not saved' notice, so the file is never overwritten."
+    },
+    {
+      "id": "T02-A4",
+      "awarded": 12.0,
+      "rationale": "Most APIs used exist: ViewDispatcher with tick callback, Submenu, VariableItemList, Widget, Popup, with_view_model, storage_file_*/storage_common_*, and the notification sequences. Deductions: values_count and the item index for variable_item_list_add are passed values far above 255, which uint8_t silently truncates. The hand-written parser does not use the FlipperFormat API. Nothing was checked against api_symbols.csv, though the answer says so honestly."
+    },
+    {
+      "id": "T02-A5",
+      "awarded": 6.0,
+      "rationale": "The tick and draw callbacks do no storage I/O, and the countdown is gated by an active flag cleared in the exit callback. However, the full save (write, sync, remove, rename) runs inside the VariableItemList previous_callback, which the dispatcher calls while handling a Back press. That puts blocking storage work on the input path, which the task warns against. It runs on the dispatcher thread, not the GUI thread, so it is not counted as critical."
+    },
+    {
+      "id": "T02-A6",
+      "awarded": 9.0,
+      "rationale": "Saves write a temp file, check the written length, then check sync and close. The old file goes to .bak before the temp file is renamed in place, every rename/remove result is checked, and a failed rename restores the old file. Startup removes the stale temp file and falls back to .bak if the main file is missing. Missing, unreadable or full SD cards produce notices and the app continues on defaults. A stale temp file is simply discarded rather than inspected, which is acceptable."
+    },
+    {
+      "id": "T02-A7",
+      "awarded": 7.0,
+      "rationale": "Host tests over all four samples, range edges, truncation and a format round trip were written. They were not executed because Bash was denied, and this was reported honestly. Compile and device checks are clearly marked pending, and no atomicity is claimed. There is no modeled storage or interrupted-write test, which the oracle requires."
+    },
+    {
+      "id": "T02-A8",
+      "awarded": 9.0,
+      "rationale": "Pure C settings_logic.c/.h is cleanly separated with no Furi dependency, and no unrelated framework was added. Adding the .bak mechanism and notice popup is reasonable scope."
+    },
+    {
+      "id": "T02-A9",
+      "awarded": 3.5,
+      "rationale": "The format, versions and future-version policy are documented in the header comments and the final answer. There is no standalone README or format document in the workspace."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "variable_item_list_add takes uint8_t values_count, and the item index is uint8_t, but 596 and 601 are passed. Most work/rest values are unreachable and saved values above 88 show at the wrong index. The answer's claim of full 5\u2013600 / 0\u2013600 one-second steps is wrong.",
+    "Blocking storage I/O (write, sync, rename) runs in a View previous_callback, which the dispatcher calls while handling a Back press. That is the input path. The callback also calls view_dispatcher_switch_to_view itself and then returns a view ID.",
+    "No modeled storage or interrupted-write host test, although the task requires one.",
+    "The FlipperFormat API is not used; a hand-written text parser replaces it."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 72.5,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.3239606
+}

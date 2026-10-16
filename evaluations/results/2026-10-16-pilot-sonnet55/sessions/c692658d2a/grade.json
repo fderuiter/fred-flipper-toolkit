@@ -1,0 +1,51 @@
+{
+  "assertions": [
+    {
+      "id": "T01-A1",
+      "awarded": 4.0,
+      "rationale": "The session notes the firmware is unknown and says building against it is untested. It tells the user to match the source tree to the device firmware via Settings \u2192 About. It never sets a target or provisional baseline (official 1.5.1 / f7 / API 88.2). Instead it claims the app is portable across official, Unleashed, Momentum and RogueMaster. That covers the risk only in part and gives no baseline."
+    },
+    {
+      "id": "T01-A2",
+      "awarded": 10.0,
+      "rationale": "Every API used is a standard export at API 88.2: furi_mutex_*, furi_message_queue_*, view_port_alloc/free/update, view_port_draw_callback_set, view_port_input_callback_set, gui_add_view_port, gui_remove_view_port, furi_record_open/close, canvas_clear, canvas_set_color, canvas_set_font, canvas_draw_str_aligned, plus the FontBigNumbers, FontSecondary, ColorBlack, Align* and GuiLayerFullscreen enums. Nothing is invented. FontBigNumbers only has digit glyphs, which is all this app draws."
+    },
+    {
+      "id": "T01-A3",
+      "awarded": 15.0,
+      "rationale": "Up increments on short press and repeat. Down decrements only when count > 0, so the floor is zero. A long press on OK sets the count to 0. A short Back press exits the loop. Up has an upper cap and holding a key repeats; both are harmless and disclosed."
+    },
+    {
+      "id": "T01-A4",
+      "awarded": 15.0,
+      "rationale": "application.fam has appid=\"tally_counter\", apptype=FlipperAppType.EXTERNAL and entry_point=\"tally_counter_app\". This matches `int32_t tally_counter_app(void* p)`."
+    },
+    {
+      "id": "T01-A5",
+      "awarded": 20.0,
+      "rationale": "The input callback only puts the event into a FuriMessageQueue, and the app thread handles it. A mutex guards the count between the draw callback and the app thread. Teardown order is correct: gui_remove_view_port, then furi_record_close(RECORD_GUI), then view_port_free, then the queue is freed. The queue is freed after the GUI detach, and the mutex and app struct are freed last."
+    },
+    {
+      "id": "T01-A6",
+      "awarded": 15.0,
+      "rationale": "The final answer and README both say the app was not compiled or run because there is no SDK and no device. It claims no simulator or emulator pass. The session did not try to build or deploy."
+    },
+    {
+      "id": "T01-A7",
+      "awarded": 10.0,
+      "rationale": "It uses a single ViewPort + Canvas, with no SceneManager or ViewDispatcher. Only the .c, .fam and a short README were created. The extra hint text was disclosed to the user."
+    },
+    {
+      "id": "T01-A8",
+      "awarded": 1.0,
+      "rationale": "The build instructions are short and use real commands (`./fbt fap_tally_counter`, `./fbt launch APPSRC=...`). They describe a full firmware-tree fbt workflow, though. They have no ufbt usage, no pinned SDK selection (channel/version/target) and no UFBT_HOME isolation, which is what the oracle expects."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 90.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.1042766
+}

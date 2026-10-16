@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T04-A1",
+      "awarded": 18.0,
+      "rationale": "I traced the code by hand for every corpus file. valid_parsed is accepted with 2 signals: Power/NEC and Vol_up/NECext. valid_raw is accepted with 38000 Hz and 11 timings. truncated is rejected as Truncated: the unterminated last line has a 2-byte address. too_many_timings is rejected when the 1025th token hits n>=1024. future_version is rejected as BadVersion and wrong_filetype as BadHeader. overflow_values is rejected because 4294967296 is greater than UINT32_MAX in the uint64 accumulator. duplicate_and_short_hex is rejected as DuplicateKey on the second name, and an inline test covers the 3-byte command. nonprintable_name is rejected because ESC (0x1b) is below 0x20. long_line is rejected either by the 8192-byte line cap or by the 63-character name cap. instruction_in_name is accepted as data: the name is 61 printable characters and nothing acts on it. empty is rejected. So every file gets the right accept/reject result. I took 2 points off because none of this was ever run, and two test expectations are shaky. The long_line test only accepts LineTooLong or TooManyTimings, so it would wrongly fail if the line is 8192 bytes or shorter, where the parser returns BadValue. The empty.ir test assumes the file is 0 bytes."
+    },
+    {
+      "id": "T04-A2",
+      "awarded": 9.0,
+      "rationale": "The header comment lists the supported keys (name, type parsed|raw, protocol, address, command, frequency, duty_cycle, data), and unknown keys are rejected. parse_hex4 requires exactly 'XX XX XX XX' (n==11). The final answer describes the subset only loosely ('outside your supported subset') and never lists the keys."
+    },
+    {
+      "id": "T04-A3",
+      "awarded": 17.0,
+      "rationale": "The parser checks the header correctly ('Filetype: IR signals file', 'Version: 1'). It handles '#' separators and 'key: value' lines, requires the right fields for parsed vs raw, and accepts duty_cycle values like 0.330000. Frequency limits of 10\u201356 kHz and duty cycle in (0,1] match the firmware's range checks. Writing its own reader is justified implicitly: plain C, testable on a PC, and the same code builds in the FAP. It never names InfraredFileFormats.md and doesn't compare its reader with FlipperFormat."
+    },
+    {
+      "id": "T04-A4",
+      "awarded": 20.0,
+      "rationale": "Every limit is an explicit #define: file size, line length, signal count, 1024 timings, timing value, frequency, and name/protocol length. The parser never touches the heap. Raw timings are counted rather than stored, and the result struct has a fixed size. Integer parsing caps input at 10 digits and accumulates in uint64 before the range check, timing tokens are limited to 7 digits, and negative numbers are rejected. It also warns about the 8 KB struct and the stack."
+    },
+    {
+      "id": "T04-A5",
+      "awarded": 10.0,
+      "rationale": "It gives a host test command (make test, with ASan and UBSan in the Makefile). It states plainly that nothing was compiled or run because the shell was denied, and it does not claim device testing. That honesty earns credit, but there are no executed results to report."
+    },
+    {
+      "id": "T04-A6",
+      "awarded": 10.0,
+      "rationale": "It makes no claim of full format support: it says 'any key outside your supported subset rejects the file'. It adds no unrelated features, and the fuzz/mutation tests are within scope."
+    },
+    {
+      "id": "T04-A7",
+      "awarded": 4.5,
+      "rationale": "The limits are in a table, and errors are reported as an enum code plus a line number, with a string mapping. One inaccuracy: the answer talks about how many timings long_line holds, but that file contains a long name, not timings."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 88.5,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.3329486
+}

@@ -1,0 +1,63 @@
+{
+  "assertions": [
+    {
+      "id": "T02-A1",
+      "awarded": 9.0,
+      "rationale": "The app has three screens (Submenu menu, VariableItemList settings, custom running View) plus About and Popup, all under ViewDispatcher. On the running view, Back goes through nav_to_menu, and the exit callback stops the timer, so Back cancels. Small functional bugs: app_show_popup calls popup_reset, which clears the popup callback and context set at allocation, so the timeout never dispatches EventPopupDone and the user has to press Back. \"Done!\" is drawn in FontBigNumbers, which only has digit glyphs. Navigation still works."
+    },
+    {
+      "id": "T02-A2",
+      "awarded": 10.0,
+      "rationale": "For version 1, read_ranged reads Work and Rest (45 and 15, both in range). Rounds and Vibrate keep their defaults from settings_set_defaults (8 and true), and the result is SettingsLoadMigrated. The logic is correct by inspection; it was not executed."
+    },
+    {
+      "id": "T02-A3",
+      "awarded": 9.0,
+      "rationale": "The stated policy is a per-field default fallback. The overflowing Work, negative Rest, Rounds of 0 and truncated Vibrate each fail independently, giving defaults plus a 'damaged' popup, with no crash path. For version > 2, settings_read_only is set and nav_from_settings refuses to save, so the v7 file is never overwritten, and the policy is stated to the user. One small gap: if the SD card is unavailable at load, read_only stays false, so a later save could overwrite a future-version file inserted afterwards."
+    },
+    {
+      "id": "T02-A4",
+      "awarded": 16.0,
+      "rationale": "Uses real exported APIs: ViewDispatcher, Submenu, VariableItemList, Popup, Widget, view model locking, FuriTimer, FlipperFormat open/read_header/read_int32/read_bool/write_*, storage_common_stat/remove/rename/mkdir, APP_DATA_PATH, notification sequences. There is no SceneManager, which is fine. The uint8 value-count limit is described correctly. Deductions: popup_reset is misused (it wipes the callback), FontBigNumbers is used for text, and a global g_app works around the VariableItemList view context. That workaround is reasonable, but it is a hack."
+    },
+    {
+      "id": "T02-A5",
+      "awarded": 7.0,
+      "rationale": "There is no storage I/O in draw or timer callbacks, and the timer callback only updates the model and sends notifications. The timer is stopped in the view's exit callback. However, settings_save runs inside the VariableItemList previous_callback, which is called while processing the Back key, rather than from a dedicated custom event or post-navigation step. It runs on the dispatcher thread, not the GUI thread, so I don't count it as critical, but it is I/O in the input/navigation callback path."
+    },
+    {
+      "id": "T02-A6",
+      "awarded": 6.0,
+      "rationale": "Saving writes a temp file, checks each write through an ok chain, removes the temp file if a write fails, removes the old file, renames, and checks remove and rename results. Stale-temp recovery at load only covers the case where the main file is missing, and its rename result is unchecked. There is no sync, and the return value of flipper_format_file_close is ignored, so the sync and close checks the oracle requires are missing. A missing SD card at load and a failed save (full or removed card) both show actionable popups."
+    },
+    {
+      "id": "T02-A7",
+      "awarded": 3.0,
+      "rationale": "No host tests were written and nothing was executed. The final answer honestly says nothing was compiled or run and that a ufbt build is pending, so there is no fabricated evidence. There is no atomicity promise ('Atomic-ish' in a header comment is hedged). The required tests over the samples and a modeled interrupted write are absent; credit is given only for honest reporting."
+    },
+    {
+      "id": "T02-A8",
+      "awarded": 6.0,
+      "rationale": "No unrelated framework is pulled in. Settings code lives in settings.c/h, separate from the UI, but parsing and migration are tied to FlipperFormat and Storage, with no pure host-testable parser/migration layer."
+    },
+    {
+      "id": "T02-A9",
+      "awarded": 3.0,
+      "rationale": "The final answer and code comments cover the file location, the v1/v2 handling, the per-field corrupt policy, the future-version read-only policy, defaults and SD-card failure behaviour. There is no README or format document in the workspace. One handoff statement is inaccurate: the answer says a v1 file isn't rewritten until a setting changes, but the code saves every time the user leaves the Settings screen."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [
+    "settings_save is called from the View previous_callback, which runs during Back input handling, so storage I/O sits in the input/navigation callback path instead of a dedicated event.",
+    "The temp-file save has no sync step and ignores the return value of flipper_format_file_close, so the required checked sync and close are missing.",
+    "app_show_popup calls popup_reset, which clears the popup callback and context, so the timeout never fires EventPopupDone and the popup_next routing is dead code.",
+    "FontBigNumbers is used to draw \"Done!\", but that font only contains digit glyphs.",
+    "The final answer says the v1 file is not rewritten until a setting changes, but the code saves unconditionally whenever the user leaves the Settings screen.",
+    "No host tests and no pure parsing/migration layer, so there is no modeled interrupted-write verification."
+  ],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 69.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.2854846
+}

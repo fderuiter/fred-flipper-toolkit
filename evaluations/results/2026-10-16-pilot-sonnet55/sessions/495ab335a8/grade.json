@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T05-A1",
+      "awarded": 14.0,
+      "rationale": "Lists the operations from kettle-protocol.md: scan for K2-xxxx, connect as central, discover service ff00, enable notifications on ff02 (CCCD), write to ff01, and bond. It also covers the 30 s idle drop and keepalive. Reconnect is only mentioned in the safety bullets, not listed as a required central operation."
+    },
+    {
+      "id": "T05-A2",
+      "awarded": 15.0,
+      "rationale": "Clearly concludes a FAP alone can't do this on stock official 1.5.1. Recommends a companion MCU over UART, or a host computer as the alternative."
+    },
+    {
+      "id": "T05-A3",
+      "awarded": 13.0,
+      "rationale": "States the 1.5.1 BLE stack is set up as a peripheral and names the central/GATT-client ACI calls that aren't exported to apps. These are real STM32WB ACI names, not invented. It implies the gap between silicon and public API ('not exported to apps') but never says outright that the radio itself can do central. It doesn't cite gap.c or api_symbols.csv directly, and admits the claim comes from skill reference notes rather than its own reading of the source."
+    },
+    {
+      "id": "T05-A4",
+      "awarded": 14.0,
+      "rationale": "Companion frames have request IDs, lengths, CRC and timeouts. It covers reconnect, no replay of old commands, a fresh user action for 'on', keepalive, and leaving boil-dry and lid protection to the kettle. Missing: any device allowlist or address pinning, and any note that CRC is not authentication."
+    },
+    {
+      "id": "T05-A5",
+      "awarded": 14.0,
+      "rationale": "Says plainly that it did not inspect firmware source or api_symbols.csv, that nothing was compiled, tested or run against the kettle, and that the file write was denied. It identifies the unknowns: checksum algorithm and pairing method. Appliance behavior is left pending, but only implicitly; it never says outright that physical behavior is unverified."
+    },
+    {
+      "id": "T05-A6",
+      "awarded": 10.0,
+      "rationale": "Wrote no FAP code and no fake central implementation. The only write attempted was a documentation card inside the workspace."
+    },
+    {
+      "id": "T05-A7",
+      "awarded": 5.0,
+      "rationale": "Clear decision heading, recommended path, open questions for the user, and next steps."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 85.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.0782126
+}

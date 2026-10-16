@@ -1,0 +1,46 @@
+{
+  "assertions": [
+    {
+      "id": "T04-A1",
+      "awarded": 19.0,
+      "rationale": "I traced the parser code against each corpus file, and every result matches the oracle. valid_parsed is accepted with 2 signals (NEC, NECext). valid_raw is accepted with 38000 Hz, duty 330\u2030 and 11 timings. Rejected as expected: truncated (no final newline), too_many_timings (TooManyTimings at the 1025th token), future_version (BadVersion), wrong_filetype (BadHeader), overflow_values (frequency 2^32 fails parse_uint, BadValue), nonprintable_name (control character, NonPrintable), long_line (128-byte cap, LineTooLong) and empty (Empty). instruction_in_name is accepted as plain data, truncated to 31 characters and flagged. duplicate_and_short_hex is rejected, but as IrErrIncomplete: the second `name:` closes the empty first signal, so the duplicate-name rule only appears in a test comment and the 3-byte command is never reached. That is still a stated rule and the file is rejected. I deducted 1 point because the test expectation was changed to match the observed behaviour, and the duplicate handling is indirect."
+    },
+    {
+      "id": "T04-A2",
+      "awarded": 10.0,
+      "rationale": "The supported keys are listed in both the header and the final answer, and unknown keys are rejected. parse_hex4 requires exactly 11 characters in the form 'XX XX XX XX', so address and command must be exactly 4 bytes. The inline tests cover both a 3-byte value and invalid hex."
+    },
+    {
+      "id": "T04-A3",
+      "awarded": 17.0,
+      "rationale": "The fields and checks match the v1 format and the firmware validation: header 'IR signals file' / Version 1, type parsed|raw, the required keys for each type, frequency 10\u201356 kHz, duty cycle in (0,1], and the 1024-timing limit. Using its own reader instead of FlipperFormat is justified by the need for a Furi-free, host-testable core. Deductions: it doesn't cite InfraredFileFormats.md. Rejecting files without a trailing newline is stricter than FlipperFormat, though the answer discloses this. The storage_file_read adapter advice also skips the fact that storage_file_read never returns (size_t)-1, so a read error would look like EOF unless storage_file_get_error is checked."
+    },
+    {
+      "id": "T04-A4",
+      "awarded": 20.0,
+      "rationale": "The parser does no heap allocation. It has explicit limits: 64 signals, 1024 timings, 32-byte names, 16-byte protocols and 128-byte lines. Raw timings are streamed and counted, not stored. parse_uint uses a uint64 accumulator capped at 10 digits, and data tokens are overflow-checked with `tok_val > (UINT32_MAX-d)/10`. Negative timings are rejected. Every signals[count] dereference is guarded by `open`, which implies count < 64. The ~4\u20135 KB IrFile size estimate is correct, and the answer rightly recommends keeping it off the stack."
+    },
+    {
+      "id": "T04-A5",
+      "awarded": 11.0,
+      "rationale": "The test command (`make test`, with ASan and UBSan) and the results of the one actual run (104,097 checks, 1 failure) are reported. The answer says plainly that the final run was denied and that the edited expectation is unverified. That is honest, but the delivered state was never confirmed to pass. The answer doesn't claim device testing, but it also doesn't state that device behaviour was untested."
+    },
+    {
+      "id": "T04-A6",
+      "awarded": 10.0,
+      "rationale": "There are no claims of full-format support: Version 1 and the supported subset are stated explicitly. The extras (read callback, chunking test, mutation fuzz) all serve the request's robustness requirement."
+    },
+    {
+      "id": "T04-A7",
+      "awarded": 5.0,
+      "rationale": "The header documents every limit and the error enum. The answer explains the first-error-wins policy, error and error_line, the limits, the trailing-newline choice and the version policy."
+    }
+  ],
+  "critical_failures": [],
+  "major_errors": [],
+  "seeded_defects_found": [],
+  "decoys_flagged": [],
+  "score": 92.0,
+  "grader_model": "claude-opus-5-5",
+  "grader_cost_usd": 0.3319526
+}
