@@ -1,0 +1,26 @@
+{
+  "run": "a06-2",
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "scope": "project",
+  "claude_code_version": "2.1.301",
+  "skills_listed": 114,
+  "cases": 1,
+  "passed": 0,
+  "negative_false_activations": 0,
+  "direct_entry": [],
+  "isolation_violations": [],
+  "total_cost_usd": 0.0575,
+  "results": [
+    {
+      "id": "A06",
+      "kind": "ambiguous",
+      "pass": false,
+      "loaded_fred": [],
+      "loaded_other_skills": [],
+      "reasons": [
+        "missing expected ['flipper-native']"
+      ]
+    }
+  ]
+}

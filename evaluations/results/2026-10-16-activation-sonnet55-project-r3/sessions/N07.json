@@ -1,0 +1,66 @@
+{
+  "id": "N07",
+  "kind": "negative",
+  "prompt": "Summarize this STM32 HAL reference manual chapter on DMA for a class handout.",
+  "started": "2026-10-16T20:15:36+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.056342800000000005,
+    "num_turns": 2,
+    "usage": {
+      "input_tokens": 4,
+      "output_tokens": 433,
+      "cache_read_input_tokens": 23500,
+      "cache_creation_input_tokens": 12381
+    },
+    "text": "I couldn't find the DMA chapter, so I haven't written a summary. The working directory has no PDF or text file of the STM32 HAL reference manual. It only holds some Flipper skill files under `.claude/skills/`, and none of them cover the chapter.\n\nI'd rather not write the handout from memory. A class handout needs to match your manual's exact register names, stream and channel counts, and HAL function signatures. Those differ between STM32 families (F4, G0, H7 and so on), so a recalled version could contain errors.\n\nYou can fix this in either of these ways:\n- **Upload or point me to the file.** Put the PDF in the working directory, or give me its path, and tell me the page range if you only want the DMA chapter.\n- **Paste the text.** Paste the chapter straight into the chat.\n\nPlease also tell me:\n- which STM32 family or manual number it is (for example RM0090 or UM1725),\n- who the handout is for (intro embedded course or advanced),\n- how long it should be (one page or a longer reference)."
+  },
+  "tool_events": [
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I'll check the working directory for the chapter file.",
+    "I couldn't find the DMA chapter, so I haven't written a summary. The working directory has no PDF or text file of the STM32 HAL reference manual. It only holds some Flipper skill files under `.claude/skills/`, and none of them cover the chapter.\n\nI'd rather not write the handout from memory. A class handout needs to match your manual's exact register names, stream and channel counts, and HAL function signatures. Those differ between STM32 families (F4, G0, H7 and so on), so a recalled version could contain errors.\n\nYou can fix this in either of these ways:\n- **Upload or point me to the file.** Put the PDF in the working directory, or give me its path, and tell me the page range if you only want the DMA chapter.\n- **Paste the text.** Paste the chapter straight into the chat.\n\nPlease also tell me:\n- which STM32 family or manual number it is (for example RM0090 or UM1725),\n- who the handout is for (intro embedded course or advanced),\n- how long it should be (one page or a longer reference)."
+  ]
+}

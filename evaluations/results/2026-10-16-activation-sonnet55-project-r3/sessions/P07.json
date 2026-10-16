@@ -1,0 +1,118 @@
+{
+  "id": "P07",
+  "kind": "positive",
+  "prompt": "Pin my uFBT build to the 1.5.1 SDK and tell me exactly what the build does and doesn't prove.",
+  "started": "2026-10-16T20:15:10+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/build-debug-release.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1381443,
+    "num_turns": 9,
+    "usage": {
+      "input_tokens": 7,
+      "output_tokens": 2467,
+      "cache_read_input_tokens": 69774,
+      "cache_creation_input_tokens": 26515
+    },
+    "text": "I haven't pinned anything yet. This workspace has no uFBT project: there's no `application.fam`, no `.ufbt` directory, and no build scripts. It holds only the `.claude/skills` files. Pinning means editing your project's build setup, and I'd rather not invent a project to pin. Tell me where the app lives and I'll apply it.\n\nDownloading the SDK also needs your approval. The first `ufbt` run fetches the SDK and toolchain from `update.flipperzero.one`, which changes SDK state. My notes say the cloud container's proxy blocked that host with a 403 on 2026-10-16. I haven't re-tested it, and I won't try to route around it.\n\n## The pin\n\nThe 1.5.1 SDK identity comes from the project's claim table. The URL and SHA-256 are source-confirmed by a download on 2026-10-16.\n\n| Item | Value |\n|---|---|\n| Firmware commit | `9e810dc399e027e48ce07751df72168abbb19065` |\n| Target / API | f7 / 88.2 |\n| SDK URL | `https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip` |\n| SDK SHA-256 | `dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe` |\n| Toolchain | Flipper toolchain 39, gcc 12.3.1. It has no published checksum file, so it is pinned by version only. |\n| uFBT | 0.2.6 is the documented version. I haven't confirmed which version you run. |\n\nThe commands below pin the SDK by release tag, which is the pin that works here today:\n\n```\nexport UFBT_HOME=$PWD/.ufbt-1.5.1      # isolated state; keeps your global SDK untouched\nufbt update --branch=1.5.1             # downloads; needs your go-ahead\nufbt                                   # build into dist/\n```\n\nFor a stricter pin, download the zip yourself and check its SHA-256 against the value above. Then run `ufbt update --local <zip> --hw-target=f7`. A bare `ufbt` on first run silently picks the moving `release` channel, so run the pinned `update` first.\n\nBefore the first build, read `application.fam` and any build hooks. They are executable Python.\n\n## What a successful build proves\n\n- **Compiled:** the source compiles and links against the 1.5.1 SDK headers with toolchain 39. You get a `dist/*.fap` whose SHA-256 you can record.\n- **Imports:** the build's link step checks the imports against the SDK's API table (88.2). Treat the official build and loader as the authority. The repo's `scripts/compare_api.py` is only a cross-check.\n- **Formatting:** `ufbt lint` passing proves formatting and naming only. It is not static analysis.\n\n## What it does not prove\n\n- **Device behavior:** the build says nothing about UI, input handling, timers, teardown, storage, radio, GPIO or timing. All of that stays `not-run` until it runs on hardware, and device test cases have to be written separately.\n- **Other firmware:** it covers official 1.5.1 only. Momentum, Unleashed, newer dev builds (API 88.4) and other forks are separate lineages and need their own builds and device tests.\n- **Bit-for-bit reproducibility:** repeatable inputs don't guarantee identical output. Multi-source FAPs varied between clean builds, and the hash depends on build paths and `PYTHONHASHSEED`.\n- **Catalog acceptance:** a clean build says nothing about the catalog's manifest, screenshot or license rules.\n- **Freshness:** a leftover `dist/` from an earlier build is not evidence. Clean first and record the exit code.\n- **Host tests:** there is no `ufbt test`, so a build isn't a test run either.\n\nIf no trusted toolchain is present, the compile status is `blocked`, not `pass`.\n\nTwo things I need from you:\n1. The path to your app, so I can apply the pin there.\n2. Your explicit approval for the SDK and toolchain download. Pinning to 1.5.1 doesn't count as that approval. If the host is still blocked, you'd need to add `update.flipperzero.one` under the cloud environment's allowed domains."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P07/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P07/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P07/ws/.claude/skills/flipper-core/references/build-debug-release.md"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "C-BASE-00[1-5]|C-BUILD-005",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P07/ws/.claude/skills/flipper-core/references/sources.json",
+        "output_mode": "content",
+        "-A": 12
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/{application.fam,.ufbt*,*.fap,scripts/*}"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I'll read the shared rules the skill requires, plus the build reference.",
+    "I haven't pinned anything yet. This workspace has no uFBT project: there's no `application.fam`, no `.ufbt` directory, and no build scripts. It holds only the `.claude/skills` files. Pinning means editing your project's build setup, and I'd rather not invent a project to pin. Tell me where the app lives and I'll apply it.\n\nDownloading the SDK also needs your approval. The first `ufbt` run fetches the SDK and toolchain from `update.flipperzero.one`, which changes SDK state. My notes say the cloud container's proxy blocked that host with a 403 on 2026-10-16. I haven't re-tested it, and I won't try to route around it.\n\n## The pin\n\nThe 1.5.1 SDK identity comes from the project's claim table. The URL and SHA-256 are source-confirmed by a download on 2026-10-16.\n\n| Item | Value |\n|---|---|\n| Firmware commit | `9e810dc399e027e48ce07751df72168abbb19065` |\n| Target / API | f7 / 88.2 |\n| SDK URL | `https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip` |\n| SDK SHA-256 | `dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe` |\n| Toolchain | Flipper toolchain 39, gcc 12.3.1. It has no published checksum file, so it is pinned by version only. |\n| uFBT | 0.2.6 is the documented version. I haven't confirmed which version you run. |\n\nThe commands below pin the SDK by release tag, which is the pin that works here today:\n\n```\nexport UFBT_HOME=$PWD/.ufbt-1.5.1      # isolated state; keeps your global SDK untouched\nufbt update --branch=1.5.1             # downloads; needs your go-ahead\nufbt                                   # build into dist/\n```\n\nFor a stricter pin, download the zip yourself and check its SHA-256 against the value above. Then run `ufbt update --local <zip> --hw-target=f7`. A bare `ufbt` on first run silently picks the moving `release` channel, so run the pinned `update` first.\n\nBefore the first build, read `application.fam` and any build hooks. They are executable Python.\n\n## What a successful build proves\n\n- **Compiled:** the source compiles and links against the 1.5.1 SDK headers with toolchain 39. You get a `dist/*.fap` whose SHA-256 you can record.\n- **Imports:** the build's link step checks the imports against the SDK's API table (88.2). Treat the official build and loader as the authority. The repo's `scripts/compare_api.py` is only a cross-check.\n- **Formatting:** `ufbt lint` passing proves formatting and naming only. It is not static analysis.\n\n## What it does not prove\n\n- **Device behavior:** the build says nothing about UI, input handling, timers, teardown, storage, radio, GPIO or timing. All of that stays `not-run` until it runs on hardware, and device test cases have to be written separately.\n- **Other firmware:** it covers official 1.5.1 only. Momentum, Unleashed, newer dev builds (API 88.4) and other forks are separate lineages and need their own builds and device tests.\n- **Bit-for-bit reproducibility:** repeatable inputs don't guarantee identical output. Multi-source FAPs varied between clean builds, and the hash depends on build paths and `PYTHONHASHSEED`.\n- **Catalog acceptance:** a clean build says nothing about the catalog's manifest, screenshot or license rules.\n- **Freshness:** a leftover `dist/` from an earlier build is not evidence. Clean first and record the exit code.\n- **Host tests:** there is no `ufbt test`, so a build isn't a test run either.\n\nIf no trusted toolchain is present, the compile status is `blocked`, not `pass`.\n\nTwo things I need from you:\n1. The path to your app, so I can apply the pin there.\n2. Your explicit approval for the SDK and toolchain download. Pinning to 1.5.1 doesn't count as that approval. If the host is still blocked, you'd need to add `update.flipperzero.one` under the cloud environment's allowed domains."
+  ]
+}

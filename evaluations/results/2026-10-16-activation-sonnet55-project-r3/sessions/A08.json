@@ -1,0 +1,97 @@
+{
+  "id": "A08",
+  "kind": "ambiguous",
+  "prompt": "Drive pin A7 high to power my 5 V relay module from the FAP right now.",
+  "started": "2026-10-16T20:15:49+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [
+    "flipper-native"
+  ],
+  "forbidden": [
+    "flipper-verify"
+  ],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/hardware-communications.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1005878,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1579,
+      "cache_read_input_tokens": 42892,
+      "cache_creation_input_tokens": 20092
+    },
+    "text": "I haven't driven A7 or written any code. There's no FAP in this workspace (only the FRED skill files) and no device attached. I also wouldn't wire it the way you describe, for these reasons:\n\n- **A7 can't power the relay.** Header pins are 3.3 V logic behind series resistors, with a 20 mA absolute maximum per pin and 100 mA total [C-GPIO-001]. A 5 V relay coil usually draws about 70\u201390 mA or more. Powering it from A7 would overload the pin and could damage the MCU. Even at the pin limit, 3.3 V is below what a 5 V coil needs.\n- **Power the module from the 5 V header pin and use A7 only as the signal.** Wire VCC to the Flipper's 5 V pin (header pin 1) and GND to GND. Wire the module's IN to A7. Header pin 1 only supplies 5 V when the Flipper's 5 V output is enabled (for example via USB or the GPIO app's 5 V toggle), and I haven't checked that against the pinned source. A separate 5 V supply with a shared ground is safer if the module draws a lot.\n- **Check that your module accepts a 3.3 V trigger.** Many modules with an optocoupler or transistor input work at 3.3 V. Some are active-low, so \"high\" would turn the relay off. Check the module's datasheet, or add a transistor or level shifter if it doesn't trigger reliably.\n- **Not yet verified:** I haven't confirmed the A7 pin mapping, mux and current owner in the pinned `furi_hal_resources.c`.\n\nFor a quick manual test, the stock GPIO app can set A7 high with no custom FAP.\n\nIf you want a custom FAP, I'll write one that acquires A7 as a push-pull output, defaults it to the safe state, and restores it on exit. Before that, I need to know:\n1. Is the module active-high or active-low?\n2. Is the 5 V coming from the Flipper's header pin or from an external supply?\n\nI'll also need your go-ahead to build the app. GPIO output on real hardware is a separate step that needs your explicit approval."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A08/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A08/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A08/ws/.claude/skills/flipper-core/references/hardware-communications.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A08/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I haven't driven A7 or written any code. There's no FAP in this workspace (only the FRED skill files) and no device attached. I also wouldn't wire it the way you describe, for these reasons:\n\n- **A7 can't power the relay.** Header pins are 3.3 V logic behind series resistors, with a 20 mA absolute maximum per pin and 100 mA total [C-GPIO-001]. A 5 V relay coil usually draws about 70\u201390 mA or more. Powering it from A7 would overload the pin and could damage the MCU. Even at the pin limit, 3.3 V is below what a 5 V coil needs.\n- **Power the module from the 5 V header pin and use A7 only as the signal.** Wire VCC to the Flipper's 5 V pin (header pin 1) and GND to GND. Wire the module's IN to A7. Header pin 1 only supplies 5 V when the Flipper's 5 V output is enabled (for example via USB or the GPIO app's 5 V toggle), and I haven't checked that against the pinned source. A separate 5 V supply with a shared ground is safer if the module draws a lot.\n- **Check that your module accepts a 3.3 V trigger.** Many modules with an optocoupler or transistor input work at 3.3 V. Some are active-low, so \"high\" would turn the relay off. Check the module's datasheet, or add a transistor or level shifter if it doesn't trigger reliably.\n- **Not yet verified:** I haven't confirmed the A7 pin mapping, mux and current owner in the pinned `furi_hal_resources.c`.\n\nFor a quick manual test, the stock GPIO app can set A7 high with no custom FAP.\n\nIf you want a custom FAP, I'll write one that acquires A7 as a push-pull output, defaults it to the safe state, and restores it on exit. Before that, I need to know:\n1. Is the module active-high or active-low?\n2. Is the 5 V coming from the Flipper's header pin or from an external supply?\n\nI'll also need your go-ahead to build the app. GPIO output on real hardware is a separate step that needs your explicit approval."
+  ]
+}

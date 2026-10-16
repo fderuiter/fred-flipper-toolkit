@@ -1,0 +1,111 @@
+{
+  "id": "A05",
+  "kind": "ambiguous",
+  "prompt": "I don't have an SDK installed or a Flipper with me. Can you confirm my app works?",
+  "started": "2026-10-16T20:15:43+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1004627,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 7,
+      "output_tokens": 1529,
+      "cache_read_input_tokens": 68414,
+      "cache_creation_input_tokens": 19547
+    },
+    "text": "I can't confirm your app works, because there's nothing here to check yet.\n\n**What I found**\n- The working directory (`/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A05/ws`) holds only the `.claude/skills/` files.\n- There's no `application.fam`, no C source and no assets.\n- If the app lives somewhere else, tell me the path or add it to this workspace.\n\n**What I can and can't verify**\n\n| Check | Status | Reason |\n|---|---|---|\n| Source inspection | not-run | No source here. |\n| Compile and link (`ufbt build`) | blocked | There's no source and no trusted SDK or toolchain. Per the verify rules, that counts as blocked, never pass. |\n| Import check against the SDK's `api_symbols.csv` | blocked | It needs the SDK for your target firmware. |\n| Host tests on parsers or logic | not-run | Possible without the SDK or a Flipper, once there's code. |\n| Device behavior (UI, teardown, GPIO, radio) | not-run | You have no Flipper. Compiling or mocking can't prove this. |\n\n**What I can do without an SDK or a Flipper**\n1. **Review the source.** I'd read `application.fam` and any build hooks, then check the code for lifecycle, callback-context and parser-bounds problems. That's source inspection only.\n2. **Run host tests** on the pure-C parts, such as parsers, if you want them.\n3. **Write a device test plan** you can run later when you have hardware.\n\n**Building it needs the SDK, and I haven't set that up**\n- Downloading the SDK is a separate step from the above. I won't do it without your say-so, and I'd state the source, pin and effects first.\n- A project note says this cloud environment blocked `update.flipperzero.one` on 2026-10-16. I haven't re-checked that today. If it's still blocked, the host has to be added under Project settings > cloud environment > Allowed domains. I won't try to route around the block.\n- A real build also needs you to name the target firmware and SDK. The default baseline is official firmware 1.5.1, API 88.2.\n\nWhere is the app's source, and do you want the source review first?"
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A05/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A05/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A05/ws"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "ufbt",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A05/ws/.claude/skills/flipper-core/references/build-debug-release.md",
+        "output_mode": "count"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/application.fam",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A05/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't confirm your app works, because there's nothing here to check yet.\n\n**What I found**\n- The working directory (`/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A05/ws`) holds only the `.claude/skills/` files.\n- There's no `application.fam`, no C source and no assets.\n- If the app lives somewhere else, tell me the path or add it to this workspace.\n\n**What I can and can't verify**\n\n| Check | Status | Reason |\n|---|---|---|\n| Source inspection | not-run | No source here. |\n| Compile and link (`ufbt build`) | blocked | There's no source and no trusted SDK or toolchain. Per the verify rules, that counts as blocked, never pass. |\n| Import check against the SDK's `api_symbols.csv` | blocked | It needs the SDK for your target firmware. |\n| Host tests on parsers or logic | not-run | Possible without the SDK or a Flipper, once there's code. |\n| Device behavior (UI, teardown, GPIO, radio) | not-run | You have no Flipper. Compiling or mocking can't prove this. |\n\n**What I can do without an SDK or a Flipper**\n1. **Review the source.** I'd read `application.fam` and any build hooks, then check the code for lifecycle, callback-context and parser-bounds problems. That's source inspection only.\n2. **Run host tests** on the pure-C parts, such as parsers, if you want them.\n3. **Write a device test plan** you can run later when you have hardware.\n\n**Building it needs the SDK, and I haven't set that up**\n- Downloading the SDK is a separate step from the above. I won't do it without your say-so, and I'd state the source, pin and effects first.\n- A project note says this cloud environment blocked `update.flipperzero.one` on 2026-10-16. I haven't re-checked that today. If it's still blocked, the host has to be added under Project settings > cloud environment > Allowed domains. I won't try to route around the block.\n- A real build also needs you to name the target firmware and SDK. The default baseline is official firmware 1.5.1, API 88.2.\n\nWhere is the app's source, and do you want the source review first?"
+  ]
+}

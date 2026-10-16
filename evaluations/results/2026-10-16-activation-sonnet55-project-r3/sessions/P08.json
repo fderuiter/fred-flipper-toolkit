@@ -1,0 +1,124 @@
+{
+  "id": "P08",
+  "kind": "positive",
+  "prompt": "Firmware moved to a new API version; compare these two api_symbols.csv files and plan my app's migration.",
+  "started": "2026-10-16T20:15:10+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.10570579999999999,
+    "num_turns": 10,
+    "usage": {
+      "input_tokens": 8,
+      "output_tokens": 1412,
+      "cache_read_input_tokens": 65510,
+      "cache_creation_input_tokens": 21222
+    },
+    "text": "I can't compare the two `api_symbols.csv` files yet, because neither is in this workspace. I searched for `api_symbols*.csv` and for any file with the CSV header (`Entry,Status,Name,Type,Params`) and found nothing. The workspace holds only the `.claude/skills/` FRED skill files. There is also no app source here, no `application.fam`, and no `scripts/compare_api.py`.\n\nI haven't produced a migration plan. Anything I wrote now would be guessed, and the FRED rules say not to invent API changes.\n\n**What I need from you**\n1. **Old `api_symbols.csv`:** the one from the firmware or SDK your app currently builds against. It's usually in the firmware tree at `targets/f7/api_symbols.csv`, or inside the SDK package.\n2. **New `api_symbols.csv`:** the same file from the new firmware or SDK.\n3. **Your app source:** the `application.fam` and the C files, so I can map changed or removed symbols to your call sites.\n4. **Firmware lineage and version:** official, Momentum, Unleashed or another fork, plus the exact version or commit for both the old and new firmware. Forks are separate API lineages.\n\nYou can drop the files into the working directory, or paste them.\n\n**What I'll produce once I have them**\n- A diff of the two tables, covering the API major/minor version, and every symbol that was added, removed or changed signature.\n- Every import your app uses, checked against the new table. A removed or unexported import fails at load even when the API major matches.\n- The impact table (Source / Binary-import / Behavior) and a rebuild plan.\n- A separate device test plan. Everything stays marked `not-run` unless you attach hardware and say it's in scope.\n\nI won't download an SDK or toolchain, build, or touch a device without your explicit go-ahead. If the plan needs one of those, I'll tell you the exact source, pin and effect first."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/api_symbols*.csv"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P08/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P08/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*.csv"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/compare_api.py"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "^Entry,Status,Name,Type,Params",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P08/ws",
+        "output_mode": "files_with_matches"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "*",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P08/ws"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't compare the two `api_symbols.csv` files yet, because neither is in this workspace. I searched for `api_symbols*.csv` and for any file with the CSV header (`Entry,Status,Name,Type,Params`) and found nothing. The workspace holds only the `.claude/skills/` FRED skill files. There is also no app source here, no `application.fam`, and no `scripts/compare_api.py`.\n\nI haven't produced a migration plan. Anything I wrote now would be guessed, and the FRED rules say not to invent API changes.\n\n**What I need from you**\n1. **Old `api_symbols.csv`:** the one from the firmware or SDK your app currently builds against. It's usually in the firmware tree at `targets/f7/api_symbols.csv`, or inside the SDK package.\n2. **New `api_symbols.csv`:** the same file from the new firmware or SDK.\n3. **Your app source:** the `application.fam` and the C files, so I can map changed or removed symbols to your call sites.\n4. **Firmware lineage and version:** official, Momentum, Unleashed or another fork, plus the exact version or commit for both the old and new firmware. Forks are separate API lineages.\n\nYou can drop the files into the working directory, or paste them.\n\n**What I'll produce once I have them**\n- A diff of the two tables, covering the API major/minor version, and every symbol that was added, removed or changed signature.\n- Every import your app uses, checked against the new table. A removed or unexported import fails at load even when the API major matches.\n- The impact table (Source / Binary-import / Behavior) and a rebuild plan.\n- A separate device test plan. Everything stays marked `not-run` unless you attach hardware and say it's in scope.\n\nI won't download an SDK or toolchain, build, or touch a device without your explicit go-ahead. If the plan needs one of those, I'll tell you the exact source, pin and effect first."
+  ]
+}

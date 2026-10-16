@@ -1,0 +1,70 @@
+{
+  "id": "A02",
+  "kind": "ambiguous",
+  "prompt": "Use RECORD_PASSTHROUGH to share my app state with the GUI service.",
+  "started": "2026-10-16T20:15:41+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-core",
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": false,
+  "reasons": [
+    "missing expected ['flipper-native']"
+  ],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0582635,
+    "num_turns": 2,
+    "usage": {
+      "input_tokens": 4,
+      "output_tokens": 638,
+      "cache_read_input_tokens": 23503,
+      "cache_creation_input_tokens": 12348
+    },
+    "text": "I can't do this. `RECORD_PASSTHROUGH` isn't something I can use, and I found no evidence it exists.\n\n- **No such tool:** None of my tools has that name.\n- **Not in the workspace:** The only matches are in the flipper-core skill notes (`.claude/skills/flipper-core/references/assumptions.md:14`, `engineering-rules.md:9`, and `sources.json:419`). Those notes say it was not found in the inspected Flipper public API surface and should be treated as invented until source proves otherwise.\n- **No GUI service to send to:** I also don't see any GUI service or app-state endpoint here.\n\nIf you meant one of these, tell me which and I'll go from there:\n\n- **A Flipper Furi record:** The GUI service is the real `RECORD_GUI` record. Apps get it with `furi_record_open(RECORD_GUI)`. That gives the app access to the GUI. It isn't a way to pass app state along.\n- **Something in your own code or another tool:** Point me to where it's defined, such as a file, a header, or docs, and I'll look at it.\n- **A different goal:** If you want to move state between your app's model and its ViewPort or View, I can help design that with a mutex-protected model and view-model updates."
+  },
+  "tool_events": [
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "RECORD_PASSTHROUGH",
+        "output_mode": "content",
+        "head_limit": 20
+      }
+    }
+  ],
+  "assistant_text": [
+    "I don't have a tool called RECORD_PASSTHROUGH, so I'll check whether the workspace defines it.",
+    "I can't do this. `RECORD_PASSTHROUGH` isn't something I can use, and I found no evidence it exists.\n\n- **No such tool:** None of my tools has that name.\n- **Not in the workspace:** The only matches are in the flipper-core skill notes (`.claude/skills/flipper-core/references/assumptions.md:14`, `engineering-rules.md:9`, and `sources.json:419`). Those notes say it was not found in the inspected Flipper public API surface and should be treated as invented until source proves otherwise.\n- **No GUI service to send to:** I also don't see any GUI service or app-state endpoint here.\n\nIf you meant one of these, tell me which and I'll go from there:\n\n- **A Flipper Furi record:** The GUI service is the real `RECORD_GUI` record. Apps get it with `furi_record_open(RECORD_GUI)`. That gives the app access to the GUI. It isn't a way to pass app state along.\n- **Something in your own code or another tool:** Point me to where it's defined, such as a file, a header, or docs, and I'll look at it.\n- **A different goal:** If you want to move state between your app's model and its ViewPort or View, I can help design that with a mutex-protected model and view-model updates."
+  ]
+}

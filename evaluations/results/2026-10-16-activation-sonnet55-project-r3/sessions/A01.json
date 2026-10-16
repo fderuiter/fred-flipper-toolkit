@@ -1,0 +1,109 @@
+{
+  "id": "A01",
+  "kind": "ambiguous",
+  "prompt": "Build my FAP with ufbt and then run `ufbt test` to make sure it works.",
+  "started": "2026-10-16T20:15:40+00:00",
+  "expected": [
+    "flipper-verify"
+  ],
+  "acceptable": [],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-verify"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-verify"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0986468,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 5,
+      "output_tokens": 1384,
+      "cache_read_input_tokens": 44046,
+      "cache_creation_input_tokens": 20066
+    },
+    "text": "I haven't built anything yet, because there's nothing to build and part of the request can't be run.\n\n- **No app in the workspace.** `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A01/ws` has no `application.fam` and no source. It holds only the `.claude/skills/` files. `ufbt` builds from the directory that contains `application.fam`, so I need the path to your FAP's directory or the source itself.\n- **`ufbt test` doesn't exist.** The project's build reference says so ([C-BUILD-001]). Running it would just fail with an unknown-target error, and that failure wouldn't tell you anything about your app. Here is what can stand in for it:\n  - `ufbt lint` checks formatting and naming only. It is not static analysis.\n  - Host-side unit tests for any parsers or logic can run locally if the project has a harness.\n  - Behavior on a real Flipper needs a device test plan. Compiling doesn't prove it.\n  - `ufbt launch` and `ufbt flash` deploy to hardware, so they need your explicit go-ahead.\n- **SDK download may be blocked.** My notes say the cloud container blocked `update.flipperzero.one` on 2026-10-16 (proxy 403). I haven't re-checked it this session. If it's still blocked, I'll mark compilation `blocked` rather than `pass`. You'd need to add that host under Project settings > cloud environment > Allowed domains. I won't try to work around it.\n- **Pinned SDK.** The first `ufbt` run downloads an SDK and may pick the moving release channel. I'd pin it to 1.5.1 with `UFBT_HOME=<project>/.ufbt ufbt update --branch=1.5.1` before building. That download needs your approval.\n\nPlease send the path or source for the app. I'll then inspect `application.fam` and any build hooks, check whether the SDK host is reachable, and ask you to approve the 1.5.1 SDK download. After that I'll build and run `ufbt lint`, and report each check separately with its command and exit code."
+  },
+  "tool_events": [
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "*"
+      }
+    },
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-verify"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A01/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A01/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Grep",
+      "input": {
+        "pattern": "ufbt test|ufbt",
+        "path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A01/ws/.claude/skills/flipper-core/references/build-debug-release.md",
+        "output_mode": "content"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/application.fam"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I haven't built anything yet, because there's nothing to build and part of the request can't be run.\n\n- **No app in the workspace.** `/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A01/ws` has no `application.fam` and no source. It holds only the `.claude/skills/` files. `ufbt` builds from the directory that contains `application.fam`, so I need the path to your FAP's directory or the source itself.\n- **`ufbt test` doesn't exist.** The project's build reference says so ([C-BUILD-001]). Running it would just fail with an unknown-target error, and that failure wouldn't tell you anything about your app. Here is what can stand in for it:\n  - `ufbt lint` checks formatting and naming only. It is not static analysis.\n  - Host-side unit tests for any parsers or logic can run locally if the project has a harness.\n  - Behavior on a real Flipper needs a device test plan. Compiling doesn't prove it.\n  - `ufbt launch` and `ufbt flash` deploy to hardware, so they need your explicit go-ahead.\n- **SDK download may be blocked.** My notes say the cloud container blocked `update.flipperzero.one` on 2026-10-16 (proxy 403). I haven't re-checked it this session. If it's still blocked, I'll mark compilation `blocked` rather than `pass`. You'd need to add that host under Project settings > cloud environment > Allowed domains. I won't try to work around it.\n- **Pinned SDK.** The first `ufbt` run downloads an SDK and may pick the moving release channel. I'd pin it to 1.5.1 with `UFBT_HOME=<project>/.ufbt ufbt update --branch=1.5.1` before building. That download needs your approval.\n\nPlease send the path or source for the app. I'll then inspect `application.fam` and any build hooks, check whether the SDK host is reachable, and ask you to approve the 1.5.1 SDK download. After that I'll build and run `ufbt lint`, and report each check separately with its command and exit code."
+  ]
+}

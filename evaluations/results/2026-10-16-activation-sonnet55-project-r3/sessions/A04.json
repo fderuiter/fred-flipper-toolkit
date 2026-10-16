@@ -1,0 +1,105 @@
+{
+  "id": "A04",
+  "kind": "ambiguous",
+  "prompt": "Here's a 2022 tutorial using `furi_alloc` and `furi_record_open(\"gui\")` without close \u2014 update it for my FAP.",
+  "started": "2026-10-16T20:15:42+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-core",
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-native"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/runtime-ui.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-native"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0999758,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1314,
+      "cache_read_input_tokens": 43949,
+      "cache_creation_input_tokens": 20518
+    },
+    "text": "I can't update it yet because the workspace has no tutorial and no FAP source. It holds only the `.claude/skills` files. Please paste the tutorial's code, or point me at your FAP directory. I'll make the changes in your code once I can see it.\n\nHere is what I'll change, based on the pinned FRED baseline (official firmware 1.5.1, API 88.2):\n\n- **`furi_alloc`:** it isn't an established API at this baseline (claim C-MEM-003). I won't use it and will switch to `malloc` and `free`. These are exported and use the firmware heap. Allocation failure crashes via `furi_check` rather than returning NULL. So I'll bound sizes and check `count \u00d7 size` before allocating, not rely on NULL checks.\n- **`furi_record_open(\"gui\")` without close:** every open needs a matching `furi_record_close`. The record is a borrowed service, so the app never frees it. A missing close leaves a holder-count imbalance, not necessarily an immediate panic (C-REC-001). I'll use the `RECORD_GUI` macro from `gui.h` instead of the raw string, because a misspelled record name blocks forever.\n- **Teardown order:** I'll order exit as follows:\n  1. Stop producers (timers, callbacks, workers).\n  2. Detach the ViewPort with `gui_remove_view_port`.\n  3. Free the ViewPort, queues and other memory.\n  4. Close the GUI record last.\n- **Init failure paths:** I'll release only what was actually acquired.\n- **Other 2022-era patterns:** I'll also check for these:\n  - `furi_timer_stop` followed by freeing the callback context.\n  - Slow work or storage calls inside draw or input callbacks.\n  - Dropped Back events on a full queue.\n\nI haven't built or run anything yet. When I finish, I'll give you a teardown table and say what is compile-checked versus device-tested. I'll also note that I couldn't run anything on a Flipper."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A04/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A04/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A04/ws/.claude/skills/flipper-core/references/runtime-ui.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't update it yet because the workspace has no tutorial and no FAP source. It holds only the `.claude/skills` files. Please paste the tutorial's code, or point me at your FAP directory. I'll make the changes in your code once I can see it.\n\nHere is what I'll change, based on the pinned FRED baseline (official firmware 1.5.1, API 88.2):\n\n- **`furi_alloc`:** it isn't an established API at this baseline (claim C-MEM-003). I won't use it and will switch to `malloc` and `free`. These are exported and use the firmware heap. Allocation failure crashes via `furi_check` rather than returning NULL. So I'll bound sizes and check `count \u00d7 size` before allocating, not rely on NULL checks.\n- **`furi_record_open(\"gui\")` without close:** every open needs a matching `furi_record_close`. The record is a borrowed service, so the app never frees it. A missing close leaves a holder-count imbalance, not necessarily an immediate panic (C-REC-001). I'll use the `RECORD_GUI` macro from `gui.h` instead of the raw string, because a misspelled record name blocks forever.\n- **Teardown order:** I'll order exit as follows:\n  1. Stop producers (timers, callbacks, workers).\n  2. Detach the ViewPort with `gui_remove_view_port`.\n  3. Free the ViewPort, queues and other memory.\n  4. Close the GUI record last.\n- **Init failure paths:** I'll release only what was actually acquired.\n- **Other 2022-era patterns:** I'll also check for these:\n  - `furi_timer_stop` followed by freeing the callback context.\n  - Slow work or storage calls inside draw or input callbacks.\n  - Dropped Back events on a full queue.\n\nI haven't built or run anything yet. When I finish, I'll give you a teardown table and say what is compile-checked versus device-tested. I'll also note that I couldn't run anything on a Flipper."
+  ]
+}

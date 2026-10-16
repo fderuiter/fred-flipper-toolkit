@@ -1,0 +1,58 @@
+{
+  "id": "N01",
+  "kind": "negative",
+  "prompt": "Proofread this blog paragraph: 'I took my Flipper Zero to DEF CON and it was a hit.'",
+  "started": "2026-10-16T20:15:28+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0501936,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 227,
+      "cache_read_input_tokens": 5854,
+      "cache_creation_input_tokens": 11801
+    },
+    "text": "The sentence is already correct. Spelling, grammar, and punctuation are all fine, and \"Flipper Zero\" and \"DEF CON\" are capitalized and spaced the way they're normally written.\n\nIf you want it to read better, here are two optional changes:\n\n- **More specific:** \"I took my Flipper Zero to DEF CON, and it was a hit.\" The comma before \"and\" is optional, because both clauses are short. Adding it is also correct.\n- **Less generic:** \"A hit\" doesn't say much. You could add a detail, such as \"\u2026and it drew a crowd at every talk I attended.\" Only use a detail like that if it's true.\n\nIf you send the rest of the paragraph, I can proofread it in context."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "The sentence is already correct. Spelling, grammar, and punctuation are all fine, and \"Flipper Zero\" and \"DEF CON\" are capitalized and spaced the way they're normally written.\n\nIf you want it to read better, here are two optional changes:\n\n- **More specific:** \"I took my Flipper Zero to DEF CON, and it was a hit.\" The comma before \"and\" is optional, because both clauses are short. Adding it is also correct.\n- **Less generic:** \"A hit\" doesn't say much. You could add a detail, such as \"\u2026and it drew a crowd at every talk I attended.\" Only use a detail like that if it's true.\n\nIf you send the rest of the paragraph, I can proofread it in context."
+  ]
+}
