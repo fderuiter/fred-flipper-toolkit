@@ -1,0 +1,228 @@
+{
+  "checked_on": "2026-10-16",
+  "evidence": "repository metadata and selected primary texts; no candidate execution",
+  "repositories": [
+    {
+      "repo": "AeonDave/malskill",
+      "sha": "3be7994b37d8490481408bc242b05a9d0f588345",
+      "date": "2026-10-14T07:38:13Z",
+      "branch": "main",
+      "archived": false,
+      "license": null
+    },
+    {
+      "repo": "DarkFlippers/unleashed-firmware",
+      "sha": "f62964cb8216c566cb3940992d0fea6bbe91d840",
+      "date": "2026-10-16T01:15:21Z",
+      "branch": "dev",
+      "archived": false,
+      "license": "GPL-3.0",
+      "release": "unlshd-094"
+    },
+    {
+      "repo": "Flipper-XFW/Xtreme-Firmware",
+      "sha": "54619d013a120897eeade491decf4d1e95217c06",
+      "date": "2024-11-19T01:52:33Z",
+      "branch": "dev",
+      "archived": true,
+      "license": "GPL-3.0",
+      "release": "XFW-0053_02022024"
+    },
+    {
+      "repo": "Next-Flip/Momentum-Firmware",
+      "sha": "d3f89dfe2ef6b01839201598e9be1590cba80322",
+      "date": "2026-08-18T20:42:07Z",
+      "branch": "dev",
+      "archived": false,
+      "license": "GPL-3.0",
+      "release": "mntm-012"
+    },
+    {
+      "repo": "Nikolaibibo/flipper-blackhat-skill",
+      "sha": "1380aa1fee8cfde69494c64d1a676d61de9936be",
+      "date": "2025-10-28T18:23:52Z",
+      "branch": "main",
+      "archived": false,
+      "license": "NOASSERTION"
+    },
+    {
+      "repo": "Wet-wr-Labs/claupper",
+      "sha": "f671bf33e91c338de4dc03b33f5b39dc6333ed69",
+      "date": "2026-05-04T23:56:46Z",
+      "branch": "main",
+      "archived": false,
+      "license": "MIT",
+      "release": "v0.26"
+    },
+    {
+      "repo": "ZDStudios/Flipper-Zero-Emulator",
+      "branch": "main",
+      "sha": "23edb1bf355698cc0d9c37f297c2102ecd1b114f",
+      "date": "2026-08-20T10:02:08Z",
+      "archived": false,
+      "license": "NOASSERTION"
+    },
+    {
+      "repo": "ankurCES/flipper-zero-ai",
+      "sha": "995dba264b5075e2768ea29d9ac0abbb4a090046",
+      "date": "2026-06-06T16:27:54Z",
+      "branch": "master",
+      "archived": false,
+      "license": "NOASSERTION"
+    },
+    {
+      "repo": "busse/flipperzero-mcp",
+      "sha": "36948b7ffb03e46fb352394363e327d953706a9d",
+      "date": "2025-12-29T18:13:00Z",
+      "branch": "main",
+      "archived": false,
+      "license": "MIT"
+    },
+    {
+      "repo": "dwgx/FlipperZeroTeacher",
+      "branch": "main",
+      "sha": "27fc9862f60bdd3aa911bfbb9513e6ad8f5f08d8",
+      "date": "2026-09-30T19:42:19Z",
+      "archived": false,
+      "license": "MIT"
+    },
+    {
+      "repo": "flipperdevices/flipper-application-catalog",
+      "sha": "5309fa2b142cb3bcc78098ddb1d1e3c7908fce47",
+      "date": "2026-10-15T18:57:37Z",
+      "branch": "main",
+      "archived": false,
+      "license": null
+    },
+    {
+      "repo": "flipperdevices/flipperzero-firmware",
+      "sha": "3fb1d51727733d2007abc5ec636a89328857803e",
+      "date": "2026-10-13T18:17:54Z",
+      "branch": "dev",
+      "archived": false,
+      "license": "GPL-3.0",
+      "release": "1.5.1"
+    },
+    {
+      "repo": "flipperdevices/flipperzero-good-faps",
+      "sha": "55328b486971e49078a955a7c086e4463fa6843b",
+      "date": "2026-08-15T15:29:17Z",
+      "branch": "dev",
+      "archived": false,
+      "license": "GPL-3.0"
+    },
+    {
+      "repo": "flipperdevices/flipperzero-protobuf",
+      "sha": "1c84fa48919cbb71d1cc65236fc0ee36740e24c6",
+      "date": "2024-12-17T11:55:39Z",
+      "branch": "dev",
+      "archived": false,
+      "license": null
+    },
+    {
+      "repo": "flipperdevices/flipperzero-ufbt-action",
+      "sha": "6237e4616a47217903940b09c883dd67cb615cf8",
+      "date": "2024-03-06T21:18:15Z",
+      "branch": "dev",
+      "archived": false,
+      "license": null,
+      "release": "v0.1.3"
+    },
+    {
+      "repo": "flipperdevices/flipperzero-ufbt",
+      "sha": "4c603daa164430d791cb58ef019f18721ced7f0d",
+      "date": "2026-01-29T16:02:39Z",
+      "branch": "dev",
+      "archived": false,
+      "license": "GPL-3.0",
+      "release": "v0.2.6"
+    },
+    {
+      "repo": "jamisonderek/flipper-zero-tutorials",
+      "sha": "2aeac9189f6e6ad7d9c2d857c40cd1afb43882f9",
+      "date": "2026-03-31T21:19:57Z",
+      "branch": "main",
+      "archived": false,
+      "license": "MIT"
+    },
+    {
+      "repo": "jonastbrg/FlipperAgent",
+      "sha": "f79ecf4d15f0bdf6e2709ed3d57e17f4456d2057",
+      "date": "2026-03-23T05:33:42Z",
+      "branch": "main",
+      "archived": false,
+      "license": "MIT"
+    },
+    {
+      "repo": "jxw1102/flipper-claude-buddy",
+      "branch": "main",
+      "sha": "fd484a53b8e6590cf9c9f679511e116bab1468b7",
+      "date": "2026-07-26T08:54:54Z",
+      "archived": false,
+      "license": "MIT"
+    },
+    {
+      "repo": "leedave/flipper-zero-fap-boilerplate",
+      "sha": "812f336394220b154e3a0a02e2201504949b678f",
+      "date": "2026-02-16T09:44:28Z",
+      "branch": "main",
+      "archived": false,
+      "license": null
+    },
+    {
+      "repo": "pogorelov-labs/flipper-ble-mcp",
+      "sha": "da83716d5449c69d1442dc5c1ffb4ffd54879804",
+      "date": "2026-06-22T21:32:57Z",
+      "branch": "main",
+      "archived": false,
+      "license": "MIT"
+    },
+    {
+      "repo": "roostercoopllc/flipper-mcp",
+      "sha": "2efd0f9d8242469fe119b089b5e12b4e76797a59",
+      "date": "2026-03-08T10:27:42Z",
+      "branch": "main",
+      "archived": false,
+      "license": "MIT"
+    },
+    {
+      "repo": "rovinax/embedded-skills",
+      "branch": "master",
+      "sha": "022ce31b469b1a1d0c1261c2c8d0f3e07b2c0bbc",
+      "date": "2026-05-24T05:26:10Z",
+      "archived": false,
+      "license": "MIT"
+    },
+    {
+      "repo": "xentron-bit/stm32-embedded-skill",
+      "branch": "main",
+      "sha": "7d81ee0c2bff8399c32fb2fdaa4ba3d98bcac338",
+      "date": "2026-07-02T08:06:33Z",
+      "archived": false,
+      "license": null
+    },
+    {
+      "repo": "yairhdz24/flipper-mcp",
+      "sha": "9dcb774a1e55b751ca37421967630cb464eb52bb",
+      "date": "2026-07-19T22:19:37Z",
+      "branch": "main",
+      "archived": false,
+      "license": "MIT"
+    }
+  ],
+  "official_baseline": {
+    "firmware_tag": "1.5.1",
+    "firmware_commit": "9e810dc399e027e48ce07751df72168abbb19065",
+    "target": "f7",
+    "api_version": "88.2",
+    "ufbt_version": "0.2.6",
+    "ufbt_release_commit": "093ab78058f19b11eab82020989aa4e123521490",
+    "sdk_index_url": "https://update.flipperzero.one/firmware/directory.json",
+    "sdk_url": "https://update.flipperzero.one/builds/firmware/1.5.1/flipper-z-f7-sdk-1.5.1.zip",
+    "published_sdk_sha256": "dfde39df32ba8a9789b26afc1d702579ad8399a1c285770637cfe3287b2e2ffe",
+    "sdk_bytes_verified": false,
+    "compiled": false,
+    "host_application_tests": false,
+    "device_tests": false
+  }
+}
