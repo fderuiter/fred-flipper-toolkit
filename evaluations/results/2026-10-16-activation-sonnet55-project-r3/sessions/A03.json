@@ -1,0 +1,102 @@
+{
+  "id": "A03",
+  "kind": "ambiguous",
+  "prompt": "This Momentum firmware example uses a momentum_* settings API; make it work on my official-firmware Flipper.",
+  "started": "2026-10-16T20:15:41+00:00",
+  "expected": [
+    "flipper-core"
+  ],
+  "acceptable": [
+    "flipper-native",
+    "flipper-verify"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-core"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/assets/compatibility-card.md",
+    "flipper-core/references/compatibility.md",
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md"
+  ],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.10160649999999999,
+    "num_turns": 8,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1221,
+      "cache_read_input_tokens": 43430,
+      "cache_creation_input_tokens": 21228
+    },
+    "text": "I can't port it yet because the Momentum example isn't in the workspace. The only files here are the FRED skill files.\n\n**Please send one of these:**\n- the example's source, either pasted or placed in the working directory (for me, the `.c` files, `application.fam` and any settings code), or\n- a link to the file or directory in the Momentum repo.\n\n**What I expect the port to involve:**\n- **Different API lineage.** The FRED baseline is official 1.5.1 with API 88.2. Momentum's pinned head is API 87.1, which adds 468 symbols and drops 2. A FAP built against Momentum is rejected on official firmware, and the source usually won't compile either.\n- **No official equivalent for `momentum_*` settings.** I haven't confirmed that any official export matches them. I won't invent a replacement. For each call I'll check the official headers and `api_symbols.csv` first.\n- **Likely approach.** Settings that only configure the example's own behavior can move to the app's own config file. That means a versioned file under the app's data directory, with validated defaults, using the Storage API. Settings that change firmware-wide behavior, such as UI, desktop or radio options, can't be set from a FAP on official firmware. In that case I'll tell you the feature isn't available there and what the options are.\n\nOnce I have the source, I'll list each `momentum_*` call and say whether it can be replaced, dropped or isn't possible. Then I'll port the code, and compile it against the 1.5.1 SDK if the toolchain is available here.\n\nI won't claim it works on your device. A successful compile doesn't show that. Device behavior needs you to run it. I won't deploy or launch anything on your Flipper without your explicit say-so.\n\nIf you know your firmware version (for example 1.5.1 or a different one), tell me so I target the right SDK."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-core"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A03/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A03/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A03/ws/.claude/skills/flipper-core/references/compatibility.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/A03/ws/.claude/skills/flipper-core/assets/compatibility-card.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't port it yet because the Momentum example isn't in the workspace. The only files here are the FRED skill files.\n\n**Please send one of these:**\n- the example's source, either pasted or placed in the working directory (for me, the `.c` files, `application.fam` and any settings code), or\n- a link to the file or directory in the Momentum repo.\n\n**What I expect the port to involve:**\n- **Different API lineage.** The FRED baseline is official 1.5.1 with API 88.2. Momentum's pinned head is API 87.1, which adds 468 symbols and drops 2. A FAP built against Momentum is rejected on official firmware, and the source usually won't compile either.\n- **No official equivalent for `momentum_*` settings.** I haven't confirmed that any official export matches them. I won't invent a replacement. For each call I'll check the official headers and `api_symbols.csv` first.\n- **Likely approach.** Settings that only configure the example's own behavior can move to the app's own config file. That means a versioned file under the app's data directory, with validated defaults, using the Storage API. Settings that change firmware-wide behavior, such as UI, desktop or radio options, can't be set from a FAP on official firmware. In that case I'll tell you the feature isn't available there and what the options are.\n\nOnce I have the source, I'll list each `momentum_*` call and say whether it can be replaced, dropped or isn't possible. Then I'll port the code, and compile it against the 1.5.1 SDK if the toolchain is available here.\n\nI won't claim it works on your device. A successful compile doesn't show that. Device behavior needs you to run it. I won't deploy or launch anything on your Flipper without your explicit say-so.\n\nIf you know your firmware version (for example 1.5.1 or a different one), tell me so I target the right SDK."
+  ]
+}

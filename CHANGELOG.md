@@ -2,6 +2,7 @@
 
 ## Unreleased
 
+- Activation recheck after #24, #25 and #27 (#13): 23/24 with 0/8 negative false activations (claude-sonnet-5-5, project scope). A06 missed direct entry once and loaded no skill in three repeats ([#32](https://github.com/fderuiter/fred-flipper-toolkit/issues/32)).
 - Rubric version 2 (#13, [ADR 0003](docs/adr/0003-token-budget-revision.md)): the comparative token budget is ≤ 2.0× median when the same run shows ≥ 50% fewer critical/major errors and no mean regression, otherwise ≤ 1.5×. `run_pilot.py report` adds `token_budget` and `token_ratio_within_budget`. Scoring is unchanged.
 - Held-out benchmark set (#12): seven variants in `evaluations/heldout/` with agent-facing fixtures, task definitions, oracles that match the rubric weights, and reference solutions. Host tests pass for H01–H04 (120 checks, gcc with ASan/UBSan and -O2, clang -O0/-O2). The FAP builds of the H01 and H06 apps are pending because the SDK host was unreachable. `check_bundle.py` validates the held-out set; `run_pilot.py --set heldout` runs it. The paired held-out run has not been executed yet: it needs approval for model-session spend.
 - `run_pilot.py report` adds 95 % bootstrap intervals for the paired gain, resampling pairs and, as a sensitivity check, tasks (#23). The retained rounds give +7.2 [+1.2, +13.0] and +9.5 [+4.0, +15.2] ([record](evaluations/results/2026-10-16-paired-gain-bootstrap.md)).

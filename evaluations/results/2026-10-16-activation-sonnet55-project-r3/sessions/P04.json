@@ -1,0 +1,104 @@
+{
+  "id": "P04",
+  "kind": "positive",
+  "prompt": "Implement UART receive in my Flipper app; frames arrive in bursts and I need an overflow counter.",
+  "started": "2026-10-16T20:15:10+00:00",
+  "expected": [
+    "flipper-native"
+  ],
+  "acceptable": [
+    "flipper-review"
+  ],
+  "forbidden": [],
+  "loaded_fred": [
+    "flipper-native"
+  ],
+  "loaded_other_skills": [],
+  "references_read": [
+    "flipper-core/references/engineering-rules.md",
+    "flipper-core/references/evidence-policy.md",
+    "flipper-core/references/hardware-communications.md"
+  ],
+  "direct_entry": {
+    "non_core_loaded": [
+      "flipper-native"
+    ],
+    "core_loaded": false,
+    "shared_rules_read": {
+      "engineering-rules.md": true,
+      "evidence-policy.md": true
+    },
+    "pass": true
+  },
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.1078641,
+    "num_turns": 7,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 1348,
+      "cache_read_input_tokens": 41873,
+      "cache_creation_input_tokens": 22514
+    },
+    "text": "I haven't written any code yet, because there's no Flipper app in this workspace. The only files are the `.claude/skills` references, with no `application.fam` or C sources. I'd be guessing at your app's structure if I went ahead.\n\nI need these from you:\n\n1. **The app.** Put the FAP source in this directory, or tell me to create a new minimal app here.\n2. **The frame format.** I need the start marker or header, whether the length is fixed or in a length field, the maximum frame size, and the CRC or checksum, if there is one.\n3. **The UART setup.** I need the baud rate, and whether you use the header pins (USART on pins 13/14) or the expansion/LPUART interface.\n4. **The burst profile.** I need the largest burst (frames or bytes back-to-back) and the gap between bursts. I'll use this to size the stream buffer.\n\n**My plan once I have those:**\n- **RX callback.** It runs in interrupt context and only copies available bytes into a `FuriStreamBuffer` with zero timeout. If the send is short, it increments an atomic `rx_overflow` counter (bytes dropped).\n- **Worker thread.** It reads from the stream with a timeout and runs a bounded framing state machine. The state machine enforces a maximum length, resyncs on a bad length or CRC, and counts framing errors and resyncs separately from overflows.\n- **Pure logic.** The framer will be a separate C file with no Furi dependencies, so it can be host-tested.\n- **Display.** The counters show on screen.\n- **Teardown.** The order is stop flag, then `async_rx_stop`, `deinit` and `control_release`, then join the worker, and free the stream last. I'll include the teardown self-check table.\n- **Busy handle.** If `furi_hal_serial_control_acquire` returns NULL, the app reports it and doesn't retry.\n\nI can compile or run host tests of the framer if the toolchain is available here. Anything on the device, such as real bursts at line rate, stays unverified until you test it on hardware."
+  },
+  "tool_events": [
+    {
+      "tool": "Skill",
+      "input": {
+        "skill": "flipper-native"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P04/ws/.claude/skills/flipper-core/references/engineering-rules.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P04/ws/.claude/skills/flipper-core/references/evidence-policy.md"
+      }
+    },
+    {
+      "tool": "Read",
+      "input": {
+        "file_path": "/tmp/fred-eval/runs/2026-10-16-activation-sonnet55-project-r3/P04/ws/.claude/skills/flipper-core/references/hardware-communications.md"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I haven't written any code yet, because there's no Flipper app in this workspace. The only files are the `.claude/skills` references, with no `application.fam` or C sources. I'd be guessing at your app's structure if I went ahead.\n\nI need these from you:\n\n1. **The app.** Put the FAP source in this directory, or tell me to create a new minimal app here.\n2. **The frame format.** I need the start marker or header, whether the length is fixed or in a length field, the maximum frame size, and the CRC or checksum, if there is one.\n3. **The UART setup.** I need the baud rate, and whether you use the header pins (USART on pins 13/14) or the expansion/LPUART interface.\n4. **The burst profile.** I need the largest burst (frames or bytes back-to-back) and the gap between bursts. I'll use this to size the stream buffer.\n\n**My plan once I have those:**\n- **RX callback.** It runs in interrupt context and only copies available bytes into a `FuriStreamBuffer` with zero timeout. If the send is short, it increments an atomic `rx_overflow` counter (bytes dropped).\n- **Worker thread.** It reads from the stream with a timeout and runs a bounded framing state machine. The state machine enforces a maximum length, resyncs on a bad length or CRC, and counts framing errors and resyncs separately from overflows.\n- **Pure logic.** The framer will be a separate C file with no Furi dependencies, so it can be host-tested.\n- **Display.** The counters show on screen.\n- **Teardown.** The order is stop flag, then `async_rx_stop`, `deinit` and `control_release`, then join the worker, and free the stream last. I'll include the teardown self-check table.\n- **Busy handle.** If `furi_hal_serial_control_acquire` returns NULL, the app reports it and doesn't retry.\n\nI can compile or run host tests of the framer if the toolchain is available here. Anything on the device, such as real bursts at line rate, stays unverified until you test it on hardware."
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "id": "N05",
+  "kind": "negative",
+  "prompt": "Fix the flaky GitHub Actions cache step in my Rust project.",
+  "started": "2026-10-16T20:15:34+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.059363799999999994,
+    "num_turns": 4,
+    "usage": {
+      "input_tokens": 6,
+      "output_tokens": 483,
+      "cache_read_input_tokens": 41375,
+      "cache_creation_input_tokens": 12564
+    },
+    "text": "I can't fix this yet because the working directory has no Rust project in it. There's no `.github/` workflow, no `Cargo.toml` or `Cargo.lock`, and no source files. The only files are Flipper Zero skill docs under `.claude/skills/`. It isn't a git repo either.\n\nTo fix the cache step I need the workflow file. Either of these would work:\n- Put the repo in this directory, or tell me where it is.\n- Paste the workflow YAML and the failing step's log output.\n\nIt would also help to know how it's flaky. Common patterns are cache misses on some runs, \"Failed to restore\" or tar errors, and a stale `target/` causing odd build failures.\n\nI'll start with the usual causes. The first is a cache key that doesn't hash `Cargo.lock`. The second is caching all of `target/` without `restore-keys`. The third is parallel jobs racing to save the same key. The usual fix is to switch to `Swatinem/rust-cache`."
+  },
+  "tool_events": [
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": ".github/**/*.{yml,yaml}"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "Cargo.*"
+      }
+    },
+    {
+      "tool": "Glob",
+      "input": {
+        "pattern": "**/*"
+      }
+    }
+  ],
+  "assistant_text": [
+    "I can't fix this yet because the working directory has no Rust project in it. There's no `.github/` workflow, no `Cargo.toml` or `Cargo.lock`, and no source files. The only files are Flipper Zero skill docs under `.claude/skills/`. It isn't a git repo either.\n\nTo fix the cache step I need the workflow file. Either of these would work:\n- Put the repo in this directory, or tell me where it is.\n- Paste the workflow YAML and the failing step's log output.\n\nIt would also help to know how it's flaky. Common patterns are cache misses on some runs, \"Failed to restore\" or tar errors, and a stale `target/` causing odd build failures.\n\nI'll start with the usual causes. The first is a cache key that doesn't hash `Cargo.lock`. The second is caching all of `target/` without `restore-keys`. The third is parallel jobs racing to save the same key. The usual fix is to switch to `Swatinem/rust-cache`."
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "id": "N06",
+  "kind": "negative",
+  "prompt": "What's a good name for my cat? She likes dolphins.",
+  "started": "2026-10-16T20:15:34+00:00",
+  "expected": [],
+  "acceptable": [],
+  "forbidden": [
+    "flipper-core",
+    "flipper-native",
+    "flipper-review",
+    "flipper-verify"
+  ],
+  "loaded_fred": [],
+  "loaded_other_skills": [],
+  "references_read": [],
+  "direct_entry": null,
+  "outside_workspace_paths": [],
+  "private_paths": [],
+  "isolation_ok": true,
+  "pass": true,
+  "reasons": [],
+  "init": {
+    "model": "claude-sonnet-5-5",
+    "claude_code_version": "2.1.301",
+    "skills_listed": 114,
+    "fred_listed": [
+      "flipper-core",
+      "flipper-native",
+      "flipper-review",
+      "flipper-verify"
+    ],
+    "tools": [
+      "Glob",
+      "Grep",
+      "Read",
+      "Skill"
+    ],
+    "permissionMode": "default"
+  },
+  "result": {
+    "subtype": "success",
+    "is_error": false,
+    "cost_usd": 0.0504396,
+    "num_turns": 1,
+    "usage": {
+      "input_tokens": 2,
+      "output_tokens": 260,
+      "cache_read_input_tokens": 5854,
+      "cache_creation_input_tokens": 11781
+    },
+    "text": "Here are some dolphin-inspired names for her:\n\n**Direct nods**\n- **Delphi**: from *Delphinus*, the dolphin constellation\n- **Echo**: for dolphin echolocation\n- **Flipper**: the classic TV dolphin\n\n**Ocean-themed**\n- **Pearl**\n- **Marina**\n- **Coral**\n- **Misty**\n- **Wave**\n\n**Sweet and playful**\n- **Splash**\n- **Bubbles**\n- **Finn** (or **Finley**)\n- **Nori**\n\nMy pick is **Delphi**. It sounds elegant, has a real dolphin connection, and works well as a cat name. **Echo** is a close second if she's a chatty cat.\n\nIf you tell me her color or personality, I can narrow the list down."
+  },
+  "tool_events": [],
+  "assistant_text": [
+    "Here are some dolphin-inspired names for her:\n\n**Direct nods**\n- **Delphi**: from *Delphinus*, the dolphin constellation\n- **Echo**: for dolphin echolocation\n- **Flipper**: the classic TV dolphin\n\n**Ocean-themed**\n- **Pearl**\n- **Marina**\n- **Coral**\n- **Misty**\n- **Wave**\n\n**Sweet and playful**\n- **Splash**\n- **Bubbles**\n- **Finn** (or **Finley**)\n- **Nori**\n\nMy pick is **Delphi**. It sounds elegant, has a real dolphin connection, and works well as a cat name. **Echo** is a close second if she's a chatty cat.\n\nIf you tell me her color or personality, I can narrow the list down."
+  ]
+}

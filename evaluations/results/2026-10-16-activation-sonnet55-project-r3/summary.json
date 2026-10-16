@@ -1,0 +1,361 @@
+{
+  "run": "2026-10-16-activation-sonnet55-project-r3",
+  "model": "claude-sonnet-5-5",
+  "effort": "medium",
+  "scope": "project",
+  "claude_code_version": "2.1.301",
+  "skills_listed": 114,
+  "cases": 24,
+  "passed": 23,
+  "negative_false_activations": 0,
+  "direct_entry": [
+    {
+      "id": "A01",
+      "non_core_loaded": [
+        "flipper-verify"
+      ],
+      "core_loaded": false,
+      "shared_rules_read": {
+        "engineering-rules.md": true,
+        "evidence-policy.md": true
+      },
+      "pass": true
+    },
+    {
+      "id": "A04",
+      "non_core_loaded": [
+        "flipper-native"
+      ],
+      "core_loaded": false,
+      "shared_rules_read": {
+        "engineering-rules.md": true,
+        "evidence-policy.md": true
+      },
+      "pass": true
+    },
+    {
+      "id": "A05",
+      "non_core_loaded": [
+        "flipper-verify"
+      ],
+      "core_loaded": false,
+      "shared_rules_read": {
+        "engineering-rules.md": true,
+        "evidence-policy.md": true
+      },
+      "pass": true
+    },
+    {
+      "id": "A06",
+      "non_core_loaded": [
+        "flipper-native"
+      ],
+      "core_loaded": false,
+      "shared_rules_read": {
+        "engineering-rules.md": false,
+        "evidence-policy.md": false
+      },
+      "pass": false
+    },
+    {
+      "id": "P03",
+      "non_core_loaded": [
+        "flipper-native"
+      ],
+      "core_loaded": false,
+      "shared_rules_read": {
+        "engineering-rules.md": true,
+        "evidence-policy.md": true
+      },
+      "pass": true
+    },
+    {
+      "id": "P04",
+      "non_core_loaded": [
+        "flipper-native"
+      ],
+      "core_loaded": false,
+      "shared_rules_read": {
+        "engineering-rules.md": true,
+        "evidence-policy.md": true
+      },
+      "pass": true
+    },
+    {
+      "id": "P05",
+      "non_core_loaded": [
+        "flipper-review"
+      ],
+      "core_loaded": false,
+      "shared_rules_read": {
+        "engineering-rules.md": true,
+        "evidence-policy.md": true
+      },
+      "pass": true
+    },
+    {
+      "id": "P06",
+      "non_core_loaded": [
+        "flipper-review"
+      ],
+      "core_loaded": false,
+      "shared_rules_read": {
+        "engineering-rules.md": true,
+        "evidence-policy.md": true
+      },
+      "pass": true
+    },
+    {
+      "id": "P07",
+      "non_core_loaded": [
+        "flipper-verify"
+      ],
+      "core_loaded": false,
+      "shared_rules_read": {
+        "engineering-rules.md": true,
+        "evidence-policy.md": true
+      },
+      "pass": true
+    },
+    {
+      "id": "P08",
+      "non_core_loaded": [
+        "flipper-verify"
+      ],
+      "core_loaded": false,
+      "shared_rules_read": {
+        "engineering-rules.md": true,
+        "evidence-policy.md": true
+      },
+      "pass": true
+    }
+  ],
+  "isolation_violations": [],
+  "total_cost_usd": 2.087,
+  "results": [
+    {
+      "id": "A01",
+      "kind": "ambiguous",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-verify"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "A02",
+      "kind": "ambiguous",
+      "pass": false,
+      "loaded_fred": [],
+      "loaded_other_skills": [],
+      "reasons": [
+        "missing expected ['flipper-native']"
+      ]
+    },
+    {
+      "id": "A03",
+      "kind": "ambiguous",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-core"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "A04",
+      "kind": "ambiguous",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-native"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "A05",
+      "kind": "ambiguous",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-verify"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "A06",
+      "kind": "ambiguous",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-native"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "A07",
+      "kind": "ambiguous",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-core"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "A08",
+      "kind": "ambiguous",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-core"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "N01",
+      "kind": "negative",
+      "pass": true,
+      "loaded_fred": [],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "N02",
+      "kind": "negative",
+      "pass": true,
+      "loaded_fred": [],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "N03",
+      "kind": "negative",
+      "pass": true,
+      "loaded_fred": [],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "N04",
+      "kind": "negative",
+      "pass": true,
+      "loaded_fred": [],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "N05",
+      "kind": "negative",
+      "pass": true,
+      "loaded_fred": [],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "N06",
+      "kind": "negative",
+      "pass": true,
+      "loaded_fred": [],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "N07",
+      "kind": "negative",
+      "pass": true,
+      "loaded_fred": [],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "N08",
+      "kind": "negative",
+      "pass": true,
+      "loaded_fred": [],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "P01",
+      "kind": "positive",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-core"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "P02",
+      "kind": "positive",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-core"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "P03",
+      "kind": "positive",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-native"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "P04",
+      "kind": "positive",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-native"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "P05",
+      "kind": "positive",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-review"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "P06",
+      "kind": "positive",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-review"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "P07",
+      "kind": "positive",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-verify"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    },
+    {
+      "id": "P08",
+      "kind": "positive",
+      "pass": true,
+      "loaded_fred": [
+        "flipper-verify"
+      ],
+      "loaded_other_skills": [],
+      "reasons": []
+    }
+  ]
+}
