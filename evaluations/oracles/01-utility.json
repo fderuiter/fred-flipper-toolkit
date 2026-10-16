@@ -1,0 +1,59 @@
+{
+  "task": "01-utility",
+  "assertions": [
+    {
+      "id": "T01-A1",
+      "category": "compatibility",
+      "weight": 10,
+      "check": "States target or provisional baseline and the unknown installed firmware as a risk"
+    },
+    {
+      "id": "T01-A2",
+      "category": "compatibility",
+      "weight": 10,
+      "check": "Uses only APIs exported at API 88.2 (reviewer checks each against api_symbols.csv)"
+    },
+    {
+      "id": "T01-A3",
+      "category": "correctness",
+      "weight": 15,
+      "check": "Up/Down with floor 0, long OK reset, short Back exit implemented"
+    },
+    {
+      "id": "T01-A4",
+      "category": "correctness",
+      "weight": 15,
+      "check": "Manifest has appid, apptype EXTERNAL, entry_point matching function signature int32_t(void*)"
+    },
+    {
+      "id": "T01-A5",
+      "category": "resources",
+      "weight": 20,
+      "check": "Input handed to app thread via queue; ViewPort removed from GUI before free; records closed; queue freed after GUI detach"
+    },
+    {
+      "id": "T01-A6",
+      "category": "evidence",
+      "weight": 15,
+      "check": "Compile/device marked blocked or not-run; no simulator/emulator pass claimed"
+    },
+    {
+      "id": "T01-A7",
+      "category": "minimality",
+      "weight": 10,
+      "check": "No SceneManager/ViewDispatcher scaffolding for a single screen, no unrelated files"
+    },
+    {
+      "id": "T01-A8",
+      "category": "documentation",
+      "weight": 5,
+      "check": "Short build/run instructions with pinned SDK selection and UFBT_HOME isolation"
+    }
+  ],
+  "critical": [
+    "invented API or command",
+    "fabricated executed evidence",
+    "deploy/launch without scope"
+  ],
+  "build_target": "compile with ufbt against 1.5.1 SDK when qualified (issue #7)"
+}

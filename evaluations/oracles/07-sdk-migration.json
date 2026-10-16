@@ -1,0 +1,67 @@
+{
+  "task": "07-sdk-migration",
+  "expected_changes": {
+    "version": "88.2 -> 89.0 (major)",
+    "removed": [
+      "meter_legacy_format (no longer exported)"
+    ],
+    "changed": [
+      "furi_hal_adc_configure: (FuriHalAdcHandle*) -> (FuriHalAdcHandle*, FuriHalAdcScale)"
+    ],
+    "added": [
+      "furi_hal_adc_set_averaging"
+    ],
+    "lineage": [
+      "cfw_meter_set_backlight_boost absent from both official tables"
+    ]
+  },
+  "assertions": [
+    {
+      "id": "T07-A1",
+      "category": "correctness",
+      "weight": 15,
+      "check": "Reports removed, changed and major version change exactly"
+    },
+    {
+      "id": "T07-A2",
+      "category": "correctness",
+      "weight": 15,
+      "check": "meter.c updated: no removed import, new configure signature, fork call removed/isolated"
+    },
+    {
+      "id": "T07-A3",
+      "category": "compatibility",
+      "weight": 20,
+      "check": "Distinguishes source vs binary/import compatibility and lineage dependency"
+    },
+    {
+      "id": "T07-A4",
+      "category": "resources",
+      "weight": 20,
+      "check": "Does not introduce lifecycle regressions; notes ADC read in timer daemon context if relevant"
+    },
+    {
+      "id": "T07-A5",
+      "category": "evidence",
+      "weight": 15,
+      "check": "Rebuild on target SDK planned; compile not claimed without toolchain"
+    },
+    {
+      "id": "T07-A6",
+      "category": "minimality",
+      "weight": 10,
+      "check": "No unnecessary rewrites"
+    },
+    {
+      "id": "T07-A7",
+      "category": "documentation",
+      "weight": 5,
+      "check": "Migration notes for the user"
+    }
+  ],
+  "critical": [
+    "claims old binary loads on new major",
+    "invented replacement API",
+    "fabricated compile"
+  ]
+}

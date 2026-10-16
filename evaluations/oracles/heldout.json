@@ -1,0 +1,67 @@
+{
+  "note": "Reviewer-side only. Do not use while tuning skill text. Run before a stable release.",
+  "task_variants": [
+    {
+      "task": "01",
+      "variant": "Stopwatch with lap list instead of tally counter; same evaluation dimensions"
+    },
+    {
+      "task": "02",
+      "variant": "Pomodoro app with settings v1->v3 where v2 renamed a key"
+    },
+    {
+      "task": "03",
+      "variant": "I2C humidity sensor polled from a worker with stuck-bus recovery"
+    },
+    {
+      "task": "04",
+      "variant": "Bounded .sub RAW subset parser (Filetype Flipper SubGhz RAW File) with timing arrays"
+    },
+    {
+      "task": "05",
+      "variant": "Wi-Fi HTTP API thermostat requested as a FAP-only controller"
+    },
+    {
+      "task": "06",
+      "variant": "Flawed ViewDispatcher app: view removed after dispatcher free, scene timer flushed from callback, IRQ log call, unbounded settings count"
+    },
+    {
+      "task": "07",
+      "variant": "Migration where a Variable export changes type and a header is removed"
+    }
+  ],
+  "activation_paraphrases": [
+    {
+      "prompt": "Is a Flipper able to act as a BLE central to talk to my lock?",
+      "expected": [
+        "flipper-core"
+      ]
+    },
+    {
+      "prompt": "Go through my FAP teardown code and look for anything that could use freed memory",
+      "expected": [
+        "flipper-review"
+      ]
+    },
+    {
+      "prompt": "pin my uFBT build to the 1.5.1 SDK and tell me what the build proves",
+      "expected": [
+        "flipper-verify"
+      ]
+    },
+    {
+      "prompt": "Add a VariableItemList settings page to my Flipper app",
+      "expected": [
+        "flipper-native"
+      ]
+    },
+    {
+      "prompt": "Proofread the Flipper paragraph in my newsletter",
+      "expected": []
+    },
+    {
+      "prompt": "Explain how C struct padding works",
+      "expected": []
+    }
+  ]
+}

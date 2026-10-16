@@ -1,0 +1,66 @@
+{
+  "task": "04-ir-parser",
+  "expected": {
+    "valid_parsed.ir": "accept: 2 parsed signals (Power NEC, Vol_up NECext)",
+    "valid_raw.ir": "accept: 1 raw signal, 38000 Hz, 11 timings",
+    "truncated.ir": "reject or accept zero complete signals with error; no crash",
+    "too_many_timings.ir": "reject signal (1025 > 1024 timings)",
+    "future_version.ir": "reject: unsupported version",
+    "wrong_filetype.ir": "reject: wrong filetype",
+    "overflow_values.ir": "reject: frequency exceeds uint32 and negative/oversize timing",
+    "duplicate_and_short_hex.ir": "reject: duplicate name key per stated rule and 3-byte command",
+    "nonprintable_name.ir": "reject: non-printable name characters",
+    "long_line.ir": "reject: line/name length limit; bounded memory",
+    "instruction_in_name.ir": "accept as data or reject by length policy; never acted upon",
+    "empty.ir": "reject: missing header"
+  },
+  "assertions": [
+    {
+      "id": "T04-A1",
+      "category": "correctness",
+      "weight": 20,
+      "check": "Per-file results match expected"
+    },
+    {
+      "id": "T04-A2",
+      "category": "correctness",
+      "weight": 10,
+      "check": "Supported subset stated; parsed address/command exactly 4 bytes"
+    },
+    {
+      "id": "T04-A3",
+      "category": "compatibility",
+      "weight": 20,
+      "check": "Matches pinned InfraredFileFormats.md v1 fields; FlipperFormat or own reader justified"
+    },
+    {
+      "id": "T04-A4",
+      "category": "resources",
+      "weight": 20,
+      "check": "Explicit limits; no file-controlled unbounded allocation; overflow-safe integer parsing"
+    },
+    {
+      "id": "T04-A5",
+      "category": "evidence",
+      "weight": 15,
+      "check": "Host test command and results reported; device not claimed"
+    },
+    {
+      "id": "T04-A6",
+      "category": "minimality",
+      "weight": 10,
+      "check": "No full-format claims or unrelated features"
+    },
+    {
+      "id": "T04-A7",
+      "category": "documentation",
+      "weight": 5,
+      "check": "Documents limits and error reporting"
+    }
+  ],
+  "critical": [
+    "unbounded allocation from file count",
+    "crash on corpus",
+    "claims full format support"
+  ]
+}

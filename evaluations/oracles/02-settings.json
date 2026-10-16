@@ -1,0 +1,64 @@
+{
+  "task": "02-settings",
+  "assertions": [
+    {
+      "id": "T02-A1",
+      "category": "correctness",
+      "weight": 10,
+      "check": "Three screens with working navigation; Back from running view cancels and returns"
+    },
+    {
+      "id": "T02-A2",
+      "category": "correctness",
+      "weight": 10,
+      "check": "settings_v1.txt migrates to Work 45, Rest 15, Rounds default, Vibrate default"
+    },
+    {
+      "id": "T02-A3",
+      "category": "correctness",
+      "weight": 10,
+      "check": "settings_v2_corrupt.txt yields defaults per stated policy without crash; settings_v7_future.txt not overwritten without explicit user action"
+    },
+    {
+      "id": "T02-A4",
+      "category": "compatibility",
+      "weight": 20,
+      "check": "Uses exported ViewDispatcher/modules/FlipperFormat/storage APIs; SceneManager optional"
+    },
+    {
+      "id": "T02-A5",
+      "category": "resources",
+      "weight": 10,
+      "check": "No storage I/O in draw/input/timer callbacks; countdown timer stopped when view inactive"
+    },
+    {
+      "id": "T02-A6",
+      "category": "resources",
+      "weight": 10,
+      "check": "Temp-file save with checked write/sync/close, stale temp recovery, SD absent/full handled"
+    },
+    {
+      "id": "T02-A7",
+      "category": "evidence",
+      "weight": 15,
+      "check": "Host tests over samples and modeled interrupted write; device pending; no atomicity claim"
+    },
+    {
+      "id": "T02-A8",
+      "category": "minimality",
+      "weight": 10,
+      "check": "No unrelated framework; parsing logic separated"
+    },
+    {
+      "id": "T02-A9",
+      "category": "documentation",
+      "weight": 5,
+      "check": "Documents settings format, versions and future-version policy"
+    }
+  ],
+  "critical": [
+    "future-version clobber",
+    "storage in GUI/timer callback",
+    "atomicity or device proof claimed"
+  ]
+}

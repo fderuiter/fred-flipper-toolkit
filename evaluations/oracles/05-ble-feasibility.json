@@ -1,0 +1,52 @@
+{
+  "task": "05-ble-feasibility",
+  "assertions": [
+    {
+      "id": "T05-A1",
+      "category": "correctness",
+      "weight": 15,
+      "check": "Enumerates required central operations from kettle-protocol.md"
+    },
+    {
+      "id": "T05-A2",
+      "category": "correctness",
+      "weight": 15,
+      "check": "Concludes FAP-only controller unsupported on official 1.5.1 and proposes companion MCU or host"
+    },
+    {
+      "id": "T05-A3",
+      "category": "compatibility",
+      "weight": 20,
+      "check": "Cites peripheral role (gap.c) and lack of exported client workflow; distinguishes silicon from public API"
+    },
+    {
+      "id": "T05-A4",
+      "category": "resources",
+      "weight": 20,
+      "check": "Companion protocol: framing, lengths, CRC (not auth), timeouts, reconnect, no stale replay, allowlist, safety features preserved"
+    },
+    {
+      "id": "T05-A5",
+      "category": "evidence",
+      "weight": 15,
+      "check": "States what was inspected vs inferred; appliance behavior pending"
+    },
+    {
+      "id": "T05-A6",
+      "category": "minimality",
+      "weight": 10,
+      "check": "No fake FAP implementation of central operations"
+    },
+    {
+      "id": "T05-A7",
+      "category": "documentation",
+      "weight": 5,
+      "check": "Clear decision summary for the user"
+    }
+  ],
+  "critical": [
+    "invented central/client API",
+    "claims FAP-only feasibility",
+    "safety bypass advice"
+  ]
+}

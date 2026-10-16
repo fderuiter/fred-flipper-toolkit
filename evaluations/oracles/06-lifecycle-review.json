@@ -1,0 +1,112 @@
+{
+  "task": "06-lifecycle-review",
+  "seeded_defects": [
+    {
+      "id": "T06-D1",
+      "location": "app_free / tick_callback",
+      "defect": "furi_timer_stop then free(app->model) before furi_timer_free; stop does not wait for in-flight/pending callback, which dereferences the freed model and calls view_port_update after the ViewPort is freed",
+      "fix": "keep model/ViewPort alive until furi_timer_free returns (free timer first)"
+    },
+    {
+      "id": "T06-D2",
+      "location": "app_free",
+      "defect": "ViewPort freed without gui_remove_view_port; GUI keeps a dangling ViewPort and may call draw/input callbacks on freed memory",
+      "fix": "gui_remove_view_port before view_port_free"
+    },
+    {
+      "id": "T06-D3",
+      "location": "rx_callback",
+      "defect": "malloc in serial RX callback which runs in interrupt context (memmgt in ISR crash); chunk also leaks if queue put fails",
+      "fix": "copy bytes into a preallocated stream buffer with zero timeout; count overflow"
+    },
+    {
+      "id": "T06-D4",
+      "location": "input_callback",
+      "defect": "furi_message_queue_put with FuriWaitForever from the GUI thread on a 4-slot queue; when the queue is full (line events, or after the main loop stopped consuming) the GUI thread blocks indefinitely",
+      "fix": "zero/short timeout with drop/coalesce policy that preserves Back; or reserve exit path"
+    },
+    {
+      "id": "T06-D5",
+      "location": "app_free / worker_thread",
+      "defect": "furi_thread_join while holding app->mutex that the worker acquires each iteration -> deadlock on exit",
+      "fix": "set running under lock, release, then join; or use thread flags"
+    },
+    {
+      "id": "T06-D6",
+      "location": "worker_thread / draw_callback",
+      "defect": "worker writes app->line/line_len without the mutex while draw_callback reads app->line in GUI thread; torn/unterminated string",
+      "fix": "guard with mutex or publish snapshot under lock"
+    },
+    {
+      "id": "T06-D7",
+      "location": "app_free",
+      "defect": "notification record closed then notification_message uses the borrowed pointer after close",
+      "fix": "send notification before furi_record_close and stop using the pointer"
+    },
+    {
+      "id": "T06-D8",
+      "location": "load_calibration",
+      "defect": "count read from SD file unbounded; count*sizeof(uint32_t) can overflow 32-bit size_t and huge sizes crash the heap; read lengths unchecked",
+      "fix": "bound count, check multiplication, check read lengths, reject file on mismatch"
+    }
+  ],
+  "decoys": [
+    "malloc of App/Model in app_alloc (thread context) is normal",
+    "main loop furi_message_queue_get(FuriWaitForever) in app thread is acceptable",
+    "worker loop with 100 ms timeout is acceptable",
+    "10 Hz periodic redraw timer is legitimate animation",
+    "ViewPort without SceneManager is appropriate",
+    "FURI_LOG_I in app thread is fine"
+  ],
+  "additional_valid_findings": [
+    "furi_hal_serial_control_acquire result not checked for NULL",
+    "read_u32 ignores short read",
+    "RxChunk data leaked if queue full or at worker exit",
+    "storage_file_close called even when open failed (acceptable per API but worth noting)",
+    "rx_callback can run after worker exit until rx_stop; order acceptable here since RX stopped before join"
+  ],
+  "pass_threshold": "at least 7 of 8 seeded defects with correct causal trace; zero decoys flagged as defects",
+  "assertions": [
+    {
+      "id": "T06-A1",
+      "category": "correctness",
+      "weight": 30,
+      "check": "Seeded defects found with correct trace: 30 * found/8, zero if fewer than 5"
+    },
+    {
+      "id": "T06-A2",
+      "category": "compatibility",
+      "weight": 20,
+      "check": "Fixes use real exported APIs; no false 'malloc forbidden' claims"
+    },
+    {
+      "id": "T06-A3",
+      "category": "resources",
+      "weight": 20,
+      "check": "Proposed teardown order establishes quiescence without deadlock"
+    },
+    {
+      "id": "T06-A4",
+      "category": "evidence",
+      "weight": 15,
+      "check": "Evidence level per finding; scope statement; no reproduced-crash claims without execution"
+    },
+    {
+      "id": "T06-A5",
+      "category": "minimality",
+      "weight": 10,
+      "check": "Review-only: no file edits; no decoys flagged"
+    },
+    {
+      "id": "T06-A6",
+      "category": "documentation",
+      "weight": 5,
+      "check": "Severity-ranked, actionable output"
+    }
+  ],
+  "critical": [
+    "invented API in fix",
+    "edits files",
+    "malloc-forbidden or furi_alloc finding"
+  ]
+}

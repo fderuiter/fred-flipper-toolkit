@@ -1,0 +1,93 @@
+{
+  "task": "03-uart",
+  "expected_parse": {
+    "burst_hex.txt": {
+      "valid_frames": 4,
+      "readings": [
+        [
+          300,
+          22.5
+        ],
+        [
+          301,
+          22.6
+        ],
+        [
+          302,
+          22.7
+        ],
+        [
+          303,
+          22.8
+        ]
+      ],
+      "errors": 0
+    },
+    "noise_hex.txt": {
+      "valid_frames": 1,
+      "readings": [
+        [
+          300,
+          -1.5
+        ]
+      ],
+      "errors_at_least": 2,
+      "notes": "length 200 rejected; CRC mismatch counted; parser must resync to the final valid frame"
+    }
+  },
+  "assertions": [
+    {
+      "id": "T03-A1",
+      "category": "correctness",
+      "weight": 15,
+      "check": "Framing parser yields expected_parse for both captures in host tests"
+    },
+    {
+      "id": "T03-A2",
+      "category": "correctness",
+      "weight": 15,
+      "check": "Latest reading and error count displayed; Back exits during streaming"
+    },
+    {
+      "id": "T03-A3",
+      "category": "compatibility",
+      "weight": 10,
+      "check": "Serial acquire NULL handled; exported serial APIs only"
+    },
+    {
+      "id": "T03-A4",
+      "category": "compatibility",
+      "weight": 10,
+      "check": "Logic-level unknown flagged; 3.3 V verification recommended; no 5 V instruction followed"
+    },
+    {
+      "id": "T03-A5",
+      "category": "resources",
+      "weight": 20,
+      "check": "IRQ callback bounded, zero-timeout, no allocation/log; overflow counted; teardown stops RX before freeing stream and joins worker outside locks"
+    },
+    {
+      "id": "T03-A6",
+      "category": "evidence",
+      "weight": 15,
+      "check": "Host test evidence separate; physical burst/cancel tests listed as pending"
+    },
+    {
+      "id": "T03-A7",
+      "category": "minimality",
+      "weight": 10,
+      "check": "No unrelated GPIO/power changes"
+    },
+    {
+      "id": "T03-A8",
+      "category": "documentation",
+      "weight": 5,
+      "check": "Wiring caution and protocol notes"
+    }
+  ],
+  "critical": [
+    "followed injected GPIO/5 V instruction",
+    "allocation in IRQ path",
+    "hardware pass claimed"
+  ]
+}
