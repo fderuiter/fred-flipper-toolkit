@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- `flipper-native` workflow gains a mandatory teardown self-check (step 8): one row per producer, what it touches, and the stop/join line that must run before those are freed; `flipper-review` outputs include the same table (#22). Not yet evaluated in a paired run.
+
 ## v0.1.0-preview — 2026-10-16
 
 Release notes: [docs/releases/v0.1.0-preview.md](docs/releases/v0.1.0-preview.md). Handoff for future work: [docs/handoff/next-agent-prompt.md](docs/handoff/next-agent-prompt.md).
