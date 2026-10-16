@@ -1,0 +1,8 @@
+Filetype: Pomodoro Settings
+Version: 9
+Work: 25
+ShortBreak: 5
+LongBreak: 15
+Cycles: 4
+Sound: true
+Profile: deep-focus

@@ -1,0 +1,13 @@
+entry,status,name,type,params
+Version,+,88.4,,
+Header,+,applications/services/gui/gui.h,,
+Header,+,lib/toolbox/sample_rates.h,,
+Header,+,lib/toolbox/units.h,,
+Function,+,furi_hal_rtc_get_timestamp,uint32_t,
+Function,+,logger_rate_get,uint32_t,uint8_t
+Function,+,units_format_celsius,int,"char*, size_t, float"
+Function,+,view_port_alloc,ViewPort*,
+Function,+,view_port_free,void,ViewPort*
+Function,-,units_internal_scale,float,float
+Variable,+,logger_rate_table,const uint32_t[4],
+Variable,+,logger_rate_count,const uint8_t,

@@ -1,0 +1,10 @@
+# Reviewer-side corrected H06 app. Not a distributable app.
+App(
+    appid="door_monitor_fixed",
+    name="Door Monitor (fixed)",
+    apptype=FlipperAppType.EXTERNAL,
+    entry_point="door_monitor_app",
+    requires=["gui", "notification", "storage"],
+    stack_size=2 * 1024,
+    fap_category="GPIO",
+)

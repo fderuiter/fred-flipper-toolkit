@@ -1,5 +1,5 @@
 {
-  "note": "Reviewer-side only. Do not use while tuning skill text. Run before a stable release.",
+  "note": "Reviewer-side only. Do not use while tuning skill text. Run before a stable release. The task variants are implemented in evaluations/heldout/ (fixtures, tasks, oracles, reference); run them with run_pilot.py --set heldout.",
   "task_variants": [
     {
       "task": "01",

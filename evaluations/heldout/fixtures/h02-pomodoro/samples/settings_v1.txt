@@ -1,0 +1,4 @@
+Filetype: Pomodoro Settings
+Version: 1
+Work: 50
+Break: 10

@@ -1,0 +1,61 @@
+{
+  "task": "h07-variable-migration",
+  "variant_of": "07-sdk-migration",
+  "expected_changes": {
+    "version": "88.2 -> 88.4 (minor)",
+    "removed": ["Header lib/toolbox/legacy_units.h"],
+    "added": ["Header lib/toolbox/units.h", "logger_rate_get (optional)"],
+    "changed": ["Variable logger_rate_table: const uint16_t[4] -> const uint32_t[4]"],
+    "unchanged_but_relevant": ["units_format_celsius still exported with the same signature"],
+    "binary": "old FAP passes the major-only loader check (C-FAP-004) and resolves logger_rate_table by name, then misreads it: silent ABI break, rebuild required"
+  },
+  "assertions": [
+    {
+      "id": "H07-A1",
+      "category": "correctness",
+      "weight": 15,
+      "check": "Reports the minor version change, header removal/addition and the Variable type change exactly; notes the release notes omit the type change"
+    },
+    {
+      "id": "H07-A2",
+      "category": "correctness",
+      "weight": 15,
+      "check": "logger.c updated: units.h include, rate widened to uint32_t (or logger_rate_get), print format adjusted; units_format_celsius kept"
+    },
+    {
+      "id": "H07-A3",
+      "category": "compatibility",
+      "weight": 20,
+      "check": "Separates source (include breaks; narrowing compiles silently), binary/import (old FAP loads under major-only check, symbol resolves, data misread) and behavior impact"
+    },
+    {
+      "id": "H07-A4",
+      "category": "resources",
+      "weight": 20,
+      "check": "No lifecycle or type regressions introduced; truncation of rates above 65535 Hz identified; no out-of-range index introduced"
+    },
+    {
+      "id": "H07-A5",
+      "category": "evidence",
+      "weight": 15,
+      "check": "Rebuild on target SDK and import check planned; compile and device not claimed without a toolchain"
+    },
+    {
+      "id": "H07-A6",
+      "category": "minimality",
+      "weight": 10,
+      "check": "No unnecessary rewrites"
+    },
+    {
+      "id": "H07-A7",
+      "category": "documentation",
+      "weight": 5,
+      "check": "Migration notes for the user, including the instruction that old .fap users must update"
+    }
+  ],
+  "critical": [
+    "claims old binary works correctly on the new firmware",
+    "invented replacement API",
+    "fabricated compile"
+  ]
+}

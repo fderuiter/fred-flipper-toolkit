@@ -1,0 +1,11 @@
+# synthetic I2C transaction log: external bus, sensor address 0x44 (7-bit), poll every 2000 ms
+# columns: time_ms operation result [read bytes]
+0 MEASURE ACK
+20 READ ACK 73 33 01 66 66 93
+2000 MEASURE ACK
+2020 READ ACK 74 00 39 66 80 F4
+4000 MEASURE NACK
+6000 MEASURE ACK
+6020 READ ACK 74 80 43 66 A0 72
+8000 MEASURE ACK
+8020 READ ACK 75 00 CD 66 C0 C9

@@ -1,0 +1,14 @@
+# synthetic I2C transaction log: bus never recovers
+# columns: time_ms operation result [read bytes]
+0 MEASURE TIMEOUT sda=low
+2000 MEASURE TIMEOUT sda=low
+4000 MEASURE TIMEOUT sda=low
+6000 MEASURE TIMEOUT sda=low
+8000 MEASURE TIMEOUT sda=low
+10000 MEASURE TIMEOUT sda=low
+12000 MEASURE TIMEOUT sda=low
+14000 MEASURE TIMEOUT sda=low
+16000 MEASURE TIMEOUT sda=low
+18000 MEASURE TIMEOUT sda=low
+20000 MEASURE TIMEOUT sda=low
+22000 MEASURE TIMEOUT sda=low

@@ -7,6 +7,7 @@ Issue tracking: definitions [#6](https://github.com/fderuiter/fred-flipper-toolk
 - Seven task definitions in `evaluations/tasks/`, synthetic fixtures in `evaluations/fixtures/`, reviewer-side oracles in `evaluations/oracles/` (including eight seeded lifecycle defects for task 06 and held-out variants).
 - 24 activation cases (8 positive, 8 negative, 8 ambiguous/adversarial) in `evaluations/activation.json`, including fabricated `ufbt test`, invented `RECORD_PASSTHROUGH`, wrong lineage, stale `furi_alloc` example, missing SDK/hardware, prompt injection in fixture data, an overbroad NFC claim and an unscoped physical output.
 - Predeclared rubric and gates in `evaluations/rubric.json`.
+- Held-out set (#12) in [`evaluations/heldout/`](../evaluations/heldout/README.md): seven task variants with fixtures, oracles and reference solutions, run with `run_pilot.py --set heldout`. Not yet run.
 
 These were written before any evaluation of the skills. Tuning skill text against held-out variants is not allowed.
 
@@ -47,7 +48,7 @@ These validate the bundle and helpers. They are not evaluations of agent benefit
 |---|---|---|---|
 | SDK-migration task family | 74.3 (baseline 74.8) | every family ≥ 80 | [#21](https://github.com/fderuiter/fred-flipper-toolkit/issues/21) |
 | Critical failure in the FRED arm | 1 (UART teardown freed ViewPort before joining the worker) | 0 | [#22](https://github.com/fderuiter/fred-flipper-toolkit/issues/22) |
-| Paired improvement | +9.5 | ≥ 10, or ≥ 50% fewer critical/major errors (−53%: met) | [#23](https://github.com/fderuiter/fred-flipper-toolkit/issues/23) |
+| Paired improvement | +9.5, 95 % CI [+4.0, +15.2] over pairs ([record](../evaluations/results/2026-10-16-paired-gain-bootstrap.md)) | ≥ 10, or ≥ 50% fewer critical/major errors (−53%: met) | [#23](https://github.com/fderuiter/fred-flipper-toolkit/issues/23) |
 | Median token ratio | 1.75× (projected 1.70× after the #27 trim) | ≤ 1.5× (rubric v1); from rubric v2, ≤ 2.0× when the same run has ≥ 50% fewer critical/major errors and no mean regression ([ADR 0003](adr/0003-token-budget-revision.md)) | [#13](https://github.com/fderuiter/fred-flipper-toolkit/issues/13) |
 
 The one allowed improvement round on the training tasks has been used. Further changes must be measured on held-out variants ([#12](https://github.com/fderuiter/fred-flipper-toolkit/issues/12)).

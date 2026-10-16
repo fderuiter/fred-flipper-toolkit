@@ -1,0 +1,5 @@
+Filetype: Pomodoro Settings
+Version: 2
+Work: 30
+Break: 7
+LongBreak: 25
